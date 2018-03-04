@@ -1,0 +1,4 @@
+#!/bin/bash
+
+exec sudo ntpdate pool.ntp.org
+
