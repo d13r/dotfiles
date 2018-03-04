@@ -6,7 +6,9 @@ if $HAS_TERMINAL; then
             cat ~/.hostname
         elif $WINDOWS; then
             # Titlecase hostname on Windows
-            hostname | sed 's/\(.\)\(.*\)/\u\1\L\2/'
+            #hostname | sed 's/\(.\)\(.*\)/\u\1\L\2/'
+            # Lowercase hostname on Windows
+            hostname | tr '[:upper:]' '[:lower:]'
         else
             # FQDN hostname on Linux
             hostname -f
@@ -156,8 +158,9 @@ if $HAS_TERMINAL; then
         PS1="${PS1}\[\033[30;1m\]@"                 # @                             Grey
         PS1="${PS1}\[\033[32;1m\]$(prompthostname)" # Hostname                      Green
         PS1="${PS1}\[\033[30;1m\]:"                 # :                             Grey
-        PS1="${PS1}\[\033[33;1m\]\$(vcsprompt)"     # Working directory / Git / Hg  Yellow
-        PS1="${PS1}\[\033[30;1m\]\$(venvprompt)"    # Python virtual env            Grey
+        # Note: \$(...) doesn't work in Git for Windows (4 Mar 2018)
+        PS1="${PS1}\[\033[33;1m\]\`vcsprompt\`"     # Working directory / Git / Hg  Yellow
+        PS1="${PS1}\[\033[30;1m\]\`venvprompt\`"    # Python virtual env            Grey
         PS1="${PS1}\[\033[30;1m\] at "              # at                            Grey
         PS1="${PS1}\[\033[37;0m\]\D{%T}"            # Time                          Light grey
         #PS1="${PS1}\[\033[30;1m\] on "              # on                            Grey

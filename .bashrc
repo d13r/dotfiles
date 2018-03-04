@@ -6,9 +6,9 @@ MAC=false
 WINDOWS=false
 
 case "$(uname)" in
-    CYGWIN*)  WINDOWS=true; CYGWIN=true ;;
-    MINGW32*) WINDOWS=true; MSYSGIT=true ;;
-    Darwin)   MAC=true ;;
+    CYGWIN*) WINDOWS=true; CYGWIN=true ;;
+    MINGW*)  WINDOWS=true; MSYSGIT=true ;;
+    Darwin)  MAC=true ;;
 esac
 
 if [ -f /.dockerenv ]; then
