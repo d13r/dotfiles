@@ -2,6 +2,9 @@
 docker()
 {
     if $WINDOWS; then
+        if [ -z "$DOCKER_HOST" ]; then
+            dinit > /dev/tty
+        fi
         eval winpty docker $(cygpathmap "$@")
     else
         command docker "$@"
@@ -11,6 +14,9 @@ docker()
 docker-compose()
 {
     if $WINDOWS; then
+        if [ -z "$DOCKER_HOST" ]; then
+            dinit > /dev/tty
+        fi
         eval winpty docker-compose $(cygpathmap "$@")
     else
         command docker-compose "$@"
@@ -38,10 +44,9 @@ dclean()
 # Environment
 denv()
 {
-    echo "Switching Docker environment..."
-    cmd="$(docker-machine env "${1:-default}")" || return
+    cmd="$(docker-machine env "${1:-Docker}")" || return
     eval "$cmd"
-    echo "Done."
+    echo "Docker environment initialised"
 }
 
 # Kill most recent container
@@ -67,8 +72,8 @@ dkillall()
 # Init
 dinit()
 {
-    docker-machine create --driver virtualbox "${1:-default}"
-    denv "${1:-default}"
+    docker-machine create --driver virtualbox "${1:-Docker}"
+    denv "${1:-Docker}"
 }
 
 # Resume
