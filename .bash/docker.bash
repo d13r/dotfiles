@@ -26,6 +26,7 @@ alias dc='docker-compose'
 alias dcr='docker-compose run'
 alias dm='docker-machine'
 alias dr='docker run'
+alias dri='docker run -it'
 
 # Clean up stopped containers and dangling (untagged) images
 dclean()
