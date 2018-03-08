@@ -14,18 +14,10 @@ if $WINDOWS; then
     # https://github.com/cuviper/ssh-pageant
     case "$(uname -a)" in
         CYGWIN_*i686*)
-            # Untested because all my PCs are 64-bit
             agent="ssh-pageant-1.4-prebuilt-cygwin32"
             ;;
         CYGWIN_*x86_64*)
             agent="ssh-pageant-1.4-prebuilt-cygwin64"
-            ;;
-        MINGW32_*)
-            agent="ssh-pageant-1.4-prebuilt-msys32"
-            ;;
-        MINGW64_*)
-            # 64-bit MSys is not (currently) supported by ssh-pageant
-            # Current workaround: Copy the key into ~/.ssh/id_rsa instead
             ;;
     esac
 fi
