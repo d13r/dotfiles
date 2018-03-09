@@ -1,10 +1,15 @@
 # Windows support
+_docker_auto_init()
+{
+    if $WINDOWS && [ -z "${DOCKER_HOST:-}" ]; then
+        dinit > /dev/tty
+    fi
+}
+
 docker()
 {
+    _docker_auto_init
     if $WINDOWS; then
-        if [ -z "$DOCKER_HOST" ]; then
-            dinit > /dev/tty
-        fi
         eval winpty docker $(cygpathmap "$@")
     else
         command docker "$@"
@@ -13,10 +18,8 @@ docker()
 
 docker-compose()
 {
+    _docker_auto_init
     if $WINDOWS; then
-        if [ -z "$DOCKER_HOST" ]; then
-            dinit > /dev/tty
-        fi
         eval winpty docker-compose $(cygpathmap "$@")
     else
         command docker-compose "$@"
@@ -72,7 +75,7 @@ dkillall()
 # Init
 dinit()
 {
-    docker-machine create --driver virtualbox "${1:-Docker}"
+    docker-machine create --driver virtualbox "${1:-Docker}" || true
     denv "${1:-Docker}"
 }
 
@@ -93,6 +96,8 @@ dresume()
 # Shell
 dsh()
 {
+    _docker_auto_init
+
     # Set up SSH agent forwarding
     if [ -n "$SSH_AUTH_SOCK" ]; then
         opt="--volume \$SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent"
@@ -115,6 +120,8 @@ dsh()
 # SSH to docker-machine
 dssh()
 {
+    _docker_auto_init
+
     # This avoids using 'docker-machine ssh' which breaks formatting in Cygwin
     machine="${1:-$DOCKER_MACHINE_NAME}"
     shift
