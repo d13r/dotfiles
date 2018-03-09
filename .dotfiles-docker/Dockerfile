@@ -1,17 +1,3 @@
-#===============================================================================
-#
-# To use Docker to test Dotfiles setup:
-#
-#   dinit                                   # Initialise docker-machine
-#   db -t dotfiles ~/.dotfiles-docker       # Build image
-#   dsh dotfiles                            # Run as 'test' user
-#   dr -it -u root dotfiles                 # Run as 'root' user
-#   dresume                                 # Resume previous session
-#
-# In either case it will run the setup script then drop you into a Bash prompt
-#
-#===============================================================================
-
 FROM ubuntu
 
 ENV HOME /home/test
