@@ -75,7 +75,9 @@ dkillall()
 # Init
 dinit()
 {
-    docker-machine create --driver virtualbox "${1:-Docker}" || true
+    docker-machine create --driver virtualbox "${1:-Docker}" || \
+        docker-machine start "${1:-Docker}" || \
+        true
     denv "${1:-Docker}"
 }
 
@@ -100,20 +102,23 @@ dsh()
 
     # Set up SSH agent forwarding
     if [ -n "$SSH_AUTH_SOCK" ]; then
-        opt="--volume \$SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent"
+        opt=(--volume \$SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
     else
-        opt=
+        opt=()
     fi
 
     # Build the command to run a shell on the specified image
-    local cmd="docker run $opt -it --entrypoint '${2:-/bin/bash}' '${1:-ubuntu}'"
+    local image="${1:-ubuntu}"
+    local entrypoint="${2:-/bin/bash}"
+    shift $(($# > 2 ? 2 : $#))
+    local cmd=(docker run "${opt[@]}" -it "$@" --entrypoint "$entrypoint" "$image")
 
     # If using Windows, we need to connect to the Docker VM first
     if $WINDOWS; then
         # -A = Enable agent forwarding, -t = Force TTY allocation
-        dssh "$DOCKER_MACHINE_NAME" -At "$cmd"
+        dssh "$DOCKER_MACHINE_NAME" -At "${cmd[@]}"
     else
-        eval "$cmd"
+        "${cmd[@]}"
     fi
 }
 
