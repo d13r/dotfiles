@@ -3,7 +3,7 @@ set -o nounset -o pipefail -o errexit
 cd "$(dirname "$0")/.."
 
 ################################################################################
-# Run the setup script as a regular user.
+# Run the setup script as the root user.
 ################################################################################
 
 # Rebuild the image if the 'cfg' script changes (if not it's cached so this is quick)
