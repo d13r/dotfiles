@@ -10,7 +10,8 @@ docker()
 {
     _docker_auto_init
     if $WINDOWS; then
-        eval winpty docker $(cygpathmap "$@")
+        # eval winpty docker $(cygpathmap "$@")
+        winpty docker "$@"
     else
         command docker "$@"
     fi
@@ -20,7 +21,8 @@ docker-compose()
 {
     _docker_auto_init
     if $WINDOWS; then
-        eval winpty docker-compose $(cygpathmap "$@")
+        # eval winpty docker-compose $(cygpathmap "$@")
+        winpty docker-compose "$@"
     else
         command docker-compose "$@"
     fi
@@ -55,7 +57,10 @@ denv()
 # Kill most recent container
 dkill()
 {
-    container="$(docker ps -ql)"
+    container="${1:-}"
+    if [ -z "$container" ]; then
+        container="$(docker ps -qlf status=running)"
+    fi
 
     if [ -n "$container" ]; then
         docker kill $container
@@ -65,7 +70,7 @@ dkill()
 # Kill all containers
 dkillall()
 {
-    containers="$(docker ps -q)"
+    containers="$(docker ps -qf status=running)"
 
     if [ -n "$containers" ]; then
         docker kill $containers
@@ -75,9 +80,16 @@ dkillall()
 # Init
 dinit()
 {
-    docker-machine create --driver virtualbox "${1:-Docker}" || \
+    if [ -n "$www_dir" ]; then
+        root="$www_dir"
+    else
+        root="$HOME"
+    fi
+
+    docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}" || \
         docker-machine start "${1:-Docker}" || \
         true
+
     denv "${1:-Docker}"
 }
 
@@ -92,6 +104,47 @@ dresume()
     else
         echo "No stopped images found." >&2
         return 1
+    fi
+}
+
+# Serve a directory of files over HTTP for quick local sharing
+# https://github.com/halverneus/static-file-server
+dserve()
+{
+    if $WINDOWS; then
+
+        echo "Serving files:"
+        ipconfig | gawk '
+            /Ethernet/ { public = 1 }
+            /VirtualBox/ { public = 0 }
+            public && match($0, /IPv4 Address.*: (.+)/, m) { print "  http://" m[1] "/" }
+        '
+        echo
+        echo "Press Ctrl-C to stop."
+
+        # Run the server on the Docker VM
+        # docker_id="$(dr -d -v "$PWD:/web" -p 80:8080 halverneus/static-file-server)"
+        docker_id="$(dr -d -v "$PWD:/usr/share/nginx/html" -p 80:80 jrelva/nginx-autoindex)"
+
+        if [ -z "$docker_id" ]; then
+            return
+        fi
+
+        # Set up port forwarding from the machine to localhost
+        trap 'true' SIGINT
+        dssh Docker -gNL 80:localhost:80
+        ssh_pid=$!
+        trap SIGINT
+
+        # Stop the SSH process and the container once it is stopped
+        kill "$ssh_pid" 2>/dev/null
+        dstop "$docker_id"
+
+    else
+
+        # TODO: List of IP addresses similar to the above Windows version
+        dr -v "$PWD:/web" -p 80:8080 halverneus/static-file-server
+
     fi
 }
 
@@ -137,7 +190,10 @@ dssh()
 # Stop most recent container
 dstop()
 {
-    container="$(docker ps -ql)"
+    container="${1:-}"
+    if [ -z "$container" ]; then
+        container="$(docker ps -qlf status=running)"
+    fi
 
     if [ -n "$container" ]; then
         docker stop $container
@@ -147,7 +203,7 @@ dstop()
 # Stop all containers
 dstopall()
 {
-    containers="$(docker ps -q)"
+    containers="$(docker ps -qf status=running)"
 
     if [ -n "$containers" ]; then
         docker stop $containers
