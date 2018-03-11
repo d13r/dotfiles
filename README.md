@@ -117,7 +117,6 @@ I'm lazy so I have a lot of Bash aliases and short commands - here are the most 
 | `db`       | `docker build`                                |                                                          |
 | `dr`       | `docker run`                                  |                                                          |
 | `dri`      | `docker run -t`                               | Run interactively, e.g. `dri ubuntu`                     |
-| `dcr`      | `docker-compose run`                          |                                                          |
 | `dsh`      | `docker run ... /bin/bash`                    | Run /bun/bash in the container (with agent forwarding)   |
 | `dssh`     | `ssh ...`                                     | SSH to the docker-machine host                           |
 | `dresume`  | `docker start -ai "$(docker ps ...)"`         | Resume most recently stopped container                   |

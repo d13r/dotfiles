@@ -14,4 +14,7 @@ if $WINDOWS; then
         alias acs='apt-cyg searchall'
     fi
 
+    # Expand aliases after 'winpty'
+    alias winpty='winpty '
+
 fi

@@ -21,8 +21,12 @@ docker-compose()
 {
     _docker_auto_init
     if $WINDOWS; then
+        # Removed cygpathmap 11 Mar 2018 - now using Unix-style paths (see 'dinit')
         # eval winpty docker-compose $(cygpathmap "$@")
-        winpty docker-compose "$@"
+        # Temporarily removed winpty 11 Mar 2018 - https://github.com/docker/compose/issues/5019
+        # This prevents Ctrl-C working correctly, but allows it to run at least
+        # winpty docker-compose "$@"
+        command docker-compose "$@"
     else
         command docker-compose "$@"
     fi
@@ -34,7 +38,6 @@ alias docker-machine='winpty docker-machine'
 alias d='docker'
 alias db='docker build'
 alias dc='docker-compose'
-alias dcr='docker-compose run'
 alias dm='docker-machine'
 alias dr='docker run'
 alias dri='docker run -it'
@@ -52,6 +55,34 @@ denv()
     cmd="$(docker-machine env "${1:-Docker}")" || return
     eval "$cmd"
     echo "Docker environment initialised"
+}
+
+# Init
+dinit()
+{
+    root="$(cygpath -O)"
+    if [ -z "$root" ]; then
+        root="$HOME"
+    fi
+
+    if docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}"; then
+        if [ "${root:0:10}" = "/cygdrive/" ]; then
+            # Make sure both /cygdrive/d/ and /d/ are valid, so both "docker -v $PWD:/blah"
+            # (uses /cygdrive/d/) and docker-compose (uses /d/) work as expected
+            drive="${root:10:1}"
+            docker-machine ssh "${1:-Docker}" "sudo ln -nsf /cygdrive/$drive /$drive"
+        fi
+    else
+        docker-machine start "${1:-Docker}" || true
+    fi
+
+    denv "${1:-Docker}"
+}
+
+# IP
+dip()
+{
+    docker-machine ip "${1:-Docker}"
 }
 
 # Kill most recent container
@@ -75,22 +106,6 @@ dkillall()
     if [ -n "$containers" ]; then
         docker kill $containers
     fi
-}
-
-# Init
-dinit()
-{
-    if [ -n "$www_dir" ]; then
-        root="$www_dir"
-    else
-        root="$HOME"
-    fi
-
-    docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}" || \
-        docker-machine start "${1:-Docker}" || \
-        true
-
-    denv "${1:-Docker}"
 }
 
 # Resume
