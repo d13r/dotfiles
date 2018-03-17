@@ -65,15 +65,15 @@ dinit()
         root="$HOME"
     fi
 
-    if docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}"; then
-        if [ "${root:0:10}" = "/cygdrive/" ]; then
-            # Make sure both /cygdrive/d/ and /d/ are valid, so both "docker -v $PWD:/blah"
-            # (uses /cygdrive/d/) and docker-compose (uses /d/) work as expected
-            drive="${root:10:1}"
-            docker-machine ssh "${1:-Docker}" "sudo ln -nsf /cygdrive/$drive /$drive"
-        fi
-    else
-        docker-machine start "${1:-Docker}" || true
+    docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}" || \
+        docker-machine start "${1:-Docker}" || \
+        true
+
+    if [ "${root:0:10}" = "/cygdrive/" ]; then
+        # Make sure both /cygdrive/d/ and /d/ are valid, so both "docker -v $PWD:/blah"
+        # (uses /cygdrive/d/) and docker-compose (uses /d/) work as expected
+        drive="${root:10:1}"
+        docker-machine ssh "${1:-Docker}" "sudo ln -nsf /cygdrive/$drive /$drive"
     fi
 
     denv "${1:-Docker}"
