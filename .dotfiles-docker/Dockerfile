@@ -19,7 +19,7 @@ ADD sudoers /etc/sudoers
 RUN useradd --create-home --home-dir $HOME --shell /bin/bash --groups sudo test
 
 # The first time Bash is run, automatically download and run the config file
-RUN echo "if [ ! -d ~/.git -a ! -f ~/cfg ]; then cd; wget https://alberon.uk/cfg; . cfg; fi" >> /etc/bash.bashrc
+RUN echo "if [ ! -d ~/.git -a ! -f ~/cfg ]; then cd; wget https://djm.me/cfg; . cfg; fi" >> /etc/bash.bashrc
 
 # Disable the sudo tutorial
 USER test
