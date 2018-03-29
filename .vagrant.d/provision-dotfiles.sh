@@ -171,6 +171,7 @@ if [ ! -d .git ]; then
 
     # Based on https://alberon.uk/cfg but quiet and non-interactive
     echo "Installing dotfiles in $HOME..."
+    cd $HOME
     git init -q
     git remote add origin "git://github.com/$github_user/dotfiles.git"
     git remote set-url --push origin "git@github.com:$github_user/dotfiles.git"
@@ -193,7 +194,7 @@ if [ $UID -ne 0 ]; then
             HOME=~root
 
             echo "Installing dotfiles in \$HOME..."
-            cd ~
+            cd \$HOME
             git init -q
             git remote add origin "git://github.com/$github_user/dotfiles.git"
             git remote set-url --push origin "git@github.com:$github_user/dotfiles.git"
