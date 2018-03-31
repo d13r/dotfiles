@@ -9,27 +9,16 @@ _docker_auto_init()
 docker()
 {
     _docker_auto_init
-    if $WINDOWS; then
-        # eval winpty docker $(cygpathmap "$@")
-        winpty docker "$@"
-    else
-        command docker "$@"
-    fi
+    winpty docker "$@"
 }
 
 docker-compose()
 {
     _docker_auto_init
-    if $WINDOWS; then
-        # Removed cygpathmap 11 Mar 2018 - now using Unix-style paths (see 'dinit')
-        # eval winpty docker-compose $(cygpathmap "$@")
-        # Temporarily removed winpty 11 Mar 2018 - https://github.com/docker/compose/issues/5019
-        # This prevents Ctrl-C working correctly, but allows it to run at least
-        # winpty docker-compose "$@"
-        command docker-compose "$@"
-    else
-        command docker-compose "$@"
-    fi
+    # Temporarily removed winpty 11 Mar 2018 - https://github.com/docker/compose/issues/5019
+    # This prevents Ctrl-C working correctly, but allows it to run at least
+    # winpty docker-compose "$@"
+    command docker-compose "$@"
 }
 
 alias docker-machine='winpty docker-machine'
