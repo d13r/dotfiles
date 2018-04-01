@@ -7,9 +7,6 @@ $MAC && PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 # RVM
 PATH="$HOME/.rvm/bin:$PATH"
 
-# Composer packages (Boris, Drush, etc.)
-PATH="$HOME/.composer/packages/vendor/bin:$PATH"
-
 # Manually installed packages
 for bin in $HOME/opt/*/bin; do
     PATH="$bin:$PATH"

@@ -4,7 +4,6 @@
 !/.bash_completion
 !/.bash_completion.d
 !/.bazaar
-!/.composer
 !/.dotfiles-docker
 !/.drush
 !/.elinks
@@ -29,12 +28,6 @@
 !/bin
 !/lib
 !/opt
-
-# Composer - config only, not cache files
-/.composer/*
-!/.composer/composer.json
-!/.composer/composer.lock
-!/.composer/packages
 
 # Drush - config, not cache
 /.drush/cache
