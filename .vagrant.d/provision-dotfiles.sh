@@ -167,7 +167,7 @@ install_tmux
 # dotfiles
 #---------------------------------------
 
-if [ ! -d .git ]; then
+if [ ! -d "$HOME/.git" ]; then
 
     # Based on https://alberon.uk/cfg but quiet and non-interactive
     echo "Installing dotfiles in $HOME..."
@@ -189,10 +189,10 @@ fi
 
 if [ $UID -ne 0 ]; then
     sudo -s <<END
-        if [ ! -d ~root/.git ]; then
-            # On Ubuntu, sudo sets $HOME to /home/vagrant not /root
-            HOME=~root
+        # On Ubuntu, sudo sets $HOME to /home/vagrant not /root
+        HOME=~root
 
+        if [ ! -d \$HOME/.git ]; then
             echo "Installing dotfiles in \$HOME..."
             cd \$HOME
             git init -q
