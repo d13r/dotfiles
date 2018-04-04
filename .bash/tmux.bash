@@ -9,8 +9,8 @@ h() {
     local name="${2:-default}"
     local path="${3:-.}"
 
-    if [ "$host" = "v" -a $# -eq 1 ]; then
-        # Special case for 'h v' => 'v h' => 'vagrant tmux' (see vagrant.bash)
+    if [ "$host" = "v" -o "$host" = "vagrant" ] && [ $# -eq 1 ]; then
+        # Special case for 'h vagrant' / 'h v' => 'v h' => 'vagrant tmux' (see vagrant.bash)
         vagrant tmux
     elif [ $# -eq 2 -a "$name" = "^" ]; then
         # For 'h user@host ^' upload SSH public key - easier than retyping it
