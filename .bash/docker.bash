@@ -1,33 +1,7 @@
-# Windows support
-_docker_auto_init()
-{
-    if $WINDOWS && [ -z "${DOCKER_HOST:-}" ]; then
-        dinit > /dev/tty
-    fi
-}
-
-docker()
-{
-    _docker_auto_init
-    winpty docker "$@"
-}
-
-docker-compose()
-{
-    _docker_auto_init
-    # Temporarily removed winpty 11 Mar 2018 - https://github.com/docker/compose/issues/5019
-    # This prevents Ctrl-C working correctly, but allows it to run at least
-    # winpty docker-compose "$@"
-    command docker-compose "$@"
-}
-
-alias docker-machine='winpty docker-machine'
-
 # Shorthand
 alias d='docker'
 alias db='docker build'
 alias dc='docker-compose'
-alias dm='docker-machine'
 alias dr='docker run'
 alias dri='docker run -it'
 
@@ -36,42 +10,6 @@ dclean()
 {
     docker container prune
     docker image prune
-}
-
-# Environment
-denv()
-{
-    cmd="$(docker-machine env "${1:-Docker}")" || return
-    eval "$cmd"
-    echo "Docker environment initialised"
-}
-
-# Init
-dinit()
-{
-    root="$(cygpath -O)"
-    if [ -z "$root" ]; then
-        root="$HOME"
-    fi
-
-    docker-machine create --driver virtualbox --virtualbox-share-folder "$(cygpath -w "$root"):$root" "${1:-Docker}" || \
-        docker-machine start "${1:-Docker}" || \
-        true
-
-    if [ "${root:0:10}" = "/cygdrive/" ]; then
-        # Make sure both /cygdrive/d/ and /d/ are valid, so both "docker -v $PWD:/blah"
-        # (uses /cygdrive/d/) and docker-compose (uses /d/) work as expected
-        drive="${root:10:1}"
-        docker-machine ssh "${1:-Docker}" "sudo ln -nsf /cygdrive/$drive /$drive"
-    fi
-
-    denv "${1:-Docker}"
-}
-
-# IP
-dip()
-{
-    docker-machine ip "${1:-Docker}"
 }
 
 # Kill most recent container
@@ -115,51 +53,15 @@ dresume()
 # https://github.com/halverneus/static-file-server
 dserve()
 {
-    if $WINDOWS; then
-
-        echo "Serving files:"
-        ipconfig | gawk '
-            /Ethernet/ { public = 1 }
-            /VirtualBox/ { public = 0 }
-            public && match($0, /IPv4 Address.*: (.+)/, m) { print "  http://" m[1] "/" }
-        '
-        echo
-        echo "Press Ctrl-C to stop."
-
-        # Run the server on the Docker VM
-        # docker_id="$(dr -d -v "$PWD:/web" -p 80:8080 halverneus/static-file-server)"
-        docker_id="$(dr -d -v "$PWD:/usr/share/nginx/html" -p 80:80 jrelva/nginx-autoindex)"
-
-        if [ -z "$docker_id" ]; then
-            return
-        fi
-
-        # Set up port forwarding from the machine to localhost
-        trap 'true' SIGINT
-        dssh Docker -gNL 80:localhost:80
-        ssh_pid=$!
-        trap SIGINT
-
-        # Stop the SSH process and the container once it is stopped
-        kill "$ssh_pid" 2>/dev/null
-        dstop "$docker_id"
-
-    else
-
-        # TODO: List of IP addresses similar to the above Windows version
-        dr -v "$PWD:/web" -p 80:8080 halverneus/static-file-server
-
-    fi
+    dr -v "$PWD:/web" -p 80:8080 halverneus/static-file-server
 }
 
 # Shell
 dsh()
 {
-    _docker_auto_init
-
     # Set up SSH agent forwarding
     if [ -n "$SSH_AUTH_SOCK" ]; then
-        opt=(--volume \$SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
+        opt=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
     else
         opt=()
     fi
@@ -168,27 +70,8 @@ dsh()
     local image="${1:-ubuntu}"
     local entrypoint="${2:-/bin/bash}"
     shift $(($# > 2 ? 2 : $#))
-    local cmd=(docker run "${opt[@]}" -it "$@" --entrypoint "$entrypoint" "$image")
 
-    # If using Windows, we need to connect to the Docker VM first
-    if $WINDOWS; then
-        # -A = Enable agent forwarding, -t = Force TTY allocation
-        dssh "$DOCKER_MACHINE_NAME" -At "${cmd[@]}"
-    else
-        eval "${cmd[@]}"
-    fi
-}
-
-# SSH to docker-machine
-dssh()
-{
-    _docker_auto_init
-
-    # This avoids using 'docker-machine ssh' which breaks formatting in Cygwin
-    machine="${1:-$DOCKER_MACHINE_NAME}"
-    shift
-    ip="$(docker-machine ip "$machine")" || return
-    ssh -i "$HOME/.docker/machine/machines/$machine/id_rsa" "docker@$ip" "$@"
+    docker run "${opt[@]}" -it "$@" --entrypoint "$entrypoint" "$image"
 }
 
 # Stop most recent container

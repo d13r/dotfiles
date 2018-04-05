@@ -113,20 +113,16 @@ I'm lazy so I have a lot of Bash aliases and short commands - here are the most 
 | `reload`   | `exec bash -l`                                | Run this after modifying any Bash config file            |
 | `d`        | `docker`                                      |                                                          |
 | `dc`       | `docker-compose`                              |                                                          |
-| `dm`       | `docker-machine`                              |                                                          |
 | `db`       | `docker build`                                |                                                          |
 | `dr`       | `docker run`                                  |                                                          |
-| `dri`      | `docker run -t`                               | Run interactively, e.g. `dri ubuntu`                     |
+| `dri`      | `docker run -it`                              | Run interactively, e.g. `dri ubuntu`                     |
 | `dsh`      | `docker run ... /bin/bash`                    | Run /bun/bash in the container (with agent forwarding)   |
-| `dssh`     | `ssh ...`                                     | SSH to the docker-machine host                           |
 | `dresume`  | `docker start -ai "$(docker ps ...)"`         | Resume most recently stopped container                   |
 | `dstop`    | `docker stop $(docker ps -ql)`                | Stop most recent container                               |
 | `dstopall` | `docker stop $(docker ps -q)`                 | Stop all running containers                              |
 | `dkill`    | `docker kill $(docker ps -ql)`                | Kill most recent container                               |
 | `dkillall` | `docker kill $(docker ps -q)`                 | Kill all running containers                              |
 | `dclean`   | `docker container prune; docker image prune`  | Clean up stopped containers and untagged images          |
-| `denv`     | `eval "$(docker-machine env)"`                | Set up Bash environment variables                        |
-| `dinit`    | `docker-machine create ...`                   | Uses VirtualBox                                          |
 
 **Note:** Some expansions are simplified in the list above - e.g. `l` is actually aliased to `ls -hFl --color=always --hide=*.pyc --hide=*.sublime-workspace` on Linux or `LSCOLORS=ExGxFxDaCaDaDahbaDacec ls -hFlG` on Mac.
 
