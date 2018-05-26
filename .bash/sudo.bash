@@ -70,6 +70,7 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         alias poweroff='sudo poweroff'
         alias reboot='sudo reboot'
         alias service='sudo service'
+        alias ufw='sudo ufw'
         alias useradd='sudo useradd'
         alias userdel='sudo userdel'
         alias usermod='sudo usermod'
