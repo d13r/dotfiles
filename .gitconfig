@@ -85,6 +85,7 @@
     out          = outgoing
     p            = push
     pl           = pull
+    plr          = pull --rebase
     praise       = blame
     pt           = push --tags
     r            = remote
