@@ -1,5 +1,9 @@
 if $HAS_TERMINAL; then
 
+    # Enable dynamic $COLUMNS and $LINES variables
+    shopt -s checkwinsize
+
+    # Get hostname
     prompthostname() {
         if [ -f ~/.hostname ]; then
             # Custom hostname
