@@ -24,11 +24,11 @@ Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which
 
 [Install Cygwin](https://cygwin.com/install.html) - select [any local mirror](https://cygwin.com/mirrors.html) (e.g. `mirrorservice.org` for UK), and when prompted add these packages:
 
-- git
-- vim
-- wget
+- `git`
+- `vim`
+- `wget`
 
-**Tip:** Click the "View" button in the top-right corner to select "Full" mode, then use the search box.
+**Tip:** Select View > Full mode, then use the search box to find them.
 
 Once it's installed, run Cygwin Terminal and run this to set the same home directory in Cygwin and Windows:
 
@@ -52,6 +52,8 @@ Then run this to install some additional useful packages:
 ```bash
 apt-cyg install bash-completion bind-utils curl dos2unix git-completion inetutils less links make ncurses tmux tree unzip whois
 ```
+
+(They can also be installed from the GUI - but it's much more tedious to find them all!)
 
 ### Installing on Git for Windows (formerly mSysGit):
 
