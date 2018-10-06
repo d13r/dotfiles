@@ -12,11 +12,11 @@ You need to have `git` and `wget` installed - e.g. `sudo apt-get install git wge
 
 ```bash
 cd
-wget alberon.uk/cfg
+wget djm.me/cfg
 . cfg
 ```
 
-That's it. (See https://alberon.uk/cfg for the script source - don't execute scripts from the internet without knowing what they do!)
+That's it. (See https://djm.me/cfg for the script source - don't execute scripts from the internet without knowing what they do!)
 
 ### Installing on Windows:
 
@@ -41,7 +41,7 @@ Then install dotfiles as above:
 
 ```bash
 cd
-wget alberon.uk/cfg
+wget djm.me/cfg
 . cfg
 ```
 
@@ -61,7 +61,7 @@ I don't recommend [Git for Windows](https://msysgit.github.io/) any more, but it
 
 ```bash
 cd
-curl alberon.uk/cfg > cfg
+curl djm.me/cfg > cfg
 . cfg
 ```
 
