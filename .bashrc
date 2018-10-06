@@ -1,3 +1,10 @@
+# Google Cloud Shell (required)
+if $HAS_TERMINAL; then
+    if [ -f "/google/devshell/bashrc.google" ]; then
+        source "/google/devshell/bashrc.google"
+    fi
+fi
+
 # Standard config files, nicely split up
 for file in ~/.bash/*; do
     source "$file"
