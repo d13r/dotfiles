@@ -4,6 +4,9 @@
 # MacPorts
 $MAC && PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
+# Yarn
+PATH="$HOME/.yarn/bin:$PATH"
+
 # RVM
 PATH="$HOME/.rvm/bin:$PATH"
 
