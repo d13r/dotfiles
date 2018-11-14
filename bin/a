@@ -3,7 +3,7 @@
 # 'a' = Asset builder (Awe, Gulp or npm as appropriate)
 
 # Gulp
-if dir="$(findup -e gulpfile.js)"; then
+if dir="$(findup -e gulpfile.js -o -e gulpfile.coffee)"; then
     exec gulp "$@"
 fi
 
