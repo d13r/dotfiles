@@ -1,0 +1,57 @@
+#!/bin/bash
+set -o nounset -o pipefail -o errexit
+cd "$(dirname "$0")"
+
+# Get database name
+db="${1:-}"
+
+if [ -z "$db" ]; then
+    echo "Usage: ./create-db <name> [password]" >&2
+    exit 1
+fi
+
+# Validate database name
+if [[ ! $db =~ ^[a-z0-9_]{1,16}$ ]]; then
+    echo "Invalid database name - a-z, 0-9 and _ only; max. 16 characters" >&2
+    exit 1
+fi
+
+# Get / generate password
+pass="${2:-}"
+
+if [ -z "$pass" ]; then
+    pass="$(</dev/urandom tr -dc 'a-zA-Z0-9' | head -c16 || true)"
+fi
+
+if [[ ! $pass =~ ^[^\\\']{8,}$ ]]; then
+    echo "Invalid password - minimum 8 characters, cannot contain single quotes or backslashes" >&2
+    exit 1
+fi
+
+# Check if the database already exists
+# Note: Use 'sudo' for all MySQL operations to read from ~/.my.cnf
+if [ -n "$(sudo mysql -Bse "SELECT 1 FROM information_schema.SCHEMATA WHERE SCHEMA_NAME = '$db' LIMIT 1")" ]; then
+    echo "Database '$db' already exists" >&2
+    exit 1
+fi
+
+# Check if the database user already exists
+if [ -n "$(sudo mysql -Bse "SELECT 1 FROM mysql.user WHERE user = '$db' LIMIT 1")" ]; then
+    echo "MySQL user '$db' already exists" >&2
+    exit 1
+fi
+
+# Create database
+sudo mysql <<END
+    CREATE DATABASE $db;
+    CREATE USER $db@localhost IDENTIFIED BY '$pass';
+    GRANT ALL PRIVILEGES ON $db.* TO $db@localhost;
+    FLUSH PRIVILEGES;
+END
+
+# Done
+echo "Created database and user account:"
+echo
+echo "Database: $db"
+echo "Username: $db"
+echo "Password: $pass"
