@@ -24,10 +24,18 @@ h() {
         return 1
     else
         # Already running tmux so connect without it
-        tmux rename-window -t $TMUX_PANE "$host" 2>/dev/null
+        autoname="$(tmux display-message -pt $TMUX_PANE '#{automatic-rename}')"
+
+        if [ "$autoname" = 1 ]; then
+            tmux rename-window -t $TMUX_PANE "$host" 2>/dev/null
+        fi
+
         ssh -o ForwardAgent=yes "$host"
-        tmux setw -t $TMUX_PANE automatic-rename 2>/dev/null
-        sleep 0.3 # Need a short delay else the window is named 'tmux' not 'bash'
+
+        if [ "$autoname" = 1 ]; then
+            tmux setw -t $TMUX_PANE automatic-rename 2>/dev/null
+            sleep 0.3 # Need a short delay else the window is named 'tmux' not 'bash'
+        fi
     fi
 }
 
