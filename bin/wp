@@ -1,10 +1,12 @@
 #!/bin/bash
 
-if ! dir="$(findup -f vendor/bin/wp)"; then
-    echo "Cannot find vendor/bin/wp" >&2
+exe=vendor/bin/wp
+
+if ! dir="$(findup -f $exe)"; then
+    echo "Cannot find $exe" >&2
     exit 1
 fi
 
 cd "$dir"
 
-exec vendor/bin/wp "$@"
+exec $exe "$@"

@@ -10,16 +10,6 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         fi
     }
 
-    # se. = se . (sudoedit - browse current directory)
-    alias se.="se ."
-
-    # Versions of 'sudo ls'
-    alias sl='sudo l'
-    alias sls='sudo ls'
-    alias sll='sudo ll'
-    alias sla='sudo la'
-    alias slla='sudo lla'
-
     # apt-get
     if [ $UID -eq 0 ]; then
         alias agi='apt-get install'
