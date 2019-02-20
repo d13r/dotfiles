@@ -11,7 +11,7 @@ mark() {
     mkdir -p $MARKPATH
     mark="${1:-$(basename "$PWD")}"
 
-    if ! [[ $mark =~ ^[a-zA-Z0-9-]+$ ]]; then
+    if ! [[ $mark =~ ^[a-zA-Z0-9_-]+$ ]]; then
         echo "Invalid mark name"
         return 1
     fi
