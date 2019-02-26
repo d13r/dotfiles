@@ -11,7 +11,7 @@ PATH="$HOME/.yarn/bin:$PATH"
 PATH="$HOME/.rvm/bin:$PATH"
 
 # Composer
-PATH="$HOME/.config/composer/vendor/bin:$HOME/.composer/packages/vendor/bin:$PATH"
+PATH="$HOME/.config/composer/vendor/bin:$HOME/.composer/vendor/bin:$HOME/.composer/packages/vendor/bin:$PATH"
 
 # Manually installed packages
 for bin in $HOME/opt/*/bin; do
