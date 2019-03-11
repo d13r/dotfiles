@@ -69,10 +69,11 @@
 # Python compiled files
 *.pyc
 
-# cPanel executables
+# cPanel files
 /bin/pear
 /bin/peardev
 /bin/pecl
+.ea-php-cli.cache
 
 # gitolite executables
 /bin/gitolite*

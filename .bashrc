@@ -25,7 +25,7 @@ fi
 # .bash_profile not to load .bashrc again
 BASHRC_DONE=true
 
-# Prevent Serverless Framework messing with my Bash config
+# Prevent Serverless Framework messing with the Bash config
 # https://github.com/serverless/serverless/issues/4069
 # tabtab source for serverless package
 # tabtab source for sls package
