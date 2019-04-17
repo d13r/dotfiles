@@ -18,8 +18,10 @@ if $WSL; then
     # https://github.com/benpye/wsl-ssh-pageant
     if ! pgrep -l wsl-ssh-pageant >/dev/null; then
         # WSL won't run a Windows app that's inside the Linux filesystem, so copy it to a temp directory first
-        rm -f "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe" "$WIN_TEMP_UNIX/wsl-ssh-pageant.sock"
+        # This sometimes fails even when pgrep doesn't think it's running, but that's generally OK
+        rm -f "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe" "$WIN_TEMP_UNIX/wsl-ssh-pageant.sock" 2>/dev/null && \
         cp $HOME/opt/wsl-ssh-pageant/wsl-ssh-pageant-amd64.exe "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe"
+
         "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe" --wsl "$WIN_TEMP/wsl-ssh-pageant.sock" 2>/dev/null &
     fi
 
