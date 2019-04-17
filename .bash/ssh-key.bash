@@ -16,17 +16,14 @@ if $WSL; then
 
     # Windows System for Linux
     # https://github.com/benpye/wsl-ssh-pageant
-    WINTEMP="$(cmd.exe /C 'echo %TEMP%' | tr -d '\r')"
-    LINWINTEMP=$(wslpath "$WINTEMP")
-
     if ! pgrep -l wsl-ssh-pageant >/dev/null; then
         # WSL won't run a Windows app that's inside the Linux filesystem, so copy it to a temp directory first
-        rm -f "$LINWINTEMP/wsl-ssh-pageant.exe" "$LINWINTEMP/wsl-ssh-pageant.sock"
-        cp $HOME/opt/wsl-ssh-pageant/wsl-ssh-pageant-amd64.exe "$LINWINTEMP/wsl-ssh-pageant.exe"
-        "$LINWINTEMP/wsl-ssh-pageant.exe" --wsl "$WINTEMP/wsl-ssh-pageant.sock" 2>/dev/null &
+        rm -f "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe" "$WIN_TEMP_UNIX/wsl-ssh-pageant.sock"
+        cp $HOME/opt/wsl-ssh-pageant/wsl-ssh-pageant-amd64.exe "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe"
+        "$WIN_TEMP_UNIX/wsl-ssh-pageant.exe" --wsl "$WIN_TEMP/wsl-ssh-pageant.sock" 2>/dev/null &
     fi
 
-    export SSH_AUTH_SOCK="$LINWINTEMP/wsl-ssh-pageant.sock"
+    export SSH_AUTH_SOCK="$WIN_TEMP_UNIX/wsl-ssh-pageant.sock"
 
 elif $CYGWIN; then
 

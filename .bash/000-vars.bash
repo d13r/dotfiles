@@ -9,6 +9,9 @@ WSL=false
 if grep -q 'WSL\|Microsoft' /proc/version; then
     # Note: WINDOWS=false in WSL because it's more Linux-like than Windows-like
     WSL=true
+    APPDATA_UNIX="$(wslpath "$APPDATA")"
+    WIN_TEMP="$(cmd.exe /C 'echo %TEMP%' | tr -d '\r')"
+    WIN_TEMP_UNIX=$(wslpath "$WIN_TEMP")
 else
     case "$(uname -a)" in
         CYGWIN*) WINDOWS=true; CYGWIN=true ;;
