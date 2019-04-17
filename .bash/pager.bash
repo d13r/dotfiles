@@ -4,7 +4,7 @@ export PAGER=less
 export LESS=FRX
 
 # Use lesspipe to convert non-text files, if available
-if [ -x /usr/bin/lesspipe ];
+if [ -x /usr/bin/lesspipe ]; then
     eval "$(/usr/bin/lesspipe)"
 fi
 
