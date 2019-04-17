@@ -193,7 +193,7 @@ Combined with the `v` alias above, these make easy to type Vagrant commands, e.g
 | `rebuild`  | `destroy && box update && up`                 |                                                          |
 | `hosts`    | `hostmanager`                                 | [Update /etc/hosts files](https://github.com/smdahlen/vagrant-hostmanager) |
 | `x`/`exec` | `ssh -c "cd /vagrant; $*"`                    | Run a command on the guest machine without opening Bash  |
-| `h`/`tmux` | `ssh -- -t 'tmux attach \|\| tmux new'`       | More or less - see source for the full command!          |
+| `h`/`tmux` | `ssh -- -t 'tmux new -A'`                     | More or less - see source for the full command!          |
 | `uh`       | `up && tmux`                                  |                                                          |
 
 Note: Since Vagrant doesn't really support aliases, this is actually a [Bash function](.bash/vagrant.bash) sitting in front of the real Vagrant.

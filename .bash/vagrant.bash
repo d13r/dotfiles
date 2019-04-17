@@ -96,7 +96,7 @@ vagrant() {
 
         if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
             # Not running tmux - Run tmux inside Vagrant (if available)
-            ssh -F /tmp/vagrant-ssh-config default -t 'command -v tmux &>/dev/null && { tmux attach || tmux new -s default; } || bash -l'
+            ssh -F /tmp/vagrant-ssh-config default -t 'command -v tmux &>/dev/null && tmux new -A -s default || bash -l'
         else
             # We're running tmux already
             autoname="$(tmux display-message -pt $TMUX_PANE '#{automatic-rename}')"
