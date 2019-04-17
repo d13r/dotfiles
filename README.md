@@ -18,7 +18,27 @@ wget djm.me/cfg
 
 That's it. (See https://djm.me/cfg for the script source - don't execute scripts from the internet without knowing what they do!)
 
-### Installing on Windows:
+### Installing on Windows Subsystem for Linux
+
+Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which is the regular Fixedsys font plus unicode characters).
+
+Click Start, search for `features` and select "Turn Windows features on or off". Tick "Windows Subsystem for Linux" and click OK. Reboot.
+
+Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu.
+
+[Install WSLtty](https://github.com/mintty/wsltty).
+
+Run "Ubuntu Terminal" from the start menu. Choose a username and password when prompted, then install dotfiles as normal:
+
+```bash
+cd
+wget djm.me/cfg
+. cfg
+```
+
+Close and re-open WSLtty to reload the configuration.
+
+### Installing on Cygwin (Windows):
 
 Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which is the regular Fixedsys font plus unicode characters).
 
