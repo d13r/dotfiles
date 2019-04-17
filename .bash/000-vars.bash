@@ -11,7 +11,9 @@ if grep -q 'WSL\|Microsoft' /proc/version; then
     WSL=true
     APPDATA_UNIX="$(wslpath "$APPDATA")"
     WIN_TEMP="$(cmd.exe /C 'echo %TEMP%' | tr -d '\r')"
-    WIN_TEMP_UNIX=$(wslpath "$WIN_TEMP")
+    WIN_TEMP_UNIX="$(wslpath "$WIN_TEMP")"
+    WIN_MYDOCS="$(powershell.exe -Command "[Environment]::GetFolderPath('MyDocuments')" | tr -d '\r')"
+    WIN_MYDOCS_UNIX="$(wslpath "$WIN_MYDOCS")"
 else
     case "$(uname -a)" in
         CYGWIN*) WINDOWS=true; CYGWIN=true ;;
