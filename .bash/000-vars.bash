@@ -4,12 +4,18 @@ DOCKER=false
 MSYSGIT=false
 MAC=false
 WINDOWS=false
+WSL=false
 
-case "$(uname)" in
-    CYGWIN*) WINDOWS=true; CYGWIN=true ;;
-    MINGW*)  WINDOWS=true; MSYSGIT=true ;;
-    Darwin)  MAC=true ;;
-esac
+if grep -q 'WSL\|Microsoft' /proc/version; then
+    # Note: WINDOWS=false in WSL because it's more Linux-like than Windows-like
+    WSL=true
+else
+    case "$(uname -a)" in
+        CYGWIN*) WINDOWS=true; CYGWIN=true ;;
+        MINGW*)  WINDOWS=true; MSYSGIT=true ;;
+        Darwin)  MAC=true ;;
+    esac
+fi
 
 if [ -f /.dockerenv ]; then
     DOCKER=true

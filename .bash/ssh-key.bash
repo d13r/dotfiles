@@ -1,6 +1,8 @@
 agent=
 file=
 
+# Check for local keys
+# macOS loads them automatically
 if ! $MAC; then
     if [ -n "$HOME/.ssh/id_rsa" ]; then
         file="$HOME/.ssh/id_rsa"
@@ -9,25 +11,40 @@ if ! $MAC; then
     fi
 fi
 
-if $WINDOWS; then
-    # Use Pageant for SSH keys so I don't have to re-enter the SSH key password
+# Bridge to Pageant on Windows so we can share keys
+if $WSL; then
+
+    # Windows System for Linux
+    # https://github.com/benpye/wsl-ssh-pageant
+    WINTEMP="$(cmd.exe /C 'echo %TEMP%' | tr -d '\r')"
+    LINWINTEMP=$(wslpath "$WINTEMP")
+
+    if ! pgrep -l wsl-ssh-pageant >/dev/null; then
+        # WSL won't run a Windows app that's inside the Linux filesystem, so copy it to a temp directory first
+        rm -f "$LINWINTEMP/wsl-ssh-pageant.exe" "$LINWINTEMP/wsl-ssh-pageant.sock"
+        cp $HOME/opt/wsl-ssh-pageant/wsl-ssh-pageant-amd64.exe "$LINWINTEMP/wsl-ssh-pageant.exe"
+        "$LINWINTEMP/wsl-ssh-pageant.exe" --wsl "$WINTEMP/wsl-ssh-pageant.sock" 2>/dev/null &
+    fi
+
+    export SSH_AUTH_SOCK="$LINWINTEMP/wsl-ssh-pageant.sock"
+
+elif $CYGWIN; then
+
+    # Cygwin
     # https://github.com/cuviper/ssh-pageant
     case "$(uname -a)" in
         CYGWIN_*i686*)
-            agent="ssh-pageant-1.4-prebuilt-cygwin32"
+            eval $($HOME/opt/ssh-pageant-1.4-prebuilt-cygwin32/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
             ;;
         CYGWIN_*x86_64*)
-            agent="ssh-pageant-1.4-prebuilt-cygwin64"
+            eval $($HOME/opt/ssh-pageant-1.4-prebuilt-cygwin64/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
             ;;
     esac
+
 fi
 
-if [ -n "$agent" ]; then
-
-    # ssh-pageant
-    eval $($HOME/opt/$agent/ssh-pageant -r -a "/tmp/.ssh-pageant-$USERNAME")
-
-elif [ -f "$file" ]; then
+# Local key file / agent
+if [ -f "$file" ]; then
 
     # ssh-agent
     # Make sure the agent is running
@@ -90,14 +107,14 @@ fi
 # Workaround for losing SSH agent connection when reconnecting tmux: update a
 # symlink to the socket each time we reconnect and use that as the socket in
 # every session.
-# Currently not working on Mac
-# And it stops working on MSys when you run "reload"
-# But I don't have tmux working on those platforms anyway!
-if ! $MAC && ! $MSYSGIT; then
+# Currently not working on Mac, but I don't use it
+# And it stops working on MSys when you run "reload", but I don't use that either
+# And it doesn't work but also isn't necessary on WSL
+if ! $MAC && ! $MSYSGIT && ! $WSL; then
 
     # First we make sure there's a valid socket connecting us to the agent and
     # it's not already pointing to the symlink, and there's no existing
-    # working symlink:
+    # working symlink.
     link="$HOME/.ssh/ssh_auth_sock"
     if [ "$SSH_AUTH_SOCK" != "$link" -a -S "$SSH_AUTH_SOCK" -a ! -S "$link" ]; then
         # We also check if the agent has any keys loaded - PuTTY will still open an
