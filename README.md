@@ -28,7 +28,9 @@ Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu.
 
 [Install WSLtty](https://github.com/mintty/wsltty).
 
-Run "Ubuntu Terminal" from the start menu. Choose a username and password when prompted, then install dotfiles as normal:
+[Install VcXsrv](https://sourceforge.net/projects/vcxsrv/) then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder.
+
+Run "Ubuntu Terminal" from the Start Menu. Choose a username and password when prompted, then install dotfiles as normal:
 
 ```bash
 cd
