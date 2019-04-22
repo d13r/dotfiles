@@ -18,17 +18,17 @@ wget djm.me/cfg
 
 That's it. (See https://djm.me/cfg for the script source - don't execute scripts from the internet without knowing what they do!)
 
-### Installing on Windows Subsystem for Linux
+### Installing on Windows Subsystem for Linux (WSL)
 
 Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which is the regular Fixedsys font plus unicode characters).
 
 Click Start, search for `features` and select "Turn Windows features on or off". Tick "Windows Subsystem for Linux" and click OK. Reboot.
 
-Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu.
+Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Run it, wait while it completes installation, set a username and password when prompted, then quit.
 
-[Install WSLtty](https://github.com/mintty/wsltty).
+[Install WSLtty](https://github.com/mintty/wsltty). (Note: If you installed it *before* Ubuntu, run "configure WSL shortcuts" to add the shortcuts.)
 
-Run "Ubuntu Terminal" from the start menu. Choose a username and password when prompted, then install dotfiles as normal:
+Run "Ubuntu Terminal" from the start menu. Install dotfiles as normal:
 
 ```bash
 cd
