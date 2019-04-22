@@ -24,11 +24,11 @@ Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which
 
 Click Start, search for `features` and select "Turn Windows features on or off". Tick "Windows Subsystem for Linux" and click OK. Reboot.
 
-Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Run it, wait while it completes installation, set a username and password when prompted, then quit.
+Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Run it, wait while it completes setup, set a username and password when prompted, then quit.
 
 [Install WSLtty](https://github.com/mintty/wsltty). (Note: If you installed it *before* Ubuntu, run "configure WSL shortcuts" to add the shortcuts.)
 
-[Install VcXsrv](https://sourceforge.net/projects/vcxsrv/) then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder.
+[Install VcXsrv](https://sourceforge.net/projects/vcxsrv/) then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
 
 Run "Ubuntu Terminal" from the start menu. Install dotfiles as normal:
 
