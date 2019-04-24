@@ -43,25 +43,4 @@ if ! $MAC; then
         fi
     }
 
-    # mosh + tmux
-    export MOSH_TITLE_NOPREFIX=1
-
-    m() {
-        local host="$1"
-        local name="${2:-default}"
-        local path="${3:-.}"
-
-        if [ -z "$TMUX" ]; then
-            # Run tmux over mosh (https://mosh.org/)
-            mosh --ssh="ssh -o ForwardAgent=yes -tt" "$host" -- sh -c "cd '$path'; command -v tmux &>/dev/null && { tmux -2 attach -t '$name' || { sleep 0.001; tmux -2 new -s '$name'; }; } || bash -l"
-        elif [ $# -ge 2 ]; then
-            # Already running tmux *and* the user tried to specify a session name
-            echo 'sessions should be nested with care, unset $TMUX to force' >&2
-            return 1
-        else
-            # Already running tmux so connect without it
-            mosh --ssh="ssh -o ForwardAgent=yes" "$host"
-        fi
-    }
-
 fi
