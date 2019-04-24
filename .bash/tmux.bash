@@ -5,9 +5,9 @@ if ! $MAC; then
     # tmux attach (local)
     # The 'sleep' seems to be necessary in tmux 2.0 on Ubuntu - otherwise the
     # second command fails... I have no idea why!
-    alias tm='tmux -2 attach || { sleep 0.001; tmux -2 new -s default; }'
+    alias tm='tmux -2 new -A -s default'
 
-    # ssh + tmux ('h' for 'host' or 'ssH', because 's' and 't' are in use)
+    # ssh + tmux ('h' for 'ssH', because 's' is in use)
     h() {
         local host="$1"
         local name="${2:-default}"
