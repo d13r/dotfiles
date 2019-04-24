@@ -13,33 +13,42 @@ if ! $MAC; then
         local name="${2:-default}"
         local path="${3:-.}"
 
+        # Special case for 'h vagrant' / 'h v' => 'v h' => 'vagrant tmux' (see vagrant.bash)
         if [ "$host" = "v" -o "$host" = "vagrant" ] && [ $# -eq 1 ]; then
-            # Special case for 'h vagrant' / 'h v' => 'v h' => 'vagrant tmux' (see vagrant.bash)
             vagrant tmux
-        elif [ $# -eq 2 -a "$name" = "^" ]; then
-            # For 'h user@host ^' upload SSH public key - easier than retyping it
+            return
+        fi
+
+        # For 'h user@host ^' upload SSH public key - easier than retyping it
+        if [ $# -eq 2 -a "$name" = "^" ]; then
             ssh-copy-id "$host"
-        elif [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
-            # Run tmux over ssh
+            return
+        fi
+
+        # Run tmux over ssh
+        if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
             ssh -o ForwardAgent=yes -t "$host" "cd '$path'; command -v tmux &>/dev/null && tmux -2 new -A -s '$name' || bash -l"
-        elif [ $# -ge 2 ]; then
-            # Already running tmux *and* the user tried to specify a session name
+            return
+        fi
+
+        # Already running tmux *and* the user tried to specify a session name
+        if [ $# -ge 2 ]; then
             echo 'sessions should be nested with care, unset $TMUX to force' >&2
             return 1
-        else
-            # Already running tmux so connect without it
-            autoname="$(tmux display-message -pt $TMUX_PANE '#{automatic-rename}')"
+        fi
 
-            if [ "$autoname" = 1 ]; then
-                tmux rename-window -t $TMUX_PANE "$host" 2>/dev/null
-            fi
+        # Already running tmux so connect without it, but change the pane name to match
+        autoname="$(tmux display-message -pt $TMUX_PANE '#{automatic-rename}')"
 
-            ssh -o ForwardAgent=yes "$host"
+        if [ "$autoname" = 1 ]; then
+            tmux rename-window -t $TMUX_PANE "$host" 2>/dev/null
+        fi
 
-            if [ "$autoname" = 1 ]; then
-                tmux setw -t $TMUX_PANE automatic-rename 2>/dev/null
-                sleep 0.3 # Need a short delay else the window is named 'tmux' not 'bash'
-            fi
+        ssh -o ForwardAgent=yes "$host"
+
+        if [ "$autoname" = 1 ]; then
+            tmux setw -t $TMUX_PANE automatic-rename 2>/dev/null
+            sleep 0.3 # Need a short delay else the window is named 'tmux' not 'bash'
         fi
     }
 
