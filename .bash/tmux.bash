@@ -13,7 +13,7 @@ if ! $MAC; then
         local name="${2:-default}"
         local path="${3:-.}"
 
-        # Special case for 'h vagrant' / 'h v' => 'v h' => 'vagrant tmux' (see vagrant.bash)
+        # Special case for 'h vagrant' / 'h v' ==> 'v h' => 'vagrant tmux' (see vagrant.bash)
         if [ "$host" = "v" -o "$host" = "vagrant" ] && [ $# -eq 1 ]; then
             vagrant tmux
             return
@@ -25,9 +25,35 @@ if ! $MAC; then
             return
         fi
 
-        # Run tmux over ssh
+        # Not running tmux
         if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
-            ssh -o ForwardAgent=yes -t "$host" "cd '$path'; command -v tmux &>/dev/null && tmux -2 new -A -s '$name' || bash -l"
+
+            local server="${host#*@}"
+
+            case $server in
+                # Run tmux on the local machine, as it's not available on the remote server
+                aria|baritone|forte)
+
+                    # The name defaults to the host name given, rather than 'default'
+                    name="${2:-$host}"
+
+                    # Create a detached session (if there isn't one already)
+                    tmux -2 new -s "$name" -d bash -l -c "h '$host'"
+
+                    # Set the default command for new windows to connect to the same server
+                    tmux set -t "$name" default-command "bash -l -c \"h '$host'\""
+
+                    # Connect to the session
+                    tmux -2 attach -t "$name"
+
+                    ;;
+
+                # Run tmux on the remote server
+                *)
+                    ssh -o ForwardAgent=yes -t "$host" "cd '$path'; command -v tmux &>/dev/null && tmux -2 new -A -s '$name' || bash -l"
+                    ;;
+            esac
+
             return
         fi
 
