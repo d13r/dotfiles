@@ -32,16 +32,16 @@ if ! $MAC; then
 
             case $server in
                 # Run tmux on the local machine, as it's not available on the remote server
-                aria|baritone|forte)
+                aria|baritone|dragon|forte|treble)
 
                     # The name defaults to the host name given, rather than 'default'
                     name="${2:-$host}"
 
                     # Create a detached session (if there isn't one already)
-                    tmux -2 new -s "$name" -d bash -l -c "h '$host'"
+                    tmux -2 new -s "$name" -d "ssh -o ForwardAgent=yes -t '$host' 'cd \"$path\"; bash -l'"
 
-                    # Set the default command for new windows to connect to the same server
-                    tmux set -t "$name" default-command "bash -l -c \"h '$host'\""
+                    # Set the default command for new windows to connect to the same server, so we can have multiple panes
+                    tmux set -t "$name" default-command "ssh -o ForwardAgent=yes -t '$host' 'cd \"$path\"; bash -l'"
 
                     # Connect to the session
                     tmux -2 attach -t "$name"
