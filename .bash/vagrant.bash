@@ -1,9 +1,16 @@
 alias v=vagrant
 
 vagrant() {
+    # WSL support
+    local vagrant=vagrant
+
+    if command -v vagrant.exe >/dev/null; then
+        vagrant=vagrant.exe
+    fi
+
     # No parameters
     if [ $# -eq 0 ]; then
-        command vagrant
+        command $vagrant
 
         # 1 = Help message displayed (or maybe other errors?)
         # 127 = Command not found
@@ -50,25 +57,25 @@ vagrant() {
 
     # Box update
     if [ "$cmd" = "bu" ]; then
-        command vagrant box update
+        command $vagrant box update
         return
     fi
 
     # Execute a command on the guest
     if [ "$cmd" = "exec" ]; then
-        command vagrant ssh -c "cd /vagrant; $*"
+        command $vagrant ssh -c "cd /vagrant; $*"
         return
     fi
 
     # Destroy and rebuild
     if [ "$cmd" = "rebuild" ]; then
-        command vagrant destroy "$@" && command vagrant box update && command vagrant up
+        command $vagrant destroy "$@" && command vagrant box update && command vagrant up
         return
     fi
 
     # up & tmux
     if [ "$cmd" = "uh" ]; then
-        command vagrant up || return
+        command $vagrant up || return
         cmd="tmux"
     fi
 
@@ -92,7 +99,7 @@ vagrant() {
         # For some reason Cygwin -> tmux -> vagrant (ruby) -> ssh is *really* slow
         # And since I upgraded Vagrant, Cygwin -> vagrant -> ssh doesn't work properly
         # So bypass Vagrant and use the Cygwin ssh instead, always
-        (umask 077 && command vagrant ssh-config > /tmp/vagrant-ssh-config)
+        (umask 077 && command $vagrant ssh-config > /tmp/vagrant-ssh-config)
 
         if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
             # Not running tmux - Run tmux inside Vagrant (if available)
@@ -117,7 +124,7 @@ vagrant() {
     fi
 
     # Other commands
-    command vagrant "$cmd" "$@"
+    command $vagrant "$cmd" "$@"
 }
 
 # Workaround for Vagrant bug on Cygwin
