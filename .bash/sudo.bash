@@ -16,7 +16,7 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         alias agr='apt-get remove'
         alias agar='apt-get autoremove'
         alias agu='apt-get update && apt-get upgrade'
-        alias agdu='apt-get dist-upgrade'
+        alias agdu='apt-get update && apt-get dist-upgrade'
         alias agupdate='apt-get update'
         alias agupgrade='apt-get upgrade'
     else
@@ -24,7 +24,7 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         alias agr='sudo apt-get remove'
         alias agar='sudo apt-get autoremove'
         alias agu='sudo apt-get update && sudo apt-get upgrade'
-        alias agdu='sudo apt-get dist-upgrade'
+        alias agdu='sudo apt-get update && sudo apt-get dist-upgrade'
         alias agupdate='sudo apt-get update'
         alias agupgrade='sudo apt-get upgrade'
     fi
