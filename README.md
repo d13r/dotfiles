@@ -30,15 +30,19 @@ Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Ru
 cd
 wget djm.me/cfg
 . cfg
-agi dos2unix tree zip
-exit
 ```
 
 [Install WSLtty](https://github.com/mintty/wsltty). (Note: If you installed it *before* setting up Ubuntu, run "configure WSL shortcuts" to add the shortcuts.)
 
 [Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
 
-Finally, run "Ubuntu Terminal" from the start menu.
+Run "Ubuntu Terminal" from the start menu. Optionally install updates and some additional packages:
+
+```bash
+agdu
+agar
+agi dos2unix tree unzip zip
+```
 
 **Tip:** To reinstall Ubuntu without re-downloading it, launch Command Prompt and run `wslconfig /u ubuntu`, then re-launch Ubuntu from the Start Menu. It will take a few minutes to reinstall.
 
