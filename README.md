@@ -24,21 +24,23 @@ Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which
 
 Click Start, search for `features` and select "Turn Windows features on or off". Tick "Windows Subsystem for Linux" and click OK. Reboot.
 
-Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Run it, wait while it completes setup, set a username and password when prompted, then quit.
-
-[Install WSLtty](https://github.com/mintty/wsltty). (Note: If you installed it *before* Ubuntu, run "configure WSL shortcuts" to add the shortcuts.)
-
-[Install VcXsrv](https://sourceforge.net/projects/vcxsrv/) then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
-
-Run "Ubuntu Terminal" from the start menu. Install dotfiles as normal:
+Click Start, search for `ubuntu`, go to the Windows Store and install Ubuntu. Run it, wait while it completes setup, set a username and password when prompted, then run:
 
 ```bash
 cd
 wget djm.me/cfg
 . cfg
+agi dos2unix tree zip
+exit
 ```
 
-Close and re-open WSLtty to reload the configuration.
+[Install WSLtty](https://github.com/mintty/wsltty). (Note: If you installed it *before* setting up Ubuntu, run "configure WSL shortcuts" to add the shortcuts.)
+
+[Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
+
+Finally, run "Ubuntu Terminal" from the start menu.
+
+**Tip:** To reinstall Ubuntu without re-downloading it, launch Command Prompt and run `wslconfig /u ubuntu`, then re-launch Ubuntu from the Start Menu. It will take a few minutes to reinstall.
 
 ### Installing on Cygwin (Windows):
 
