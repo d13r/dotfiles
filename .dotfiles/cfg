@@ -12,6 +12,9 @@
     # Should be in home directory anyway, but just in case...
     cd
 
+    # WSL defaults to umask 000
+    umask 022
+
     # Make sure this file is in the home directory
     if [ ! -f cfg ]; then
         echo 'Script must be named ~/cfg' >&2
