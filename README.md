@@ -44,6 +44,18 @@ agar
 agi dos2unix tree unzip zip
 ```
 
+Finally - optional, but it removes the annoying green background in `ls`:
+
+```bash
+se /etc/wsl.conf
+
+# Add:
+[automount]
+options = "umask=0022"
+```
+
+(Note: Adding `fmask=0111` to remove the `x` bit prevents WSL running Windows `.exe` commands - so don't do that!)
+
 **Tip:** To reinstall Ubuntu without re-downloading it, launch Command Prompt and run `wslconfig /u ubuntu`, then re-launch Ubuntu from the Start Menu. It will take a few minutes to reinstall.
 
 ### Installing on Cygwin (Windows):
