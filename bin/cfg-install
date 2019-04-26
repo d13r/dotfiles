@@ -83,5 +83,10 @@ if [ ! -f ~/.bashrc_config ]; then
 
 fi
 
+# Create .sudo_as_admin_successful to stop the help message at login
+if [ ! -f ~/.sudo_as_admin_successful ] && groups | grep '\bsudo\b' >/dev/null; then
+    touch ~/.sudo_as_admin_successful
+fi
+
 # No need to check for updates
 echo "$(date +%Y%m%d)" > ~/.cfg_last_update
