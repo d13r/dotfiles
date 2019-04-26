@@ -9,7 +9,9 @@ WSL=false
 if grep -q 'WSL\|Microsoft' /proc/version; then
     # Note: WINDOWS=false in WSL because it's more Linux-like than Windows-like
     WSL=true
-    APPDATA_UNIX="$(wslpath "$APPDATA")"
+    # These paths are useful for some functions & scripts
+    WIN_APPDATA="$(cmd.exe /C 'echo %APPDATA%' | tr -d '\r')"
+    WIN_APPDATA_UNIX="$(wslpath "$WIN_APPDATA")"
     WIN_TEMP="$(cmd.exe /C 'echo %TEMP%' | tr -d '\r')"
     WIN_TEMP_UNIX="$(wslpath "$WIN_TEMP")"
     WIN_MYDOCS="$(powershell.exe -Command "[Environment]::GetFolderPath('MyDocuments')" | tr -d '\r')"
