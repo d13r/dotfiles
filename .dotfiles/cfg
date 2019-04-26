@@ -27,26 +27,14 @@
         exit 2
     fi
 
-    # Delete the remains of the old repository, which should have been deleted by the old
-    # cfg-update script, except the one file that hg creates after it runs
-    if [ -d .hg ]; then
-        if [ "$(ls -1A .hg | wc -l)" = 1 ] && [ -f .hg/dirstate ]; then
-            rm -rf .hg
-        else
-            echo '~/.hg exists' >&2
-            exit 3
-        fi
-    fi
-
     # Check .git doesn't exist
     if [ -d .git ]; then
         echo '~/.git exists' >&2
-        exit 4
+        exit 3
     fi
 
     # Helper function
     ask() {
-        # https://djm.me/ask
         local prompt default reply
 
         while true; do
@@ -90,18 +78,18 @@
     echo '    wget alberon.uk/cfg'
     echo '    . cfg'
     echo
-    ask 'Continue?' Y || exit 5
+    ask 'Continue?' Y || exit 4
 
     # Download the repository
     echo 'Initialising Git repository...'
     echo
-    git init || exit 6
-    git remote add origin "https://github.com/davejamesmiller/dotfiles.git" || exit 7
-    git remote set-url --push origin "git@github.com:davejamesmiller/dotfiles.git" || exit 8
+    git init || exit 5
+    git remote add origin "https://github.com/davejamesmiller/dotfiles.git" || exit 6
+    git remote set-url --push origin "git@github.com:davejamesmiller/dotfiles.git" || exit 7
     echo
     echo 'Fetching Git repository...'
     echo
-    git fetch origin || exit 9
+    git fetch origin || exit 8
 
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)
@@ -150,7 +138,7 @@
             # Unknown error
             echo "Unknown error in 'git checkout':" >&2
             echo "$result" >&2
-            exit 10
+            exit 9
 
         fi
 
@@ -159,7 +147,7 @@
         if [ $i -ge 100 ]; then
             echo
             echo 'Detected possible infinite loop - giving up' >&2
-            exit 11
+            exit 10
         fi
 
     done
