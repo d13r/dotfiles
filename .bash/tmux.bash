@@ -32,7 +32,7 @@ if ! $MAC; then
 
             case $server in
                 # Run tmux on the local machine, as it's not available on the remote server
-                aria|baritone|dragon|forte|treble)
+                a|aria|b|baritone|d|dragon|f|forte|t|treble)
 
                     # The name defaults to the host name given, rather than 'default'
                     name="${2:-$host}"
