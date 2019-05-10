@@ -81,6 +81,8 @@ vagrant() {
 
     # tmux
     if [ "$cmd" = "tmux" ]; then
+        # TODO Refactor this whole section!
+
         # if [ -z "$TMUX" ]; then
         #     # Not running tmux - Run tmux inside Vagrant (if available)
         #     command vagrant ssh -- -t 'command -v tmux &>/dev/null && { tmux attach || tmux new -s default; } || bash -l'
@@ -100,6 +102,19 @@ vagrant() {
         # And since I upgraded Vagrant, Cygwin -> vagrant -> ssh doesn't work properly
         # So bypass Vagrant and use the Cygwin ssh instead, always
         (umask 077 && command $vagrant ssh-config > /tmp/vagrant-ssh-config)
+
+        if $WSL; then
+            # Fix this error:
+            # Permissions 0755 for '/mnt/d/path/to/.vagrant/machines/default/virtualbox/private_key' are too open.
+            # It is required that your private key files are NOT accessible by others.
+            # This private key will be ignored.
+            root="$(findup -f .vagrant/machines/default/virtualbox/private_key)"
+            if [ -n "$root" ]; then
+                cp "$root/.vagrant/machines/default/virtualbox/private_key" /tmp/vagrant-ssh-key
+                chmod 600 /tmp/vagrant-ssh-key
+                sed -i "s#  IdentityFile .*#  IdentityFile /tmp/vagrant-ssh-key#" /tmp/vagrant-ssh-config
+            fi
+        fi
 
         if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
             # Not running tmux - Run tmux inside Vagrant (if available)
