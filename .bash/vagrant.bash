@@ -110,6 +110,7 @@ vagrant() {
             # This private key will be ignored.
             root="$(findup -f .vagrant/machines/default/virtualbox/private_key)"
             if [ -n "$root" ]; then
+                rm -f /tmp/vagrant-ssh-key
                 cp "$root/.vagrant/machines/default/virtualbox/private_key" /tmp/vagrant-ssh-key
                 chmod 600 /tmp/vagrant-ssh-key
                 sed -i "s#  IdentityFile .*#  IdentityFile /tmp/vagrant-ssh-key#" /tmp/vagrant-ssh-config
