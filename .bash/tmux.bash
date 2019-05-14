@@ -3,9 +3,16 @@
 if ! $MAC; then
 
     # tmux attach (local)
-    # The 'sleep' seems to be necessary in tmux 2.0 on Ubuntu - otherwise the
-    # second command fails... I have no idea why!
-    alias tm='tmux -2 new -A -s default'
+    tm() {
+        local name="${1:-default}"
+
+        if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
+            tmux -2 new -A -s "$name"
+        else
+            tmux -2 new -d -s "$name" 2>/dev/null
+            tmux -2 switch -t "$name"
+        fi
+    }
 
     # ssh + tmux ('h' for 'ssH', because 's' is in use)
     h() {
