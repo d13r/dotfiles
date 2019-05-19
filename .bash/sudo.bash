@@ -62,6 +62,7 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         alias service='sudo service'
         alias snap='sudo snap'
         alias ufw='sudo ufw'
+        alias updatedb='sudo updatedb'
         alias useradd='sudo useradd'
         alias userdel='sudo userdel'
         alias usermod='sudo usermod'
