@@ -41,7 +41,7 @@ Run "Ubuntu Terminal" from the start menu. Optionally install updates and some a
 ```bash
 agdu
 agar
-agi dos2unix tree unzip zip
+agi dos2unix php-cli tree unzip zip
 ```
 
 Finally - optional, but it removes the annoying green background in `ls`:
