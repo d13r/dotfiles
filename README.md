@@ -101,16 +101,6 @@ And run this to add Cygwin to Explorer's right-click menu:
 chere -icmf -t mintty -s bash -e 'Open with Cygwin'
 ```
 
-### Installing on Git for Windows (formerly mSysGit):
-
-I don't recommend [Git for Windows](https://msysgit.github.io/) any more, but it should still work:
-
-```bash
-cd
-curl djm.me/cfg > cfg
-. cfg
-```
-
 ## Upgrading
 
 When you log in, a maximum of once per day, dotfiles will automatically check for and install any updates.
