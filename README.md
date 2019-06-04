@@ -65,7 +65,6 @@ Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which
 [Install Cygwin](https://cygwin.com/install.html) - select [any local mirror](https://cygwin.com/mirrors.html) (e.g. `mirrorservice.org` for UK), and when prompted add these packages:
 
 - `git`
-- `vim`
 - `wget`
 
 **Tip:** Select View > Full mode, then use the search box to find them.
@@ -90,7 +89,7 @@ Close and re-open Cygwin Terminal to reload the configuration. (**Note:** When t
 Then run this to install some additional useful packages:
 
 ```bash
-apt-cyg install bash-completion bind-utils chere curl dos2unix git-completion inetutils less links make ncurses procps-ng tmux tree unzip whois xinit
+apt-cyg install bash-completion bind-utils chere curl dos2unix git-completion inetutils less links make ncurses procps-ng tmux tree unzip vim whois xinit
 ```
 
 (They can also be installed from the GUI - but it's much more tedious to find them all!)
