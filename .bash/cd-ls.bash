@@ -53,7 +53,7 @@ if $HAS_TERMINAL; then
         echo -en "\033[0m"
 
         # List the directory contents
-        ls -hF $ls_opts
+        ls -hFl $ls_opts
 
     }
 
