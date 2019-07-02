@@ -76,19 +76,8 @@ if ! $MAC; then
             return 1
         fi
 
-        # Already running tmux so connect without it, but change the pane name to match
-        autoname="$(tmux display-message -pt $TMUX_PANE '#{automatic-rename}')"
-
-        if [ "$autoname" = 1 ]; then
-            tmux rename-window -t $TMUX_PANE "$host" 2>/dev/null
-        fi
-
+        # Already running tmux so connect without it
         ssh -o ForwardAgent=yes "$host"
-
-        if [ "$autoname" = 1 ]; then
-            tmux setw -t $TMUX_PANE automatic-rename 2>/dev/null
-            sleep 0.3 # Need a short delay else the window is named 'tmux' not 'bash'
-        fi
     }
 
 fi
