@@ -26,9 +26,15 @@ if ! $MAC; then
             return
         fi
 
-        # For 'h user@host ^' upload SSH public key - easier than retyping it
+        # For 'h user@host ^', upload SSH public key - easier than retyping it
         if [ $# -eq 2 -a "$name" = "^" ]; then
             ssh-copy-id "$host"
+            return
+        fi
+
+        # For 'h user@host X', close the master connection
+        if [ $# -eq 2 -a "$name" = "X" ]; then
+            ssh -O stop "$host"
             return
         fi
 
