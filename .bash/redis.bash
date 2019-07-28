@@ -1,8 +1,8 @@
 redis()
 {
-    if [[ $# -eq 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
+    if [[ $# -gt 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
         # e.g. "redis 1"
-        redis-cli -n "$1"
+        redis-cli -n "$@"
     else
         redis-cli "$@"
     fi
