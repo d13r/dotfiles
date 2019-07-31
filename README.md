@@ -39,7 +39,7 @@ wget djm.me/cfg
 Run "Ubuntu Terminal" from the start menu. Optionally install updates and some additional packages:
 
 ```bash
-agdu
+agu
 agar
 agi dos2unix php-cli tree unzip whois zip
 ```
