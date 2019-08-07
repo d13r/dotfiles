@@ -1,4 +1,3 @@
 #!/bin/bash
 
-exec sudo ntpdate pool.ntp.org
-
+sudo systemctl restart chrony.service
