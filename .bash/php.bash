@@ -1,4 +1,5 @@
 # See ~/bin/phpunit
+alias mfs='art migrate:fresh --seed'
 alias pu='phpunit'
 
 composer() {
