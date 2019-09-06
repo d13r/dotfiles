@@ -2,11 +2,11 @@
 
 # 'a' = Asset builder (webpack, Gulp, Awe or npm as appropriate)
 
-if dir="$(findup -f scripts/webpack.sh -o -e gulpfile.js -o -e gulpfile.coffee -o -f awe.yaml -o -f package.json)"; then
+if dir="$(findup -f scripts/webpack.js -o -e gulpfile.js -o -e gulpfile.coffee -o -f awe.yaml -o -f package.json)"; then
 
     # webpack
-    if [ -f scripts/webpack.sh ]; then
-        exec scripts/webpack.sh "$@"
+    if [ -f scripts/webpack.js ]; then
+        exec scripts/webpack.js "$@"
     fi
 
     # Gulp
