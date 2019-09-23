@@ -20,7 +20,7 @@ That's it. (See https://djm.me/cfg for the script source - don't execute scripts
 
 ### Installing on Windows Subsystem for Linux (WSL)
 
-Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which is the regular Fixedsys font plus unicode characters).
+Install the [Fira Code](https://github.com/tonsky/FiraCode) font.
 
 Click Start, search for `features` and select "Turn Windows features on or off". Tick "Windows Subsystem for Linux" and click OK. Reboot.
 
@@ -60,7 +60,7 @@ options = "umask=0022"
 
 ### Installing on Cygwin (Windows):
 
-Install the [Fixedsys Excelsior Mono](http://askubuntu.com/a/725445) font (which is the regular Fixedsys font plus unicode characters).
+Install the [Fira Code](https://github.com/tonsky/FiraCode) font.
 
 [Install Cygwin](https://cygwin.com/install.html) - select [any local mirror](https://cygwin.com/mirrors.html) (e.g. `mirrorservice.org` for UK), and when prompted add these packages:
 
