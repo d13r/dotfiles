@@ -1,9 +1,9 @@
 phpstorm() {
     if [ $# -gt 0 ]; then
-        command phpstorm "$@" &
+        command phpstorm "$@" &>> ~/tmp/phpstorm.log &
     elif [ -d .idea ]; then
-        command phpstorm "$PWD" &
+        command phpstorm "$PWD" &>> ~/tmp/phpstorm.log &
     else
-        command phpstorm &
+        command phpstorm &>> ~/tmp/phpstorm.log &
     fi
 }
