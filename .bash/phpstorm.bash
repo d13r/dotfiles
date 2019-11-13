@@ -7,3 +7,5 @@ phpstorm() {
         command phpstorm &>> ~/tmp/phpstorm.log &
     fi
 }
+
+alias storm='phpstorm'
