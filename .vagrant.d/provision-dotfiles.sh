@@ -169,7 +169,7 @@ install_tmux
 
 if [ ! -d "$HOME/.git" ]; then
 
-    # Based on https://alberon.uk/cfg but quiet and non-interactive
+    # Based on https://djm.me/cfg but quiet and non-interactive
     echo "Installing dotfiles in $HOME..."
     cd $HOME
     git init -q
