@@ -82,7 +82,9 @@
     lg1          = log --graph --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%ci) %C(bold blue)<%an>%C(reset)'
     ll           = log --decorate
     lp           = log --decorate -p
+    lpa          = log --decorate -p -a
     lpw          = log --decorate -p --ignore-all-space
+    lpwa         = log --decorate -p -a --ignore-all-space
     m            = merge
     mi           = merge-into
     mt           = mergetool
