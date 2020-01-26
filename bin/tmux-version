@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# No parameters - just display the version
+if [ $# -eq 0 ]; then
+    exec tmux -V
+fi
+
+# See ~/.tmux.conf
+# Example: tmux-version '< 2.9'
+tmux -V | cut -d' ' -f2 | awk "{ exit \$1 $@ ? 0 : 1 }"
+
