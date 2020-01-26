@@ -23,8 +23,10 @@
 
     # Check git is available
     if ! command -v git >/dev/null; then
-        echo 'Git is not installed' >&2
-        exit 2
+        if ! sudo apt-get install git; then
+            echo 'Git is not installed' >&2
+            exit 2
+        fi
     fi
 
     # Check .git doesn't exist
