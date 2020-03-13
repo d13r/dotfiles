@@ -1,0 +1,44 @@
+#!/bin/bash
+set -o nounset -o pipefail -o errexit
+
+# To test this repeatedly:
+# pkill -u dave; userdel dave && rm -rf /home/dave && create-dave-user && ssh dave@localhost
+
+# Must be run as root
+if [ $UID -ne 0 ]; then
+    echo 'This script must be run as root' >&2
+    exit 1
+fi
+
+# Create user
+echo 'Creating user...'
+useradd \
+    --comment 'Dave James Miller' \
+    --create-home \
+    --groups sudo \
+    --shell /bin/bash \
+    --user-group \
+    dave
+
+# Copy SSH key
+echo 'Installing SSH key...'
+umask 077
+mkdir ~dave/.ssh
+cat ~/.ssh/davejamesmiller.pub >> ~dave/.ssh/authorized_keys
+chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
+
+# Copy dotfiles
+echo 'Installing dotfiles...'
+cp -rp ~/.git ~dave/.git
+chown -R dave:dave ~dave/.git
+sudo -u dave bash <<END
+
+cd
+git checkout -f </dev/null
+~/bin/cfg-install
+~/bin/cfg-update
+
+END
+
+# Done
+echo 'Done.'
