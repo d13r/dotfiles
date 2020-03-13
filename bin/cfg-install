@@ -71,8 +71,8 @@ if [ ! -f ~/.bashrc_config ]; then
             # Dev server - Web root
             echo "www_dir=/home/www"
         else
-            # Unknown
-            echo "www_dir="
+            # Ubuntu default
+            echo "www_dir=/var/www"
         fi
     ) > ~/.bashrc_config
 
