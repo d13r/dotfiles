@@ -35,63 +35,16 @@
         exit 3
     fi
 
-    # Helper function
-    ask() {
-        local prompt default reply
-
-        while true; do
-
-            if [ "${2:-}" = "Y" ]; then
-                prompt="Y/n"
-                default=Y
-            elif [ "${2:-}" = "N" ]; then
-                prompt="y/N"
-                default=N
-            else
-                prompt="y/n"
-                default=
-            fi
-
-            # Ask the question (not using "read -p" as it uses stderr not stdout)
-            echo -n "$1 [$prompt] "
-
-            # Read the answer (use /dev/tty in case stdin is redirected from somewhere else)
-            read reply </dev/tty
-
-            # Default?
-            if [ -z "$reply" ]; then
-                reply=$default
-            fi
-
-            # Check if the reply is valid
-            case "$reply" in
-                Y*|y*) return 0 ;;
-                N*|n*) return 1 ;;
-            esac
-
-        done
-    }
-
-    # Alberon dotfiles have been split from mine (18 Mar 2018)
-    echo "This script (djm.me/cfg) is for Dave's dotfiles only."
-    echo "If you are not Dave, please press N then run:"
-    echo
-    echo '    rm -f cfg'
-    echo '    wget alberon.uk/cfg'
-    echo '    . cfg'
-    echo
-    ask 'Continue?' Y || exit 4
-
     # Download the repository
     echo 'Initialising Git repository...'
     echo
-    git init || exit 5
-    git remote add origin "https://github.com/davejamesmiller/dotfiles.git" || exit 6
-    git remote set-url --push origin "git@github.com:davejamesmiller/dotfiles.git" || exit 7
+    git init || exit 4
+    git remote add origin "https://github.com/davejamesmiller/dotfiles.git" || exit 5
+    git remote set-url --push origin "git@github.com:davejamesmiller/dotfiles.git" || exit 6
     echo
     echo 'Fetching Git repository...'
     echo
-    git fetch origin || exit 8
+    git fetch origin || exit 7
 
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)
@@ -140,7 +93,7 @@
             # Unknown error
             echo "Unknown error in 'git checkout':" >&2
             echo "$result" >&2
-            exit 9
+            exit 8
 
         fi
 
@@ -149,7 +102,7 @@
         if [ $i -ge 100 ]; then
             echo
             echo 'Detected possible infinite loop - giving up' >&2
-            exit 10
+            exit 9
         fi
 
     done
