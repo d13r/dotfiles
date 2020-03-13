@@ -46,6 +46,14 @@
     echo
     git fetch origin || exit 7
 
+    # Automatically delete the default .bashrc file (Ubuntu 19.10) without prompting
+    if [ "$file" = ".bashrc" ]; then
+        md5="$(md5sum .bashrc | cut -d' ' -f1)"
+        if [ "$md5" = "cf277664b1771217d7006acdea006db1" ]; then
+            rm -f .bashrc
+        fi
+    fi
+
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)
     echo
@@ -73,6 +81,7 @@
             # Newer versions of git have a different message, split across two lines:
             file="$(echo "$result" | sed -n "/error: The following untracked working tree files would be overwritten by checkout:/ { n; s/\\s\\+\\(.*\\)/\\1/; p; q }")"
         fi
+
         if [ -n "$file" ] && [ "$file" != "$result" ]; then
 
             read -p "Backup $file? [y/N] " answer
