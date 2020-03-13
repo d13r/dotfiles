@@ -47,6 +47,7 @@ if $HAS_TERMINAL && ! $WINDOWS; then
         alias a2ensite='sudo a2ensite'
         alias addgroup='sudo addgroup'
         alias adduser='sudo adduser'
+        alias apt-add-repository='sudo apt-add-repository'
         alias dpkg-reconfigure='sudo dpkg-reconfigure'
         alias groupadd='sudo groupadd'
         alias groupdel='sudo groupdel'
