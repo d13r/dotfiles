@@ -15,7 +15,7 @@ echo 'Creating user...'
 useradd \
     --comment 'Dave James Miller' \
     --create-home \
-    --groups sudo \
+    --groups sudo,adm \
     --shell /bin/bash \
     --user-group \
     dave
