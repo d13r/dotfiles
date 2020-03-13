@@ -41,8 +41,10 @@ if $HAS_TERMINAL && ! $WINDOWS; then
 
     # These commands require sudo
     if [ $UID -ne 0 ]; then
+        alias a2disconf='sudo a2disconf'
         alias a2dismod='sudo a2dismod'
         alias a2dissite='sudo a2dissite'
+        alias a2enconf='sudo a2enconf'
         alias a2enmod='sudo a2enmod'
         alias a2ensite='sudo a2ensite'
         alias addgroup='sudo addgroup'
