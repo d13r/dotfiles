@@ -47,18 +47,18 @@
     git fetch origin || exit 7
 
     # Automatically delete the default 
+    echo
     echo 'Checking for known skeleton files...'
     if [ -f .bashrc ]; then
         md5="$(md5sum .bashrc | cut -d' ' -f1)"
         if [ "$md5" = "cf277664b1771217d7006acdea006db1" ]; then
-            # cf277664b1771217d7006acdea006db1 = Ubuntu 19.10
+            # cf277664b1771217d7006acdea006db1 = Ubuntu 18.04, 19.10
             echo 'Deleting .bashrc'
             rm -f .bashrc
         else
             echo "Skipping unknown .bashrc (MD5=$md5)"
         fi
     fi
-    echo
 
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)
