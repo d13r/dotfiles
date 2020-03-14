@@ -90,19 +90,24 @@
         fi
 
         if [ -n "$file" ] && [ "$file" != "$result" ]; then
-
-            read -p "Backup $file? [y/N] " answer
-            case $answer in
-                y*|Y*)
-                    dest="$file.orig"
-                    rm -f "$dest"
-                    mv "$file" "$dest"
-                    echo "  Moved to $dest"
-                    ;;
-                *)
-                    rm -f "$file"
-                    ;;
-            esac
+            
+            if [ -t 0 ]; then
+                read -p "Backup $file? [y/N] " answer
+                case $answer in
+                    y*|Y*)
+                        dest="$file.orig"
+                        rm -f "$dest"
+                        mv "$file" "$dest"
+                        echo "  Moved to $dest"
+                        ;;
+                    *)
+                        rm -f "$file"
+                        ;;
+                esac
+            else
+                # Non-interactive, e.g. cloud-init
+                rm -f "$file"
+            fi
 
         else
 
@@ -143,11 +148,13 @@ if [ $ret == 0 ]; then
     [ -x ~/bin/cfg-update ] && ~/bin/cfg-update
 
     # Load the new bash config
-    exec bash -l
+    if [ -t 0 ]; then
+        exec bash -l
+    fi
 
 else
 
     echo
-    echo "SETUP FAILED with error code $ret" >&2
+    echo "DOTFILES SETUP FAILED with error code $ret" >&2
 
 fi
