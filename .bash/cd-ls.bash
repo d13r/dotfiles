@@ -14,7 +14,7 @@ if $HAS_TERMINAL; then
         if [ -f ~/.bash_lastdirectory ]; then
             # Throw away errors about that directory not existing (any more)
             command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
-        elif [ -n "$www_dir" ]; then
+        elif [ -n "$www_dir" -a -d "$www_dir" ]; then
             # If this is the first login, try going to the web root instead
             # Mainly useful for Vagrant boxes
             cd "$www_dir"
