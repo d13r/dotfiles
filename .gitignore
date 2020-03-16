@@ -21,6 +21,7 @@
 !/.tmux_cheatsheet
 !/.vagrant.d
 !/.vim
+!/cloud-config.yaml
 !/Dotfiles.sublime-project
 !/README.md
 !/bin
