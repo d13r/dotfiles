@@ -22,7 +22,7 @@ ubuntu() {
                 ip="$(multipass list --format csv | tail +2 | head -1 | cut -d, -f3)"
             fi
 
-            if [ -n "$ip" ]; then
+            if [ -n "$ip" -a "$ip" != "--" -a "$ip" != "UNKNOWN" ]; then
                 # Connect via regular WSL SSH not Windows SSH, and launch tmux
                 h "$ip"
             else
