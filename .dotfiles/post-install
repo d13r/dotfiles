@@ -5,11 +5,11 @@ cd
 
 # -f to delete the existing configuration (for testing)
 if [ "${1:-}" = '-f' ]; then
-    rm ~/.bashrc_config
+    rm .bashrc_config
 fi
 
 # Install new .bashrc configuration
-if [ ! -f ~/.bashrc_config ]; then
+if [ ! -f .bashrc_config ]; then
 
     # Detect operating system and other attributes
     source .bash/000-vars.bash
@@ -67,7 +67,7 @@ if [ ! -f ~/.bashrc_config ]; then
         elif $CPANEL && $ROOT; then
             # Live server - Root user
             echo "www_dir='/home'"
-        elif $CPANEL || [ -d ~/repo ]; then
+        elif $CPANEL || [ -d repo ]; then
             # Live server - Git repo
             echo "www_dir=~/repo"
         elif [ -d /home/www ]; then
@@ -77,9 +77,12 @@ if [ ! -f ~/.bashrc_config ]; then
             # Ubuntu default
             echo "www_dir='/var/www'"
         fi
-    ) > ~/.bashrc_config
+    ) > .bashrc_config
 
 fi
 
 # No need to check for updates today
-date +%Y%m%d > ~/.cfg_last_update
+date +%Y%m%d > .cfg_last_update
+
+# Run the post-update script too
+.dotfiles/post-update
