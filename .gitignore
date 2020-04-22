@@ -12,6 +12,7 @@
 !/.gitignore-global
 !/.grip
 !/.irbrc
+!/.multipass
 !/.railsrc
 !/.rdebugrc
 !/.rvm
@@ -20,7 +21,6 @@
 !/.tmux_cheatsheet
 !/.vagrant.d
 !/.vim
-!/cloud-config.yaml
 !/Dotfiles.sublime-project
 !/README.md
 !/bin

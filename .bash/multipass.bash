@@ -3,16 +3,16 @@ if $WSL; then
 fi
 
 # Slightly nicer wrapper
-ubuntu() {
+mp() {
     case "${1:-}" in
 
-        launch)
+        launch|l)
             # ubuntu launch - always use cloud-init
             shift
-            multipass launch --cloud-init ~/cloud-config.yaml "$@"
+            multipass launch --cloud-init ~/.multipass/cloud-config.yaml "$@"
             ;;
 
-        shell|sh)
+        shell|ssh|sh|h)
 
             if [ -n "${2:-}" ]; then
                 # ubuntu shell - connect to the first VM instead of "primary"
