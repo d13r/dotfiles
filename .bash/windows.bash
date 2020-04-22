@@ -25,13 +25,3 @@ if $MSYSGIT; then
         > /etc/motd
     fi
 fi
-
-# The MinTTY config file is stored outside the Git repo
-if $WSL; then
-    if ! cmp -s $WIN_APPDATA_UNIX/wsltty/config $HOME/.minttyrc; then
-        rm -f $WIN_APPDATA_UNIX/wsltty/config
-        cp $HOME/.minttyrc $WIN_APPDATA_UNIX/wsltty/config
-        echo
-        yellowBg black "MinTTY config updated - please reload it"
-    fi
-fi

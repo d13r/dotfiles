@@ -12,7 +12,6 @@
 !/.gitignore-global
 !/.grip
 !/.irbrc
-!/.minttyrc
 !/.railsrc
 !/.rdebugrc
 !/.rvm
