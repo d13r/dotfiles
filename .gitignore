@@ -17,6 +17,7 @@
 !/.rdebugrc
 !/.rvm
 !/.ssh
+!/.sudo_as_admin_successful
 !/.tmux.conf
 !/.tmux_cheatsheet
 !/.vagrant.d
