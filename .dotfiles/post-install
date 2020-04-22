@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# -f to delete the existing configuration
-if [ "$1" = "-f" ]; then
+cd
+
+# -f to delete the existing configuration (for testing)
+if [ "$1" = '-f' ]; then
     rm ~/.bashrc_config
 fi
 
@@ -25,7 +27,7 @@ if [ ! -f ~/.bashrc_config ]; then
     fi
 
     ROOT=false
-    if [ "$(id -u)" = 0 ]; then
+    if [ $UID -eq 0 ]; then
         ROOT=true
     fi
 
@@ -35,11 +37,11 @@ if [ ! -f ~/.bashrc_config ]; then
         echo "#prompt_default=''"
 
         if $CPANEL; then
-            echo "prompt_type=live #live/staging/dev/special"
+            echo "prompt_type='live' #live/staging/dev/special"
         elif $VAGRANT; then
-            echo "prompt_type=dev #live/staging/dev/special"
+            echo "prompt_type='dev' #live/staging/dev/special"
         else
-            echo "prompt_type= #live/staging/dev/special"
+            echo "prompt_type='' #live/staging/dev/special"
         fi
 
         # File permissions
@@ -54,39 +56,29 @@ if [ ! -f ~/.bashrc_config ]; then
         # Path for 'cw' command - try to guess what's the best directory to use
         if $VAGRANT; then
             # Vagrant - Shared directory
-            echo "www_dir=/vagrant"
+            echo "www_dir='/vagrant'"
         elif $WSL; then
             # WSL - My Documents
-            echo "www_dir=$WIN_MYDOCS_UNIX"
+            echo "www_dir='$WIN_MYDOCS_UNIX'"
         elif $CYGWIN; then
             # Cygwin - My Documents
-            echo "www_dir=$(cygpath --mydocs)"
+            echo "www_dir='$(cygpath --mydocs)'"
         elif $CPANEL && $ROOT; then
             # Live server - Root user
-            echo "www_dir=/home"
+            echo "www_dir='/home'"
         elif $CPANEL || [ -d ~/repo ]; then
             # Live server - Git repo
             echo "www_dir=~/repo"
         elif [ -d /home/www ]; then
             # Dev server - Web root
-            echo "www_dir=/home/www"
+            echo "www_dir='/home/www'"
         else
             # Ubuntu default
-            echo "www_dir=/var/www"
+            echo "www_dir='/var/www'"
         fi
     ) > ~/.bashrc_config
 
-    # Open in editor (if running interactively, not in a Vagrant provisioner)
-    #if [ -t 0 -a "${1:-}" != "--unattended" ]; then
-    #    vim ~/.bashrc_config
-    #fi
-
 fi
 
-# Create .sudo_as_admin_successful to stop the help message at login
-if [ ! -f ~/.sudo_as_admin_successful ] && groups | grep '\bsudo\b' >/dev/null; then
-    touch ~/.sudo_as_admin_successful
-fi
-
-# No need to check for updates
-echo "$(date +%Y%m%d)" > ~/.cfg_last_update
+# No need to check for updates today
+date +%Y%m%d > ~/.cfg_last_update
