@@ -1,6 +1,6 @@
 FROM ubuntu
 
-ENV HOME /home/test
+ENV HOME /home/dave
 
 # Install dependencies
 RUN apt-get update && apt-get install -y \
@@ -15,25 +15,18 @@ RUN apt-get update && apt-get install -y \
 # Configure sudo to allow testing 'agi' (apt-get install) and friends
 ADD sudoers /etc/sudoers
 
-# Create a non-root test user
-RUN useradd --create-home --home-dir $HOME --shell /bin/bash --groups sudo test
+# Create a non-root user
+RUN useradd --create-home --home-dir $HOME --shell /bin/bash --groups sudo dave
 
 # The first time Bash is run, automatically run the config file
-RUN echo "if [ ! -d ~/.git ]; then cd; . cfg; fi" >> /etc/bash.bashrc
+RUN echo "[ ! -d ~/.git ] && cd && wget djm.me/cfg && . cfg" >> /etc/bash.bashrc
 
 # Disable the sudo tutorial
-USER test
+USER dave
 RUN touch $HOME/.sudo_as_admin_successful
 
-# Copy the cfg script
-USER test
-COPY cfg $HOME/cfg
-
-USER root
-COPY cfg $HOME/cfg
-
 # Run Bash when the image is run, starting in the current user's home directory
-# (either /root or /home/test depending on the -u option)
-USER test
-WORKDIR /home/test
+# (either /root or /home/dave depending on the -u option)
+USER dave
+WORKDIR /home/dave
 ENTRYPOINT cd && bash
