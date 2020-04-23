@@ -1,8 +1,12 @@
 #!/bin/sh
+set -eu
 
 # Commit
 if [ $# -eq 0 ]; then
-    exec git commit -v
+    git commit -v
+else
+    git commit -m "$@"
 fi
 
-exec git commit -m "$@"
+echo
+exec git s
