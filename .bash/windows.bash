@@ -13,11 +13,6 @@ if $CYGWIN; then
     alias acs='apt-cyg searchall'
 fi
 
-# Expand aliases after 'winpty'
-if $WINDOWS; then
-    alias winpty='winpty '
-fi
-
 # Clear the MSysGit MOTD (at this point it's already been shown, but this
 # gets rid of it for the future)
 if $MSYSGIT; then
