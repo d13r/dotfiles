@@ -1,9 +1,9 @@
 #!/bin/bash
 set -eu
 
-# Help
+# Merge into branch
 if [ $# -ne 1 ]; then
-    echo "Usage: git merge-info <branch>" >&2
+    echo "Usage: git mi <branch>" >&2
     exit 1
 fi
 

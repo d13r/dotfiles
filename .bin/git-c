@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Commit
+if [ $# -eq 0 ]; then
+    exec git commit -v
+fi
+
+exec git commit -m "$@"
