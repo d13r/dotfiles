@@ -8,6 +8,7 @@
 !/.elinks
 !/.gitattributes-global
 !/.gitconfig
+!/.github
 !/.gitignore
 !/.gitignore-global
 !/.grip
@@ -23,7 +24,6 @@
 !/.vagrant.d
 !/.vim
 !/Dotfiles.sublime-project
-!/README.md
 !/bin
 !/lib
 !/opt
