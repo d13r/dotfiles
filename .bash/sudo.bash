@@ -1,4 +1,4 @@
-if $HAS_TERMINAL && ! $WINDOWS; then
+if $HAS_TERMINAL; then
 
     # s=sudo
     s() {

@@ -16,11 +16,6 @@ PATH="$HOME/go/bin:$PATH"
 # Custom scripts
 PATH="$HOME/.bin:$PATH"
 
-# Custom OS-specific scripts
-if $WINDOWS; then
-    PATH="$HOME/.bin/win:$PATH"
-fi
-
 # Custom local scripts (specific to a machine so not in Git)
 PATH="$HOME/local/bin:$PATH"
 
