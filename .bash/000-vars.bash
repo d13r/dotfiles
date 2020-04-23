@@ -1,5 +1,4 @@
 # Detect operating system
-CYGWIN=false
 DOCKER=false
 MSYSGIT=false
 MAC=false
@@ -18,7 +17,6 @@ if grep -q 'WSL\|Microsoft' /proc/version; then
     WIN_MYDOCS_UNIX="$(wslpath "$WIN_MYDOCS")"
 else
     case "$(uname -a)" in
-        CYGWIN*) WINDOWS=true; CYGWIN=true ;;
         MINGW*)  WINDOWS=true; MSYSGIT=true ;;
         Darwin)  MAC=true ;;
     esac

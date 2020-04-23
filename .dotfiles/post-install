@@ -61,9 +61,6 @@ if [ ! -f .bashrc_config ]; then
         elif $WSL; then
             # WSL - My Documents
             echo "www_dir='$WIN_MYDOCS_UNIX'"
-        elif $CYGWIN; then
-            # Cygwin - My Documents
-            echo "www_dir='$(cygpath --mydocs)'"
         elif $CPANEL && $ROOT; then
             # Live server - Root user
             echo "www_dir='/home'"

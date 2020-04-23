@@ -43,8 +43,3 @@ gs() {
         command gs "$@"
     fi
 }
-
-# Workaround for Git hanging when using Composer
-# Currently disabled because it doesn't work in Vagrant provisioner, and I don't
-# need it right now because I disabled ControlMaster as it's not supported in Cygwin
-#export GIT_SSH='ssh-noninteractive'
