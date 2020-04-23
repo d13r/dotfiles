@@ -30,11 +30,7 @@ unmark() {
 }
 
 marks() {
-    if $MAC; then
-        CLICOLOR_FORCE=1 command ls -lGF "$MARKPATH" | sed '1d;s/  / /g' | cut -d' ' -f9-
-    else
-        command ls -l --color=always --classify "$MARKPATH" | sed '1d;s/  / /g' | cut -d' ' -f9-
-    fi
+    command ls -l --color=always --classify "$MARKPATH" | sed '1d;s/  / /g' | cut -d' ' -f9-
 }
 
 if [ -d "$MARKPATH" ]; then

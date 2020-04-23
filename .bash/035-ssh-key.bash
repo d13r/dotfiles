@@ -6,9 +6,8 @@ fi
 # Workaround for losing SSH agent connection when reconnecting tmux: update a
 # symlink to the socket each time we reconnect and use that as the socket in
 # every session.
-# Currently not working on Mac, but I don't use it
 # And it doesn't work but also isn't necessary on WSL
-if ! $MAC && ! $WSL; then
+if ! $WSL; then
 
     # First we make sure there's a valid socket connecting us to the agent and
     # it's not already pointing to the symlink.

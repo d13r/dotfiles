@@ -1,9 +1,6 @@
 # Note: The most general ones should be at the top, and the most specific at the
 # bottom (e.g. local script) so they override the general ones if needed
 
-# MacPorts
-$MAC && PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-
 # Yarn
 PATH="$HOME/.yarn/bin:$PATH"
 
@@ -20,9 +17,7 @@ PATH="$HOME/go/bin:$PATH"
 PATH="$HOME/.bin:$PATH"
 
 # Custom OS-specific scripts
-if $MAC; then
-    PATH="$HOME/.bin/osx:$PATH"
-elif $WINDOWS; then
+if $WINDOWS; then
     PATH="$HOME/.bin/win:$PATH"
 fi
 
