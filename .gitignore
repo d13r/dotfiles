@@ -24,7 +24,6 @@
 !/.tmux_cheatsheet
 !/.vagrant.d
 !/.vim
-!/lib
 !/opt
 
 # Drush - config, not cache
