@@ -1,13 +1,12 @@
 # g = git
 alias g='git'
 
-# 'git' with no parameters loads interactive REPL
+# 'git' with no parameters shows current status
 git() {
     if [ $# -gt 0 ]; then
         command git "$@"
     else
-        command git status &&
-        command git repl
+        command git status
     fi
 }
 
