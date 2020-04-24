@@ -54,11 +54,10 @@
 !/.vagrant.d/provision-*.sh
 !/.vagrant.d/Vagrantfile
 
-# Vim - ignore history
+# Vim
 /.vim/.netrwhist
-
-# Vim plugins - ignore tags files
 /.vim/bundle/*/doc/tags
+/.vim/plugged/
 
 # Python compiled files
 *.pyc
