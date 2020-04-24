@@ -29,10 +29,8 @@
 /.drush/cache
 
 # Elinks
-/.elinks/bookmarks
-/.elinks/cookies
-/.elinks/globhist
-/.elinks/searchhist
+/.elinks/*
+!/.elinks/elinks.conf
 
 # Grip - config only, not cache & access token
 /.grip/cache*
@@ -66,9 +64,6 @@
 *.pyc
 
 # cPanel files
-/bin/pear
-/bin/peardev
-/bin/pecl
 .ea-php-cli.cache
 
 # gitolite executables
