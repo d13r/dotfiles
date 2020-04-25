@@ -55,8 +55,6 @@
 !/.vagrant.d/Vagrantfile
 
 # Vim
-/.vim/.netrwhist
-/.vim/bundle/*/doc/tags
 /.vim/plugged/
 
 # Python compiled files

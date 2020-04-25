@@ -456,8 +456,9 @@ set ttimeoutlen=50
 "set viminfo='100,<50,s10,h,n~/.cache/vim/viminfo
 "set whichwrap=<,>,[,],h,l,b,s
 "set wildmenu
-"
-"let g:netrw_list_hide='.*\.swp$,\~$'
+
+let g:netrw_home = '~/.cache/vim'
+"let g:netrw_list_hide = '.*\.swp$,\~$'
 
 if !isdirectory($HOME . '/.cache/vim')
     call mkdir($HOME . '/.cache/vim', 'p', 0700)
@@ -769,6 +770,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'garbas/vim-snipmate'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency
     Plug 'tomtom/tlib_vim' " Dependency
+    " TODO: Uncomment if ~/.vim-cache comes back, or remove if not
+    "let g:cache_dir_options = {
+    "\   'cache_dir': '~/.cache/vim',
+    "\}
 
     Plug 'editorconfig/editorconfig-vim'
 
