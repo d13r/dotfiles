@@ -472,10 +472,10 @@ augroup END
 "---------------------------------------
 
 " Use UTF-8 for everything, but no byte-order mark because it breaks things
-set encoding=utf-8
-set fileencoding=utf-8
-set fileencodings=ucs-bom,utf-8,default,latin1
-set nobomb
+"set encoding=utf-8
+"set fileencoding=utf-8
+"set fileencodings=ucs-bom,utf-8,default,latin1
+"set nobomb
 
 " Use 4 spaces to indent (use ":ret" to convert tabs to spaces)
 set expandtab tabstop=4 softtabstop=4 shiftwidth=4
@@ -911,17 +911,23 @@ vmap <silent> <Leader><C-u> <Esc>:call <SID>VisualWrap("<u>", "</u>")<CR>
 "
 "" ,n
 "noremap <silent> <Leader>n :set number!<CR>
-"
-"" ,p
-"noremap <silent> <Leader>p :set paste!<CR>:set paste?<CR>
-"
+
+" ,p*
+noremap <silent> <Leader>pc :PlugClean<CR>
+
+noremap <silent> <Leader>pi
+\   :PlugInstall<CR>
+\   :quit<CR>
+\   :source $MYVIMRC<CR>
+
+noremap <silent> <Leader>pu
+\   :PlugUpgrade<CR>
+\   :PlugUpdate --sync<CR>
+\   :quit<CR>
+\   :source $MYVIMRC<CR>
+
 "" ,q
 "noremap <silent> <Leader>q :q<CR>
-
-" ,v*
-noremap <silent> <Leader>vc :PlugClean<CR>
-noremap <silent> <Leader>vi :PlugInstall<CR>
-noremap <silent> <Leader>vu :PlugUpdate<CR>
 
 "" ,w
 "noremap <silent> <Leader>w :set wrap!<CR>
@@ -935,18 +941,37 @@ noremap <silent> <Leader>vu :PlugUpdate<CR>
 " Plugins
 "---------------------------------------
 
+" Auto-install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !echo "Downloading vim-plug..."; curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Configure plugins
 call plug#begin('~/.vim/plugged')
 
-" Ctrl-P - https://github.com/ctrlpvim/ctrlp.vim
-Plug 'ctrlpvim/ctrlp.vim'
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_custom_ignore = {
-\   'dir': '\v[\/]\.cache$',
-\   'file': '',
-\   'link': '',
-\}
+    " Ctrl-P - https://github.com/ctrlpvim/ctrlp.vim
+    Plug 'ctrlpvim/ctrlp.vim'
+    let g:ctrlp_show_hidden = 1
+    let g:ctrlp_custom_ignore = {
+    \   'dir': '\v[\/]\.cache$',
+    \   'file': '',
+    \   'link': '',
+    \}
 
-" Eunuch (:Rename, :Delete, etc.) - https://github.com/tpope/vim-eunuch
-Plug 'tpope/vim-eunuch'
+    " NERD Commenter - Plug 'preservim/nerdcommenter'
+    Plug 'preservim/nerdcommenter'
+
+    " Eunuch (:Rename, :Delete, etc.) - https://github.com/tpope/vim-eunuch
+    Plug 'tpope/vim-eunuch'
 
 call plug#end()
+
+" Automatically install missing plugins
+augroup vim-plug
+    autocmd! VimEnter *
+    \   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+    \|      PlugInstall --sync
+    \|      quit
+    \|      source $MYVIMRC
+    \|  endif
+augroup END
