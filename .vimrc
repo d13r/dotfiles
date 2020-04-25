@@ -12,10 +12,6 @@ if getcwd() == $windir . "\\system32"
     cd $HOME
 endif
 
-" Use Pathogen to manage plugin bundles
-call pathogen#infect()
-call pathogen#helptags()
-
 " Helper to run a command while preserving cursor position & search history
 " http://technotales.wordpress.com/2010/03/31/preserve-a-vim-function-that-keeps-your-state/
 function! PreserveCursor(command)
@@ -208,184 +204,6 @@ autocmd BufWinEnter *
 \       endif |
 \       unlet b:doopenfold |
 \   endif
-
-"===============================================================================
-
-let snips_author = 'Dave James Miller'
-
-if !exists('g:snipMate')
-  let g:snipMate = {}
-endif
-
-let g:snipMate['scope_aliases'] = {
-    \   'cpp':      'c',
-    \   'cs':       'c',
-    \   'eco':      'html',
-    \   'eruby':    'html',
-    \   'html':     'htmlonly',
-    \   'less':     'css',
-    \   'mxml':     'actionscript',
-    \   'objc':     'c',
-    \   'php':      'html',
-    \   'scss':     'css',
-    \   'smarty':   'html',
-    \   'ur':       'html',
-    \   'xhtml':    'htmlonly,html',
-    \}
-
-" Ruby
-function! Snippet_RubyClassNameFromFilename(...)
-    let name = expand("%:t:r")
-    if len(name) == 0
-        if a:0 == 0
-            let name = 'MyClass'
-        else
-            let name = a:1
-        endif
-    endif
-    return Snippet_Camelcase(substitute(name, '_spec$', '', ''))
-endfunction
-
-function! Snippet_MigrationNameFromFilename(...)
-    let name = substitute(expand("%:t:r"), '^.\{-}_', '', '')
-    if len(name) == 0
-        if a:0 == 0
-            let name = 'MyClass'
-        else
-            let name = a:1
-        endif
-    endif
-    return Snippet_Camelcase(name)
-endfunction
-
-
-" Python
-function! Snippet_PythonClassNameFromFilename(...)
-    let name = expand("%:t:r")
-    if len(name) == 0
-        if a:0 == 0
-            let name = 'MyClass'
-        else
-            let name = a:1
-        endif
-    endif
-    return Snippet_Camelcase(name)
-endfunction
-
-" PHP
-function! Snippet_PHPClassNameFromFilename(...)
-    let name = expand("%:t:r:r")
-    if len(name) == 0
-        if a:0 == 0
-            let name = 'MyClass'
-        else
-            let name = a:1
-        endif
-    endif
-    return name
-endfunction
-
-" Java
-function! Snippet_JavaClassNameFromFilename(...)
-    let name = expand("%:t:r")
-    if len(name) == 0
-        if a:0 == 0
-            let name = 'MyClass'
-        else
-            let name = a:1
-        endif
-    endif
-    return name
-endfunction
-
-function! Snippet_JavaInstanceVarType(name)
-    let oldview = winsaveview()
-    if searchdecl(a:name) == 0
-        normal! B
-        let old_reg = @"
-        normal! yaW
-        let type = @"
-        let @" = old_reg
-        call winrestview(oldview)
-        let type = substitute(type, '\s\+$', '', '')
-
-        "searchdecl treats  'return foo;' as a declaration of foo
-        if type != 'return'
-            return type
-        endif
-    endif
-    return "<+type+>"
-endfunction
-
-
-" Global
-function! s:start_comment()
-    return substitute(&commentstring, '^\([^ ]*\)\s*%s\(.*\)$', '\1', '')
-endfunction
-
-function! s:end_comment()
-    return substitute(&commentstring, '^.*%s\(.*\)$', '\1', '')
-endfunction
-
-function! Snippet_Modeline()
-    return s:start_comment() . " vim: set ${1:settings}:" . s:end_comment()
-endfunction
-
-function! Snippet_Camelcase(s)
-    "upcase the first letter
-    let toReturn = substitute(a:s, '^\(.\)', '\=toupper(submatch(1))', '')
-    "turn all '_x' into 'X'
-    return substitute(toReturn, '_\(.\)', '\=toupper(submatch(1))', 'g')
-endfunction
-
-function! Snippet_Underscore(s)
-    "down the first letter
-    let toReturn = substitute(a:s, '^\(.\)', '\=tolower(submatch(1))', '')
-    "turn all 'X' into '_x'
-    return substitute(toReturn, '\([A-Z]\)', '\=tolower("_".submatch(1))', 'g')
-endfunction
-
-" Used to generate PHP class name automatically from the filename
-fun! Snippet_AutoClassName()
-    let filename = expand('%:p')
-    if filename == ''
-        return 'ClassName'
-    endif
-    let filename = substitute(filename, '\\', '/', 'g')
-    if match(filename, '/classes/') > -1
-        " /classes/A/B/C.php -> "A_B_C"
-        let filename = substitute(filename, '^.*/classes/', '', '')
-        let filename = substitute(filename, '/', '_', 'g')
-        let filename = substitute(filename, '\.php$', '', '')
-    else
-        " /A/B/C.php -> "C"
-        let filename = expand('%:t:r')
-    endif
-    return filename
-endf
-
-" HTML snippet common to PHP, Smarty and HTML
-fun! Snippet_HTML()
-   return "
-       \<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n
-       \<html lang=\"en-GB\" xml:lang=\"en-GB\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">\n
-       \	<head>\n
-       \\n
-       \		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n
-       \		<meta http-equiv=\"Content-Language\" content=\"en-GB\" />\n
-       \\n
-       \		<title>${1:Untitled Document}</title>\n
-       \\n
-       \		<link rel=\"stylesheet\" href=\"/css/main.css\" type=\"text/css\" />\n
-       \\n
-       \	</head>\n
-       \	<body>\n
-       \\n
-       \		${2}\n
-       \\n
-       \	</body>\n
-       \</html>"
-endf
 
 "===============================================================================
 
@@ -584,9 +402,6 @@ endif
 " Show tabs and trailing spaces...
 set list
 set listchars=tab:-\ ,trail:.
-
-" Except in snippet files because they have to use tabs
-au FileType snippet,snippets setl listchars+=tab:\ \ 
 
 " Use the temp directory for all backups and swap files, instead of cluttering
 " up the filesystem with .*.swp and *~ files
@@ -816,7 +631,7 @@ nmap <silent> <Leader>P :set paste!<CR>
 
 " Quit
 nmap <silent> <Leader>q :q<CR>
-nmap <silent> <Leader>Q :wq<CR>
+nmap <silent> <Leader>Q :qa<CR>
 
 " Split screen in various directions
 nmap <silent> <Leader>sh         :split<CR>
@@ -950,6 +765,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'bogado/file-line'
 
     Plug 'chrisbra/csv.vim'
+
+    Plug 'garbas/vim-snipmate'
+    Plug 'MarcWeber/vim-addon-mw-utils' " Dependency
+    Plug 'tomtom/tlib_vim' " Dependency
 
     Plug 'editorconfig/editorconfig-vim'
 
