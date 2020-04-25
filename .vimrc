@@ -6,9 +6,6 @@ autocmd!
 " Debugging
 "set verbose=9
 
-" Automatically reload this file when it is modified
-autocmd! BufWritePost .vimrc source $HOME/.vimrc
-
 " Change out of the c:\windows\system32 directory because NERDtree seems to
 " fail to load (or loads *really* slowly) in that directory
 if getcwd() == $windir . "\\system32"
@@ -637,6 +634,8 @@ set guioptions-=L
 "set smartcase
 "set softtabstop=4
 "set tabstop=4
+set ttimeout
+set ttimeoutlen=50
 "set undodir=~/.cache/vim//
 "set undofile
 "set viminfo='100,<50,s10,h,n~/.cache/vim/viminfo
@@ -694,7 +693,7 @@ augroup myvimrc
     \   silent exec '!tmux source $HOME/.tmux.conf \; display "Reloaded ~/.tmux.conf" 2>/dev/null'
 
     " Reload Vim config
-    autocmd BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc
+    autocmd BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc nested
     \   source $MYVIMRC |
     \   if has('gui_running') |
     \       so $MYGVIMRC |
@@ -944,6 +943,13 @@ endif
 
 " Configure plugins
 call plug#begin('~/.vim/plugged')
+
+    " lightline.vim - https://github.com/itchyny/lightline.vim
+    Plug 'itchyny/lightline.vim'
+    let g:lightline = {
+    \   'colorscheme': 'wombat',
+    \}
+    set noshowmode
 
     " fzf - https://github.com/junegunn/fzf.vim
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
