@@ -944,21 +944,20 @@ endif
 " Configure plugins
 call plug#begin('~/.vim/plugged')
 
-    " lightline.vim - https://github.com/itchyny/lightline.vim
+    Plug 'editorconfig/editorconfig-vim'
+
     Plug 'itchyny/lightline.vim'
     let g:lightline = {
     \   'colorscheme': 'wombat',
     \}
     set noshowmode
 
-    " fzf - https://github.com/junegunn/fzf.vim
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
 
-    " NERD Commenter - https://github.com/preservim/nerdcommenter
     Plug 'preservim/nerdcommenter'
 
-    " Eunuch (:Rename, :Delete, etc.) - https://github.com/tpope/vim-eunuch
+    " This adds :Rename, :Delete, :SudoWrite, etc.
     Plug 'tpope/vim-eunuch'
 
 call plug#end()
