@@ -131,7 +131,338 @@ endfunction
 command! SortSnippets silent! call PreserveCursor("call <SID>SortSnippets()")
 
 "===============================================================================
+
+" <Ctrl-Alt-Up/Down> swaps lines
+" http://vim.wikia.com/wiki/Transposing
+function! <SID>MoveLineUp()
+    call <SID>MoveLineOrVisualUp(".", "")
+endfunction
+
+function! <SID>MoveLineDown()
+    call <SID>MoveLineOrVisualDown(".", "")
+endfunction
+
+function! <SID>MoveVisualUp()
+    call <SID>MoveLineOrVisualUp("'<", "'<,'>")
+    normal gv
+endfunction
+
+function! <SID>MoveVisualDown()
+    call <SID>MoveLineOrVisualDown("'>", "'<,'>")
+    normal gv
+endfunction
+
+function! <SID>MoveLineOrVisualUp(line_getter, range)
+    let l_num = line(a:line_getter)
+    if l_num - v:count1 - 1 < 0
+        let move_arg = "0"
+    else
+        let move_arg = a:line_getter." -".(v:count1 + 1)
+    endif
+    call <SID>MoveLineOrVisualUpOrDown(a:range."move ".move_arg)
+endfunction
+
+function! <SID>MoveLineOrVisualDown(line_getter, range)
+    let l_num = line(a:line_getter)
+    if l_num + v:count1 > line("$")
+        let move_arg = "$"
+    else
+        let move_arg = a:line_getter." +".v:count1
+    endif
+    call <SID>MoveLineOrVisualUpOrDown(a:range."move ".move_arg)
+endfunction
+
+function! <SID>MoveLineOrVisualUpOrDown(move_arg)
+    let col_num = virtcol(".")
+    execute "silent! ".a:move_arg
+    execute "normal! ".col_num."|"
+endfunction
+
+nnoremap <silent> <C-A-Up> :<C-u>call <SID>MoveLineUp()<CR>
+nnoremap <silent> <C-A-Down> :<C-u>call <SID>MoveLineDown()<CR>
+inoremap <silent> <C-A-Up> <C-o>:<C-u>call <SID>MoveLineUp()<CR>
+inoremap <silent> <C-A-Down> <C-o>:<C-u>call <SID>MoveLineDown()<CR>
+vnoremap <silent> <C-A-Up> :<C-u>call <SID>MoveVisualUp()<CR>
+vnoremap <silent> <C-A-Down> :<C-u>call <SID>MoveVisualDown()<CR>
+
+"===============================================================================
+
+" Remember cursor position for each file
+" http://vim.sourceforge.net/tips/tip.php?tip_id=80
+autocmd BufReadPost *
+\   if expand("<afile>:p:h") !=? $TEMP |
+\       if line("'\"") > 1 && line("'\"") <= line("$") |
+\           let JumpCursorOnEdit_foo = line("'\"") |
+\           let b:doopenfold = 1 |
+\           if (foldlevel(JumpCursorOnEdit_foo) > foldlevel(JumpCursorOnEdit_foo - 1)) |
+\               let JumpCursorOnEdit_foo = JumpCursorOnEdit_foo - 1 |
+\               let b:doopenfold = 2 |
+\           endif |
+\           exe JumpCursorOnEdit_foo |
+\       endif |
+\   endif
+
+" Need to postpone using "zv" until after reading the modelines.
+autocmd BufWinEnter *
+\   if exists("b:doopenfold") |
+"\       exe "normal zv" |
+\       if (b:doopenfold > 1) |
+\           exe  "+".1 |
+\       endif |
+\       unlet b:doopenfold |
+\   endif
+
+"===============================================================================
+
+let snips_author = 'Dave James Miller'
+
+if !exists('g:snipMate')
+  let g:snipMate = {}
+endif
+
+let g:snipMate['scope_aliases'] = {
+    \   'cpp':      'c',
+    \   'cs':       'c',
+    \   'eco':      'html',
+    \   'eruby':    'html',
+    \   'html':     'htmlonly',
+    \   'less':     'css',
+    \   'mxml':     'actionscript',
+    \   'objc':     'c',
+    \   'php':      'html',
+    \   'scss':     'css',
+    \   'smarty':   'html',
+    \   'ur':       'html',
+    \   'xhtml':    'htmlonly,html',
+    \}
+
+" Ruby
+function! Snippet_RubyClassNameFromFilename(...)
+    let name = expand("%:t:r")
+    if len(name) == 0
+        if a:0 == 0
+            let name = 'MyClass'
+        else
+            let name = a:1
+        endif
+    endif
+    return Snippet_Camelcase(substitute(name, '_spec$', '', ''))
+endfunction
+
+function! Snippet_MigrationNameFromFilename(...)
+    let name = substitute(expand("%:t:r"), '^.\{-}_', '', '')
+    if len(name) == 0
+        if a:0 == 0
+            let name = 'MyClass'
+        else
+            let name = a:1
+        endif
+    endif
+    return Snippet_Camelcase(name)
+endfunction
+
+
+" Python
+function! Snippet_PythonClassNameFromFilename(...)
+    let name = expand("%:t:r")
+    if len(name) == 0
+        if a:0 == 0
+            let name = 'MyClass'
+        else
+            let name = a:1
+        endif
+    endif
+    return Snippet_Camelcase(name)
+endfunction
+
+" PHP
+function! Snippet_PHPClassNameFromFilename(...)
+    let name = expand("%:t:r:r")
+    if len(name) == 0
+        if a:0 == 0
+            let name = 'MyClass'
+        else
+            let name = a:1
+        endif
+    endif
+    return name
+endfunction
+
+" Java
+function! Snippet_JavaClassNameFromFilename(...)
+    let name = expand("%:t:r")
+    if len(name) == 0
+        if a:0 == 0
+            let name = 'MyClass'
+        else
+            let name = a:1
+        endif
+    endif
+    return name
+endfunction
+
+function! Snippet_JavaInstanceVarType(name)
+    let oldview = winsaveview()
+    if searchdecl(a:name) == 0
+        normal! B
+        let old_reg = @"
+        normal! yaW
+        let type = @"
+        let @" = old_reg
+        call winrestview(oldview)
+        let type = substitute(type, '\s\+$', '', '')
+
+        "searchdecl treats  'return foo;' as a declaration of foo
+        if type != 'return'
+            return type
+        endif
+    endif
+    return "<+type+>"
+endfunction
+
+
+" Global
+function! s:start_comment()
+    return substitute(&commentstring, '^\([^ ]*\)\s*%s\(.*\)$', '\1', '')
+endfunction
+
+function! s:end_comment()
+    return substitute(&commentstring, '^.*%s\(.*\)$', '\1', '')
+endfunction
+
+function! Snippet_Modeline()
+    return s:start_comment() . " vim: set ${1:settings}:" . s:end_comment()
+endfunction
+
+function! Snippet_Camelcase(s)
+    "upcase the first letter
+    let toReturn = substitute(a:s, '^\(.\)', '\=toupper(submatch(1))', '')
+    "turn all '_x' into 'X'
+    return substitute(toReturn, '_\(.\)', '\=toupper(submatch(1))', 'g')
+endfunction
+
+function! Snippet_Underscore(s)
+    "down the first letter
+    let toReturn = substitute(a:s, '^\(.\)', '\=tolower(submatch(1))', '')
+    "turn all 'X' into '_x'
+    return substitute(toReturn, '\([A-Z]\)', '\=tolower("_".submatch(1))', 'g')
+endfunction
+
+" Used to generate PHP class name automatically from the filename
+fun! Snippet_AutoClassName()
+    let filename = expand('%:p')
+    if filename == ''
+        return 'ClassName'
+    endif
+    let filename = substitute(filename, '\\', '/', 'g')
+    if match(filename, '/classes/') > -1
+        " /classes/A/B/C.php -> "A_B_C"
+        let filename = substitute(filename, '^.*/classes/', '', '')
+        let filename = substitute(filename, '/', '_', 'g')
+        let filename = substitute(filename, '\.php$', '', '')
+    else
+        " /A/B/C.php -> "C"
+        let filename = expand('%:t:r')
+    endif
+    return filename
+endf
+
+" HTML snippet common to PHP, Smarty and HTML
+fun! Snippet_HTML()
+   return "
+       \<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n
+       \<html lang=\"en-GB\" xml:lang=\"en-GB\" dir=\"ltr\" xmlns=\"http://www.w3.org/1999/xhtml\">\n
+       \	<head>\n
+       \\n
+       \		<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />\n
+       \		<meta http-equiv=\"Content-Language\" content=\"en-GB\" />\n
+       \\n
+       \		<title>${1:Untitled Document}</title>\n
+       \\n
+       \		<link rel=\"stylesheet\" href=\"/css/main.css\" type=\"text/css\" />\n
+       \\n
+       \	</head>\n
+       \	<body>\n
+       \\n
+       \		${2}\n
+       \\n
+       \	</body>\n
+       \</html>"
+endf
+
+"===============================================================================
+
+" Make ^Z undo smaller chunks at a time
+" http://vim.wikia.com/wiki/Modified_undo_behavior
+inoremap <BS> <C-g>u<BS>
+inoremap <Del> <C-g>u<Del>
+inoremap <C-W> <C-g>u<C-W>
+
+" Make paste an undoable action, rather than joining it with any text that's typed in
+" Also use character-wise instead of line-wise paste, so it goes where the
+" cursor is instead of on the line above
+if exists("*paste#Paste")
+
+    function! <SID>MyPaste()
+
+        " Set to character-wise
+        " http://vim.wikia.com/wiki/Unconditional_linewise_or_characterwise_paste
+        let reg_type = getregtype("+")
+        call setreg("+", getreg("+"), "v")
+
+        " Use the bundled paste command
+        call paste#Paste()
+
+        " Reset line/character-wise
+        call setreg("+", getreg("+"), reg_type)
+
+    endfunction
+
+    " Explanation:
+    " <C-g>u                      Set undo point
+    " <C-o>:call MyPaste()<CR>    Call the function above
+    " <C-g>u                      Set another undo point
+    " 2010-06-19 Removed the final undo point because it seems to cause problems
+    "            when ThinkingRock is open...
+    "inoremap <C-V> <C-g>u<C-o>:call MyPaste()<CR><C-g>u
+    inoremap <C-V> <C-g>u<C-o>:call <SID>MyPaste()<CR>
+
+endif
+
+"===============================================================================
 " Finish the autocommands group
+augroup END
+
+"===============================================================================
+
+augroup filetypedetect
+
+    " AutoIt
+    au BufNewFile,BufRead *.au3 setf autoit
+
+    " Standard ML
+    au BufNewFile,BufRead *.ml,*.sml setf sml
+
+    " Java
+    au BufNewFile,BufRead *.class setf class
+    au BufNewFile,BufRead *.jad setf java
+
+    " CSV
+    au BufNewFile,BufRead *.csv setf csv
+
+    " CakePHP
+    au BufNewFile,BufRead *.thtml,*.ctp setf php
+
+    " Drupal
+    au BufNewFile,BufRead *.module,*.install setf php
+    au BufNewFile,BufRead *.info setf dosini
+
+    " Ruby
+    au BufNewFile,BufRead *.rabl setf ruby
+
+    " Text files
+    au BufNewFile,BufRead *.txt setf txt
+
 augroup END
 
 "===============================================================================
@@ -391,8 +722,8 @@ nnoremap <C-k> <C-w>k
 nnoremap <C-l> <C-w>l
 
 " Cycle through buffers
-nnoremap <C-n> :bnext<CR>
-nnoremap <C-p> :bprevious<CR>
+"nnoremap <C-n> :bnext<CR>
+"nnoremap <C-p> :bprevious<CR>
 
 " Switch buffer quickly by pressing spacebar
 " Note: :b supports tab-completion, and it's much faster than BufExplorer or
@@ -455,10 +786,8 @@ let mapleader = ","
 " Alternate files (a.vim)
 nmap <Leader>a :A<CR>
 
-" NERD Commenter = <Leader>c* (e.g. c, n, u)
-
-" BufExplorer
-nmap <silent> <Leader>b :call MyBufExplorer()<CR>
+" Remove DOS line endings
+nmap <silent> <Leader>dr :call PreserveCursor('%s/\r$//')<CR>
 
 " Delete spaces from otherwise empty lines
 nmap <silent> <Leader>ds :call PreserveCursor('%s/^\s\+$//e')<CR>
@@ -467,15 +796,11 @@ nmap <silent> <Leader>ds :call PreserveCursor('%s/^\s\+$//e')<CR>
 nmap <silent> <Leader>dt :call PreserveCursor('%s/\s\+$//e')<CR>
 
 " Browse current directory
-nmap <silent> <Leader>e :edit %:p:h<CR>
-nmap <silent> <Leader>E :tabedit %:p:h<CR>
+nmap <silent> <Leader>e :Explore<CR>
+nmap <silent> <Leader>E :Vexplore!<CR>
 
 " Toggle search highlight
 nmap <silent> <Leader>h :set hlsearch!<CR>
-
-" Remove DOS line endings
-" I would just use ,m - but the Align plugin using ,m= which slows it down
-nmap <silent> <Leader>mm :call PreserveCursor('%s/\r$//')<CR>
 
 " Find current file in NERDtree
 nmap <silent> <Leader>n :NERDTreeFind<CR>
