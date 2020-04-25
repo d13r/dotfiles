@@ -60,6 +60,8 @@ call plug#begin('~/.vim/plugged')
 
 call plug#end()
 
+" Switch buffer quickly by pressing spacebar
+nmap <Space> :Buffers<CR>
 
 
 
@@ -257,14 +259,15 @@ autocmd BufReadPost *
 \   endif
 
 " Need to postpone using "zv" until after reading the modelines.
-autocmd BufWinEnter *
-\   if exists("b:doopenfold") |
-"\       exe "normal zv" |
-\       if (b:doopenfold > 1) |
-\           exe  "+".1 |
-\       endif |
-\       unlet b:doopenfold |
-\   endif
+" Removed because it interferes with fzf :Buffers
+"autocmd BufWinEnter *
+"\   if exists("b:doopenfold") |
+""\       exe "normal zv" |
+"\       if (b:doopenfold > 1) |
+"\           exe  "+".1 |
+"\       endif |
+"\       unlet b:doopenfold |
+"\   endif
 
 "===============================================================================
 
