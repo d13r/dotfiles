@@ -29,3 +29,65 @@ BASHRC_DONE=true
 # https://github.com/serverless/serverless/issues/4069
 # tabtab source for serverless package
 # tabtab source for sls package
+
+# fzf - https://github.com/junegunn/fzf
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+_fzf_compgen_path() {
+    echo "$1"
+    command find -L "$1" \
+        -name .cache -prune -o \
+        -name .git -prune -o \
+        -name .hg -prune -o \
+        -name .svn -prune -o \
+        \( -type d -o -type f -o -type l \) \
+        -not -path "$1" \
+        -print \
+        2>/dev/null \
+    | sed 's#^\./##'
+}
+
+_fzf_compgen_dir() {
+    command find -L "$1" \
+        -name .cache -prune -o \
+        -name .git -prune -o \
+        -name .hg -prune -o \
+        -name .svn -prune -o \
+        -type d \
+        -not -path "$1" \
+        -print \
+        2>/dev/null \
+    | sed 's#^\./##'
+}
+
+export FZF_CTRL_T_COMMAND='
+    find -L . \
+        -name .cache -prune -o \
+        -name .git -prune -o \
+        -name .hg -prune -o \
+        -name .svn -prune -o \
+        \( -type d -o -type f -o -type l \) \
+        -print \
+        2>/dev/null \
+    | sed "s#^./##"
+'
+
+export FZF_CTRL_T_OPTS="
+    --select-1
+    --preview '(highlight -O ansi -l {} 2> /dev/null || cat {} || tree -C {}) 2> /dev/null | head -200'
+"
+
+export FZF_ALT_C_OPTS="
+    --preview 'tree -C {} | head -200'
+"
+
+export FZF_COMPLETION_TRIGGER='#'
+
+_fzf_setup_completion dir c
+_fzf_setup_completion dir l
+_fzf_setup_completion dir la
+_fzf_setup_completion dir ll
+_fzf_setup_completion dir ls
+_fzf_setup_completion path e
+_fzf_setup_completion path g
+_fzf_setup_completion path git
