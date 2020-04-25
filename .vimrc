@@ -39,8 +39,6 @@ call plug#begin('~/.vim/plugged')
     "let g:cache_dir_options = {
     "\   'cache_dir': '~/.cache/vim',
     "\}
-    " Disable folding in snippets
-    au FileType snippets setl foldmethod=marker
 
     Plug 'editorconfig/editorconfig-vim'
 
