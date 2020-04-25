@@ -726,12 +726,10 @@ nnoremap <C-l> <C-w>l
 "nnoremap <C-p> :bprevious<CR>
 
 " Switch buffer quickly by pressing spacebar
-" Note: :b supports tab-completion, and it's much faster than BufExplorer or
-" any or the other plugins I've tried
-"nmap <Space> :b 
-" ... Going to try Ctrl-P for a while - but only for buffers because the file
-" search takes ages to load
-nmap <Space> :CtrlPBuffer<CR>
+nmap <Space> :Buffers<CR>
+
+" Ctrl-P
+nnoremap <C-p> :Files<CR>
 
 " Ctrl-Space for Buffer Explorer - slower, but easier for browsing the list of
 " open buffers if I can't remember the filename
@@ -917,13 +915,11 @@ noremap <silent> <Leader>pc :PlugClean<CR>
 
 noremap <silent> <Leader>pi
 \   :PlugInstall<CR>
-\   :quit<CR>
 \   :source $MYVIMRC<CR>
 
 noremap <silent> <Leader>pu
 \   :PlugUpgrade<CR>
 \   :PlugUpdate --sync<CR>
-\   :quit<CR>
 \   :source $MYVIMRC<CR>
 
 "" ,q
@@ -949,14 +945,9 @@ endif
 " Configure plugins
 call plug#begin('~/.vim/plugged')
 
-    " Ctrl-P - https://github.com/ctrlpvim/ctrlp.vim
-    Plug 'ctrlpvim/ctrlp.vim'
-    let g:ctrlp_show_hidden = 1
-    let g:ctrlp_custom_ignore = {
-    \   'dir': '\v[\/]\.cache$',
-    \   'file': '',
-    \   'link': '',
-    \}
+    " fzf - https://github.com/junegunn/fzf.vim
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
 
     " NERD Commenter - Plug 'preservim/nerdcommenter'
     Plug 'preservim/nerdcommenter'

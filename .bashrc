@@ -60,7 +60,7 @@ _fzf_compgen_dir() {
     | sed 's#^\./##'
 }
 
-export FZF_CTRL_T_COMMAND='
+export FZF_DEFAULT_COMMAND='
     find -L . \
         -name .cache -prune -o \
         -name .git -prune -o \
@@ -71,6 +71,8 @@ export FZF_CTRL_T_COMMAND='
         2>/dev/null \
     | sed "s#^./##"
 '
+
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 export FZF_CTRL_T_OPTS="
     --select-1
