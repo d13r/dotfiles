@@ -264,11 +264,9 @@ au FileType snippet,snippets setl listchars+=tab:\ \
 " up the filesystem with .*.swp and *~ files
 " Note the trailing // means include the full path of the current file so
 " files with the same name in different folders don't conflict
-set backupdir=~/tmp/vim//
-set directory=~/tmp/vim//
-if version >= 703
-    set undodir=~/tmp/vim//
-endif
+set backupdir=~/.cache/vim//
+set directory=~/.cache/vim//
+set undodir=~/.cache/vim//
 
 " Remember mark positions
 set viminfo+=f1
@@ -315,10 +313,10 @@ set guioptions-=L
 "set wildmenu
 "
 "let g:netrw_list_hide='.*\.swp$,\~$'
-"
-"if !isdirectory($HOME . '/.cache/vim')
-"    call mkdir($HOME . '/.cache/vim', 'p', 0700)
-"endif
+
+if !isdirectory($HOME . '/.cache/vim')
+    call mkdir($HOME . '/.cache/vim', 'p', 0700)
+endif
 
 
 "---------------------------------------

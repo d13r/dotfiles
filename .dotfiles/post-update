@@ -3,6 +3,9 @@ set -o errexit -o pipefail -o nounset
 
 cd
 
+# Create/update the post-merge hook
+ln -nsf ../../.dotfiles/post-update .git/hooks/post-merge
+
 # Create a template MySQL settings file, and chmod to ensure any passwords are protected
 if [ ! -e .my.cnf ]; then
     echo -e "[client]\n;user=''\n;password=''\n\n[mysql]\ndatabase=''" > .my.cnf
@@ -31,8 +34,14 @@ if ! grep -q ^bitbucket.org .ssh/known_hosts; then
     echo "bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==" >> .ssh/known_hosts
 fi
 
-# Create/update the post-merge hook
-ln -nsf ../../.dotfiles/post-update .git/hooks/post-merge
+# Move the old Vim temp directory
+if [ -d tmp/vim ] && [ ! -d .cache/vim ]; then
+    mkdir -p .cache
+    mv tmp/vim .cache/vim
+    rm -f .cache/vim/.gitkeep
+    chmod 700 .cache/vim
+    rmdir --ignore-fail-on-non-empty tmp
+fi
 
 # Return true even if the last command above failed
 true
