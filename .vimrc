@@ -945,6 +945,8 @@ endif
 " Configure plugins
 call plug#begin('~/.vim/plugged')
 
+    Plug 'bogado/file-line'
+
     Plug 'editorconfig/editorconfig-vim'
 
     Plug 'itchyny/lightline.vim'
