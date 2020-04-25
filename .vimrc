@@ -914,12 +914,13 @@ noremap <silent> <Leader>pc :PlugClean<CR>
 
 noremap <silent> <Leader>pi
 \   :PlugInstall<CR>
+
+noremap <silent> <Leader>pr
 \   :source $MYVIMRC<CR>
 
 noremap <silent> <Leader>pu
 \   :PlugUpgrade<CR>
 \   :PlugUpdate --sync<CR>
-\   :source $MYVIMRC<CR>
 
 "" ,q
 "noremap <silent> <Leader>q :q<CR>
