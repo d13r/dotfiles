@@ -1,16 +1,77 @@
+" Debugging
+"set verbose=9
+
+"===============================================================================
+" Plugins
+"===============================================================================
+
+" Automatically install vim-plug
+if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !echo "Downloading vim-plug..."; curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+endif
+
+" Automatically install missing plugins
+augroup vim-plug
+    autocmd! VimEnter *
+    \   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+    \|      PlugInstall --sync
+    \|      quit
+    \|      source $MYVIMRC
+    \|  endif
+augroup END
+
+" Configure plugins
+call plug#begin('~/.vim/plugged')
+
+    Plug 'ap/vim-css-color'
+
+    Plug 'bogado/file-line'
+
+    Plug 'chrisbra/csv.vim'
+
+    Plug 'garbas/vim-snipmate'
+    Plug 'MarcWeber/vim-addon-mw-utils' " Dependency
+    Plug 'tomtom/tlib_vim' " Dependency
+    " TODO: Uncomment if ~/.vim-cache comes back, or remove if not
+    "let g:cache_dir_options = {
+    "\   'cache_dir': '~/.cache/vim',
+    "\}
+    " Disable folding in snippets
+    au FileType snippets setl foldmethod=marker
+
+    Plug 'editorconfig/editorconfig-vim'
+
+    Plug 'itchyny/lightline.vim'
+    let g:lightline = {
+    \   'colorscheme': 'wombat',
+    \}
+    set noshowmode
+
+    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf.vim'
+
+    Plug 'preservim/nerdcommenter'
+
+    " This adds :Rename, :Delete, :SudoWrite, etc.
+    Plug 'tpope/vim-eunuch'
+
+call plug#end()
+
+
+
+
+
+
+
+"===============================================================================
+" OLD OLD OLD OLD OLD OLD OLD
+"===============================================================================
+
+"===============================================================================
 " Make sure any autocommands are replaced not added to when reloading this file
 augroup vimrc
 autocmd!
 "===============================================================================
-
-" Debugging
-"set verbose=9
-
-" Change out of the c:\windows\system32 directory because NERDtree seems to
-" fail to load (or loads *really* slowly) in that directory
-if getcwd() == $windir . "\\system32"
-    cd $HOME
-endif
 
 " Helper to run a command while preserving cursor position & search history
 " http://technotales.wordpress.com/2010/03/31/preserve-a-vim-function-that-keeps-your-state/
@@ -717,60 +778,3 @@ noremap <silent> <Leader>pu
 "" ;
 "nnoremap ; :
 "vnoremap ; :
-
-
-"---------------------------------------
-" Plugins
-"---------------------------------------
-
-" Auto-install vim-plug
-if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !echo "Downloading vim-plug..."; curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-endif
-
-" Configure plugins
-call plug#begin('~/.vim/plugged')
-
-    Plug 'ap/vim-css-color'
-
-    Plug 'bogado/file-line'
-
-    Plug 'chrisbra/csv.vim'
-
-    Plug 'garbas/vim-snipmate'
-    Plug 'MarcWeber/vim-addon-mw-utils' " Dependency
-    Plug 'tomtom/tlib_vim' " Dependency
-    " TODO: Uncomment if ~/.vim-cache comes back, or remove if not
-    "let g:cache_dir_options = {
-    "\   'cache_dir': '~/.cache/vim',
-    "\}
-    " Disable folding in snippets
-    au FileType snippets setl foldmethod=marker
-
-    Plug 'editorconfig/editorconfig-vim'
-
-    Plug 'itchyny/lightline.vim'
-    let g:lightline = {
-    \   'colorscheme': 'wombat',
-    \}
-    set noshowmode
-
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-    Plug 'junegunn/fzf.vim'
-
-    Plug 'preservim/nerdcommenter'
-
-    " This adds :Rename, :Delete, :SudoWrite, etc.
-    Plug 'tpope/vim-eunuch'
-
-call plug#end()
-
-" Automatically install missing plugins
-augroup vim-plug
-    autocmd! VimEnter *
-    \   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-    \|      PlugInstall --sync
-    \|      quit
-    \|      source $MYVIMRC
-    \|  endif
-augroup END
