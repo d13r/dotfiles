@@ -812,7 +812,7 @@ nmap <silent> <Leader>os :edit $HOME/.vim/snippets<CR>
 nmap <silent> <Leader>ov :edit $HOME/.vim<CR>
 
 " Toggle paste mode
-nmap <silent> <Leader>p :set paste!<CR>
+nmap <silent> <Leader>P :set paste!<CR>
 
 " Quit
 nmap <silent> <Leader>q :q<CR>
@@ -948,6 +948,8 @@ call plug#begin('~/.vim/plugged')
     Plug 'ap/vim-css-color'
 
     Plug 'bogado/file-line'
+
+    Plug 'chrisbra/csv.vim'
 
     Plug 'editorconfig/editorconfig-vim'
 
