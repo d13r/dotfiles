@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# explorer.exe <path> doesn't work, but explorer.exe . from a directory does
+if [ $# -gt 0 ]; then
+    cd "$@"
+fi
+
+exec explorer.exe .
