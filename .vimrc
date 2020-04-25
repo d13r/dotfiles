@@ -955,7 +955,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
 
-    " NERD Commenter - Plug 'preservim/nerdcommenter'
+    " NERD Commenter - https://github.com/preservim/nerdcommenter
     Plug 'preservim/nerdcommenter'
 
     " Eunuch (:Rename, :Delete, etc.) - https://github.com/tpope/vim-eunuch
