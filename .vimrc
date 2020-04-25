@@ -1,6 +1,11 @@
 " Debugging
 "set verbose=9
 
+" Make sure any autocommands are replaced not added to when reloading this file
+augroup vimrc
+autocmd!
+
+
 "===============================================================================
 " Plugins
 "===============================================================================
@@ -11,14 +16,12 @@ if empty(glob('~/.vim/autoload/plug.vim'))
 endif
 
 " Automatically install missing plugins
-augroup vim-plug
-    autocmd! VimEnter *
-    \   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-    \|      PlugInstall --sync
-    \|      quit
-    \|      source $MYVIMRC
-    \|  endif
-augroup END
+autocmd VimEnter *
+\   if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+\|      PlugInstall --sync
+\|      quit
+\|      source $MYVIMRC
+\|  endif
 
 " Configure plugins
 call plug#begin('~/.vim/plugged')
@@ -68,9 +71,6 @@ call plug#end()
 "===============================================================================
 
 "===============================================================================
-" Make sure any autocommands are replaced not added to when reloading this file
-augroup vimrc
-autocmd!
 "===============================================================================
 
 " Helper to run a command while preserving cursor position & search history
@@ -306,10 +306,6 @@ if exists("*paste#Paste")
 endif
 
 "===============================================================================
-" Finish the autocommands group
-augroup END
-
-"===============================================================================
 
 "===============================================================================
 
@@ -524,29 +520,22 @@ endif
 " Autocommands
 "---------------------------------------
 
-augroup myvimrc
+" Restore the last cursor position
+"autocmd BufReadPost *
+"\   if line("'\"") > 0 && line("'\"") <= line("$") |
+"\       exe "normal! g`\"" |
+"\   endif
 
-    " Clear previously defined autocommands
-    autocmd!
+" Reload Tmux config
+autocmd BufWritePost .tmux.conf
+\   silent exec '!tmux source $HOME/.tmux.conf \; display "Reloaded ~/.tmux.conf" 2>/dev/null'
 
-    " Restore the last cursor position
-    "autocmd BufReadPost *
-    "\   if line("'\"") > 0 && line("'\"") <= line("$") |
-    "\       exe "normal! g`\"" |
-    "\   endif
-
-    " Reload Tmux config
-    autocmd BufWritePost .tmux.conf
-    \   silent exec '!tmux source $HOME/.tmux.conf \; display "Reloaded ~/.tmux.conf" 2>/dev/null'
-
-    " Reload Vim config
-    autocmd BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc nested
-    \   source $MYVIMRC |
-    \   if has('gui_running') |
-    \       so $MYGVIMRC |
-    \   endif
-
-augroup END
+" Reload Vim config
+autocmd BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc nested
+\   source $MYVIMRC |
+\   if has('gui_running') |
+\       so $MYGVIMRC |
+\   endif
 
 
 "---------------------------------------
@@ -778,3 +767,6 @@ noremap <silent> <Leader>pu
 "" ;
 "nnoremap ; :
 "vnoremap ; :
+
+"===============================================================================
+augroup end
