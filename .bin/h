@@ -16,7 +16,7 @@ if [[ $# -eq 2 ]] && [[ "$name" = 'X' ]]; then
 fi
 
 # Not running tmux - run it over SSH
-if [[ -z "$TMUX" ]] && [[ "$TERM" != screen* ]]; then
+if [[ -z "${TMUX:-}" ]] && [[ "$TERM" != screen* ]]; then
     exec ssh -o ForwardAgent=yes -o StrictHostKeyChecking=accept-new "$host" \
         -t "command -v tmux &>/dev/null && tmux -2 new -A -s '$name' || bash -l"
 fi
