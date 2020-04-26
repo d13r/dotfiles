@@ -9,6 +9,9 @@ BASHRC_LOADED=true
 # Only load in interactive shells
 [[ -t 0 ]] || return
 
+# Skip when running a command like 'tmux' or 'gitolite'
+[[ -z "${BASH_EXECUTION_STRING:-}" ]] || return
+
 
 #===============================================================================
 # Third party scripts
