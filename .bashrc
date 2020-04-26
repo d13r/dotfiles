@@ -76,6 +76,14 @@ _domain-command() {
     fi
 }
 
+_ls-current-directory() {
+    echo
+    echo -en "\033[4;1m"
+    echo $PWD
+    echo -en "\033[0m"
+    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
+}
+
 
 #===============================================================================
 # User functions
@@ -330,17 +338,6 @@ cd() {
     command cd "$@" && _record-last-directory
 }
 
-# Change to the last visited directory, unless we're already in a different directory
-if [[ $PWD = $HOME ]]; then
-    if [[ -f ~/.bash_lastdirectory ]]; then
-        # Throw away errors about that directory not existing (any more)
-        command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
-    else
-        # If this is the first login, try going to the web root instead
-        cw
-    fi
-fi
-
 # Detect typos in the cd command
 shopt -s cdspell
 
@@ -354,14 +351,7 @@ c() {
         cd "$@" >/dev/null || return
     fi
 
-    # Output the path
-    echo
-    echo -en "\033[4;1m"
-    echo $PWD
-    echo -en "\033[0m"
-
-    # List the directory contents
-    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
+    _ls-current-directory
 
 }
 
@@ -1268,10 +1258,21 @@ yarn() {
 
 #===============================================================================
 
-# Custom settings for this machine/account
+# Change to the last visited directory, unless we're already in a different directory
+if [[ $PWD = $HOME ]]; then
+    if [[ -f ~/.bash_lastdirectory ]]; then
+        # Throw away errors about that directory not existing (any more)
+        command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
+    else
+        # If this is the first login, try going to the web root instead
+        cw >/dev/null
+    fi
+fi
+
+# Load custom settings for this machine/account
 if [ -f ~/.bashrc_local ]; then
     source ~/.bashrc_local
 fi
 
 # Finally, show the current directory name & contents
-c .
+_ls-current-directory
