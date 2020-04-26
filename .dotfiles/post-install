@@ -1,4 +1,3 @@
-#!/bin/bash
 set -o errexit -o pipefail -o nounset
 
 cd
@@ -45,35 +44,6 @@ if [ ! -f .bashrc_config ]; then
             echo "prompt_type='' #live/staging/dev/special"
         fi
 
-        # File permissions
-        if $CPANEL; then
-           echo "umask_user=022"
-        else
-           echo "umask_user=002"
-        fi
-
-        echo "umask_root=022"
-
-        # Path for 'cw' command - try to guess what's the best directory to use
-        if $VAGRANT; then
-            # Vagrant - Shared directory
-            echo "www_dir='/vagrant'"
-        elif $WSL; then
-            # WSL - My Documents
-            echo "www_dir='$WIN_MYDOCS_UNIX'"
-        elif $CPANEL && $ROOT; then
-            # Live server - Root user
-            echo "www_dir='/home'"
-        elif $CPANEL || [ -d repo ]; then
-            # Live server - Git repo
-            echo "www_dir=~/repo"
-        elif [ -d /home/www ]; then
-            # Dev server - Web root
-            echo "www_dir='/home/www'"
-        else
-            # Ubuntu default
-            echo "www_dir='/var/www'"
-        fi
     ) > .bashrc_config
 
 fi
