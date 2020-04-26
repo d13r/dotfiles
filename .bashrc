@@ -252,9 +252,11 @@ fi
 #---------------------------------------
 
 # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
-temp=$(wsl-temp-path)
-if is-wsl && [ -f "$temp/wsl-ssh-pageant.sock" ]; then
-    export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
+if is-wsl; then
+    temp=$(wsl-temp-path)
+    if [ -f "$temp/wsl-ssh-pageant.sock" ]; then
+        export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
+    fi
 fi
 
 # Workaround for losing SSH agent connection when reconnecting tmux
