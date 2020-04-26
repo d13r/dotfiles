@@ -61,13 +61,50 @@ export PATH
 source $HOME/.bash/ask.sh
 source $HOME/.bash/color.bash
 
+_domain-command() {
+    command="$1"
+    shift
+
+    # Accept URLs and convert to domain name only
+    domain=$(echo "$1" | sed 's#https\?://\([^/]*\).*/#\1#')
+
+    if [[ -n $domain ]]; then
+        shift
+        command $command "$domain" "$@"
+    else
+        command $command "$@"
+    fi
+}
+
 
 #===============================================================================
 # User functions
 #===============================================================================
 
+cw() {
+    if [[ -d /vagrant ]]; then
+        c /vagrant
+    elif is-wsl; then
+        c "$(wsl-mydocs-path)"
+    elif [[ -d ~/repo ]]; then
+        c ~/repo
+    elif [[ -d /home/www ]]; then
+        c /home/www
+    elif is-root-user && [[ -d /home ]]; then
+        c /home
+    elif [[ -d /var/www ]]; then
+        c /var/www
+    else
+        c ~
+    fi
+}
+
 dump-path() {
     echo -e "${PATH//:/\\n}"
+}
+
+md() {
+    mkdir -p "$1" && cd "$1"
 }
 
 status() {
@@ -131,10 +168,10 @@ alias host='_domain-command host'
 
 alias ide='t ide-helper'
 
-alias l="ls -hFl $ls_opts"
-alias la="ls -hFlA $ls_opts"
-alias ls="ls -hF $ls_opts"
-alias lsa="ls -hFA $ls_opts"
+alias l="ls -hFl --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias la="ls -hFlA --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias ls="ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias lsa="ls -hFA --color=always --hide=*.pyc --hide=*.sublime-workspace"
 
 alias mfs='art migrate:fresh --seed'
 
@@ -175,7 +212,7 @@ alias useradd='maybe-sudo useradd'
 alias userdel='maybe-sudo userdel'
 alias usermod='maybe-sudo usermod'
 
-alias v=vagrant
+alias v='vagrant'
 
 alias watch='watch --color '
 alias whois='_domain-command whois'
@@ -193,12 +230,13 @@ if is-wsl; then
 fi
 
 
-
-
-
 #===============================================================================
+# Configure Bash environment
+#===============================================================================
+
+#---------------------------------------
 # Umask
-#===============================================================================
+#---------------------------------------
 
 if [[ $(umask) = 0000 ]]; then
     if is-root-user; then
@@ -209,35 +247,24 @@ if [[ $(umask) = 0000 ]]; then
 fi
 
 
-#===============================================================================
+#---------------------------------------
 # SSH agent
-#===============================================================================
+#---------------------------------------
 
-# Support for wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
-if is-wsl && [ -f "$WIN_TEMP_UNIX/wsl-ssh-pageant.sock" ]; then
-    export SSH_AUTH_SOCK="$WIN_TEMP_UNIX/wsl-ssh-pageant.sock"
+# wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
+temp=$(wsl-temp-path)
+if is-wsl && [ -f "$temp/wsl-ssh-pageant.sock" ]; then
+    export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
 fi
 
-# Workaround for losing SSH agent connection when reconnecting tmux: update a
-# symlink to the socket each time we reconnect and use that as the socket in
-# every session.
-# And it doesn't work but also isn't necessary on WSL
+# Workaround for losing SSH agent connection when reconnecting tmux
+# It doesn't work on WSL, but isn't necessary when using wsl-ssh-pageant
 if ! is-wsl; then
-
-    # First we make sure there's a valid socket connecting us to the agent and
-    # it's not already pointing to the symlink.
     link="$HOME/.ssh/ssh_auth_sock"
     if [[ $SSH_AUTH_SOCK != $link ]] && [[ -S $SSH_AUTH_SOCK ]]; then
-        # We also check if the agent has any keys loaded - PuTTY will still open an
-        # agent connection even if we used password authentication
-        if ssh-add -l >/dev/null 2>&1; then
-            ln -nsf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
-        fi
+        ln -nsf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
     fi
-
-    # Now that's done we can use the symlink for every session
     export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
-
 fi
 
 
@@ -289,25 +316,16 @@ bind '"\eOD":backward-word'
 
 
 #===============================================================================
-# Grunt
-#===============================================================================
-
-if command -v grunt &>/dev/null; then
-    eval "$(grunt --completion=bash)"
-fi
-
-
-#===============================================================================
 # cd / ls
 #===============================================================================
 
 # Remember the last directory visited
-record_bash_lastdirectory() {
+_record-last-directory() {
     pwd > ~/.bash_lastdirectory
 }
 
 cd() {
-    command cd "$@" && record_bash_lastdirectory
+    command cd "$@" && _record-last-directory
 }
 
 # Change to the last visited directory, unless we're already in a different directory
@@ -323,15 +341,6 @@ fi
 
 # Detect typos in the cd command
 shopt -s cdspell
-
-# Need some different options for ls on Mac
-if ls --hide=*.pyc >/dev/null 2>&1; then
-    # Recent Linux
-    ls_opts='--color=always --hide=*.pyc --hide=*.sublime-workspace'
-else
-    # Old Linux (without --hide support)
-    ls_opts='--color=always'
-fi
 
 # c = cd; ls
 c() {
@@ -350,37 +359,16 @@ c() {
     echo -en "\033[0m"
 
     # List the directory contents
-    ls -hF $ls_opts
+    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
 
 }
 
 # Custom 'ls' colours
-# These don't work on CentOS 5: rs (RESET), mh (MULTIHARDLINK), ca (CAPABILITY) - but we're using the defaults so it doesn't really matter
-#export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
-export LS_COLORS='fi=01;37:di=01;33:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:tw=30;42:ow=34;42:st=37;44:ex=01;32'
+export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
 
 # Stop newer versions of Bash quoting the filenames in ls
 # http://unix.stackexchange.com/a/258687/14368
 export QUOTING_STYLE=literal
-
-# cw = web files directory
-cw() {
-    if [[ -d /vagrant ]]; then
-        c /vagrant
-    elif is-wsl; then
-        c "$(wsl-mydocs-path)"
-    elif [[ -d ~/repo ]]; then
-        c ~/repo
-    elif [[ -d /home/www ]]; then
-        c /home/www
-    elif is-root-user && [[ -d /home ]]; then
-        c /home
-    elif [[ -d /var/www ]]; then
-        c /var/www
-    else
-        c ~
-    fi
-}
 
 
 #===============================================================================
@@ -393,115 +381,6 @@ shopt -s no_empty_cmd_completion
 
 # Ignore case when tab-completing
 set completion-ignore-case on
-
-
-#===============================================================================
-# Docker
-#===============================================================================
-
-# Clean up stopped containers and dangling (untagged) images
-dclean() {
-    docker container prune
-    docker image prune
-}
-
-# Kill most recent container
-dkill() {
-    container="${1:-}"
-    if [[ -z $container ]]; then
-        container="$(docker ps -qlf status=running)"
-    fi
-
-    if [[ -n $container ]]; then
-        docker kill $container
-    fi
-}
-
-# Kill all containers
-dkillall() {
-    containers="$(docker ps -qf status=running)"
-
-    if [[ -n $containers ]]; then
-        docker kill $containers
-    fi
-}
-
-# Resume
-dresume() {
-    # http://stackoverflow.com/a/37886136/167815
-    container="$(docker ps -qlf status=exited)"
-
-    if [[ -n $container ]]; then
-        docker start -ai "$container"
-    else
-        echo "No stopped images found." >&2
-        return 1
-    fi
-}
-
-# Serve a directory of files over HTTP for quick local sharing
-# https://github.com/halverneus/static-file-server
-dserve() {
-    dr -v "$PWD:/web" -p 80:8080 halverneus/static-file-server
-}
-
-# Shell
-dsh() {
-    # Set up SSH agent forwarding
-    if [[ -n $SSH_AUTH_SOCK ]]; then
-        opt=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
-    else
-        opt=()
-    fi
-
-    # Build the command to run a shell on the specified image
-    local image="${1:-ubuntu}"
-    local entrypoint="${2:-/bin/bash}"
-    shift $(($# > 2 ? 2 : $#))
-
-    docker run "${opt[@]}" -it "$@" --entrypoint "$entrypoint" "$image"
-}
-
-# Stop most recent container
-dstop() {
-    container="${1:-}"
-    if [[ -z $container ]]; then
-        container="$(docker ps -qlf status=running)"
-    fi
-
-    if [[ -n $container ]]; then
-        docker stop $container
-    fi
-}
-
-# Stop all containers
-dstopall() {
-    containers="$(docker ps -qf status=running)"
-
-    if [[ -n $containers ]]; then
-        docker stop $containers
-    fi
-}
-
-
-#===============================================================================
-# Domain tools
-#===============================================================================
-
-_domain-command() {
-    command="$1"
-    shift
-
-    # Accept URLs and convert to domain name only
-    domain=$(echo "$1" | sed 's#https\?://\([^/]*\).*/#\1#')
-
-    if [[ -n $domain ]]; then
-        shift
-        command $command "$domain" "$@"
-    else
-        command $command "$@"
-    fi
-}
 
 
 #===============================================================================
@@ -722,58 +601,6 @@ if [ -d "$MARKPATH" ]; then
         alias $mark="jump $mark"
     done
 fi
-
-
-#===============================================================================
-# md (mkdir; cd)
-#===============================================================================
-
-md() {
-    mkdir -p "$1" && cd "$1"
-}
-
-
-#===============================================================================
-# Multipass
-#===============================================================================
-
-# Slightly nicer wrapper
-mp() {
-    case "${1:-}" in
-
-        launch|l)
-            # ubuntu launch - always use cloud-init
-            shift
-            multipass launch --cloud-init ~/.multipass/cloud-config.yaml "$@"
-            ;;
-
-        shell|ssh|sh|h)
-
-            if [ -n "${2:-}" ]; then
-                # ubuntu shell - connect to the first VM instead of "primary"
-                ip="$(multipass list --format csv | tail +2 | grep "^$2," | cut -d, -f3)"
-            else
-                # ubuntu shell <name>
-                ip="$(multipass list --format csv | tail +2 | head -1 | cut -d, -f3)"
-            fi
-
-            if [ -n "$ip" -a "$ip" != "--" -a "$ip" != "UNKNOWN" ]; then
-                # Connect via regular WSL SSH not Windows SSH, and launch tmux
-                h "$ip"
-            else
-                echo "Cannot determine the IP to connect to. These are the running VMs:" >&2
-                echo >&2
-                multipass list >&2
-            fi
-
-            ;;
-
-        *)
-            multipass "$@"
-            ;;
-
-    esac
-}
 
 
 #===============================================================================
@@ -1211,72 +1038,6 @@ tm() {
         tmux -2 new -d -s "$name" 2>/dev/null
         tmux -2 switch -t "$name"
     fi
-}
-
-# ssh + tmux ('h' for 'ssH', because 's' is in use)
-h() {
-    local host="$1"
-    local name="${2:-default}"
-    local path="${3:-.}"
-
-    # Special case for 'h vagrant' / 'h v' ==> 'v h' => 'vagrant tmux' (see vagrant.bash)
-    if [ "$host" = "v" -o "$host" = "vagrant" ] && [ $# -eq 1 ]; then
-        vagrant tmux
-        return
-    fi
-
-    # For 'h user@host ^', upload SSH public key - easier than retyping it
-    if [ $# -eq 2 -a "$name" = "^" ]; then
-        ssh-copy-id "$host"
-        return
-    fi
-
-    # For 'h user@host X', close the master connection
-    if [ $# -eq 2 -a "$name" = "X" ]; then
-        ssh -O stop "$host"
-        return
-    fi
-
-    # Not running tmux
-    if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
-
-        local server="${host#*@}"
-
-        case $server in
-            # Run tmux on the local machine, as it's not available on the remote server
-            a|aria|b|baritone|d|dragon|f|forte|t|treble)
-
-                # The name defaults to the host name given, rather than 'default'
-                name="${2:-$host}"
-
-                # Create a detached session (if there isn't one already)
-                tmux -2 new -s "$name" -d "ssh -o ForwardAgent=yes -t '$host' 'cd \"$path\"; bash -l'"
-
-                # Set the default command for new windows to connect to the same server, so we can have multiple panes
-                tmux set -t "$name" default-command "ssh -o ForwardAgent=yes -t '$host' 'cd \"$path\"; bash -l'"
-
-                # Connect to the session
-                tmux -2 attach -t "$name"
-
-                ;;
-
-            # Run tmux on the remote server
-            *)
-                ssh -o ForwardAgent=yes -t "$host" "cd '$path'; command -v tmux &>/dev/null && tmux -2 new -A -s '$name' || bash -l"
-                ;;
-        esac
-
-        return
-    fi
-
-    # Already running tmux *and* the user tried to specify a session name
-    if [ $# -ge 2 ]; then
-        echo 'sessions should be nested with care, unset $TMUX to force' >&2
-        return 1
-    fi
-
-    # Already running tmux so connect without it
-    ssh -o ForwardAgent=yes "$host"
 }
 
 
