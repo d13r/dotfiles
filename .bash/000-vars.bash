@@ -1,3 +1,8 @@
+# TODO
+# Merged into .bashrc, but also still needed by scripts in ~/.dotfiles/
+
+
+
 # Detect operating system
 DOCKER=false
 MAC=false

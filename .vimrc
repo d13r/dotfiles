@@ -113,6 +113,7 @@ let g:NERDCommentEmptyLines = 1
 let g:NERDDefaultAlign = 'left'
 let g:NERDSpaceDelims = 1
 
+let g:netrw_banner = 0
 let g:netrw_home = $HOME.'/.cache/vim'
 let g:netrw_liststyle = 3
 
@@ -323,6 +324,10 @@ autocmd BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc nested
 \|  if has('gui_running')
 \|      source $MYGVIMRC
 \|  endif
+
+" Prevent prompts to save directory listings - https://vi.stackexchange.com/a/12326/29179
+autocmd FileType netrw
+\ setlocal bufhidden=delete
 
 
 "===============================================================================

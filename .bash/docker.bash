@@ -1,3 +1,8 @@
+# TODO
+# Merged into .bashrc, but also still needed by scripts in ~/.dotfiles/
+
+
+
 # Shorthand
 alias d='docker'
 alias db='docker build'
