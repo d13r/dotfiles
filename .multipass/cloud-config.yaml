@@ -3,7 +3,9 @@
 timezone: Europe/London
 
 users:
-  - name: dave
+  # Using 'ubuntu' not 'dave' because the default mount can't easily be
+  # moved/disabled and it's not worth trying to work around that
+  - name: ubuntu
     shell: /bin/bash
     ssh-authorized-keys:
       - 'ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQEApH2uQjVOlpn8jW4X5WnQgpQPmr3GjF/oHDAmODqPAXQuTQ1pvfMgS/Kp+H9p+h16B3SJYMxBvOdirGJjaLh1TDBNb1iw8tP9TDrfze5gAwn8C7UFXlCwZe2TnTWT07CxHiyoChD5YtfSWGsRzS7NFLkNT3oJVaHh8Xmvzz/5gpF8adUJlQT1Vl3OHWM2l27/HWCzkSY/uVwUKrVCfnP+SQxnQzR456uC3v36PFFXarpsl8l7uDVgTbZOnXzamU7e4v7aKEIp2SeXzsZV4Ve+X67zbp3Zyb6ZFtU1AXgvfJJUmKfTaukEy1Ju9VdtDcP/BFbgaYow54Rp6lEqjlNd5w== dave@davejamesmiller.com'
@@ -11,6 +13,6 @@ users:
       - 'ALL=(ALL) NOPASSWD:ALL'
 
 runcmd:
-  - sudo -u dave -H /bin/sh -c "echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> ~/.bashrc"
+  - echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> /home/ubuntu/.bashrc
 
 # vim:ts=2 sts=2 sw=2

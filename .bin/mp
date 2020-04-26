@@ -9,6 +9,12 @@ else
     multipass='multipass'
 fi
 
+list-instances() {
+    instances=$($multipass list)
+    color lwhite -- "$(echo "$instances" | head -n1)"
+    echo "$instances" | tail -n+2
+}
+
 primary-name() {
     $multipass get client.primary-name | tr -d '\r'
 }
@@ -26,29 +32,33 @@ case "${1:-}" in
         echo "To list other commands run '$(color lwhite 'mp help')'."
         echo
         color lcyan 'Current instances'
-        exec $multipass list
+        list-instances
         ;;
 
     d|down) # Down
         shift
         $multipass suspend "$@"
-        exec $multipass list
+        list-instances
         ;;
 
     h) # SSH
-        name="${2:-}"
+        shift
+
+        name="${1:-}"
         if [[ -z $name ]]; then
             name="$(primary-name)"
+        else
+            shift
         fi
 
         ip=$($multipass list --format csv | awk -F , -v name="$name" 'NR > 1 && $1 == name { print $3 }')
 
         if [[ -n $ip ]] && [[ $ip != '--' ]] && [[ $ip != 'UNKNOWN' ]]; then
             # Remove the IP from the known hosts file because IPs are reused
-            ssh-keygen -f ~/.ssh/known_hosts -R "$ip" 2>/dev/null
+            ssh-keygen -f ~/.ssh/known_hosts -R "$ip" &>/dev/null
 
             # Connect via regular WSL SSH not Windows SSH, and launch tmux
-            exec h "$ip"
+            exec h "ubuntu@$ip" "$@"
         fi
 
         if [[ "$ip" = 'UNKNOWN' ]]; then
@@ -65,30 +75,37 @@ case "${1:-}" in
         fi
 
         echo >&2
-        exec $multipass list >&2
+        list-instances
         ;;
 
     l) # Launch
-        primary=$(primary-name)
-        name="${2:-$primary}"
+        shift
+
+        name="${1:-}"
+        if [[ -z $name ]]; then
+            name="$(primary-name)"
+        else
+            shift
+        fi
 
         $multipass launch \
             --cloud-init ~/.multipass/cloud-config.yaml \
             --cpus 4 \
             --disk 5G \
             --mem 2G \
-            --name "$name"
+            --name "$name" \
+            "$@"
 
-        if [[ $name = $primary ]]; then
-            $multipass umount "$name:Home"
-        fi
-
-        exec mp h "$name"
+        echo
+        list-instances
         ;;
 
     rm) # Delete & purge
         shift
-        exec $multipass delete --purge "$@"
+        $multipass delete --purge "$@"
+        echo 'Instance deleted.'
+        echo
+        list-instances
         ;;
 
     scp) # Transfer
@@ -99,9 +116,11 @@ case "${1:-}" in
     u|up) # Up
         shift
         $multipass start "$@"
-        exec $multipass list
+        list-instances
+        ;;
+
+    *)
+        exec $multipass "$@"
         ;;
 
 esac
-
-exec $multipass "$@"
