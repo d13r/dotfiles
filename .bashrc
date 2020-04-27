@@ -92,6 +92,13 @@ _ls-current-directory() {
 # User functions
 #===============================================================================
 
+c() {
+    if [[ $@ != . ]]; then
+        cd "$@" >/dev/null || return
+    fi
+    _ls-current-directory
+}
+
 cw() {
     if [[ -d /vagrant ]]; then
         c /vagrant
@@ -285,23 +292,7 @@ fi
 # Automatic updates
 #===============================================================================
 
-# Check what the current revision is
-old_head=$(cd; git rev-parse HEAD)
-
-# Catch Ctrl-C - sometimes if GitHub or my internet connection is down I
-# need to be able to cancel the update without skipping the rest of .bashrc
-trap 'echo' INT
-
-# Run the auto-update
-~/.bin/cfg-auto-update
-
-trap - INT
-
-# Reload Bash if any changes were made
-# Removed because auto-update now runs in the background
-#if [ "$(cd; git rev-parse HEAD)" != "$old_head" ]; then
-#    exec bash -l
-#fi
+~/.dotfiles/auto-update
 
 
 #===============================================================================
@@ -317,15 +308,6 @@ if [[ -n $TMUX ]]; then
         echo -e "\033[30;1m$hr\033[0m"
     fi
 fi
-
-
-#===============================================================================
-# Key mappings
-#===============================================================================
-
-# Couldn't get these working in .inputrc
-bind '"\eOC":forward-word'
-bind '"\eOD":backward-word'
 
 
 #===============================================================================
@@ -345,18 +327,6 @@ cd() {
 shopt -s cdspell
 
 # c = cd; ls
-c() {
-
-    # cd to the given directory
-    if [[ $@ != . ]]; then
-        # If "." don't do anything, so that "cd -" still works
-        # Don't output the path as I'm going to anyway (done by "cd -" and cdspell)
-        cd "$@" >/dev/null || return
-    fi
-
-    _ls-current-directory
-
-}
 
 # Custom 'ls' colours
 export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
@@ -509,10 +479,6 @@ gs() {
 #===============================================================================
 # History
 #===============================================================================
-
-# Start typing then use Up/Down to see *matching* history items
-bind '"\e[A":history-search-backward'
-bind '"\e[B":history-search-forward'
 
 # Don't store duplicate entries in history
 export HISTIGNORE="&"
