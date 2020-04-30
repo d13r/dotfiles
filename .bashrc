@@ -1,46 +1,91 @@
 #===============================================================================
-# Safety checks
+# Setup
 #===============================================================================
 
-# Only load once
-[[ -n $BASHRC_LOADED ]] && return
-BASHRC_LOADED=true
+#---------------------------------------
+# Safety checks
+#---------------------------------------
+
+# Only load this file once
+[[ -n $BASHRC_SOURCED ]] && return
+BASHRC_SOURCED=true
 
 # Only load in interactive shells
-[[ -t 0 ]] || return
-
-# Skip when running a command like 'tmux' or 'gitolite'
-[[ -z "${BASH_EXECUTION_STRING:-}" ]] || return
+[[ -z $PS1 ]] && return
 
 
-#===============================================================================
+#---------------------------------------
 # Third party scripts
-#===============================================================================
-# Load these first so we can override anything they do
+#---------------------------------------
+
+# Auto-completion - seems to be loaded automatically on some servers but not on others
+shopt -s extglob
+[[ -f /etc/bash_completion ]] && source /etc/bash_completion
 
 # Google Cloud Shell
 [[ -f /google/devshell/bashrc.google ]] && source /google/devshell/bashrc.google
+
+# lesspipe
+[[ -x /usr/bin/lesspipe ]] && eval "$(/usr/bin/lesspipe)"
+
+# Python virtualenv
+if [[ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]]; then
+    export VIRTUAL_ENV_DISABLE_PROMPT=1
+    source /usr/local/bin/virtualenvwrapper_lazy.sh
+fi
+
+# Ruby rvm
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+    rvm_project_rvmrc=0
+    source "$HOME/.rvm/scripts/rvm"
+fi
 
 # The Fuck
 command -v thefuck &>/dev/null && eval $(thefuck --alias)
 
 
-#---------------------------------------
-# Bash completion
-#---------------------------------------
-
-# https://trac.macports.org/ticket/44558#comment:13
-shopt -s extglob
-
-# This seems to be loaded automatically on some servers but not on others
-[[ -f /etc/bash_completion ]] && source /etc/bash_completion
-
-source $HOME/.bash_completion
-
-
 #===============================================================================
+# Settings
+#===============================================================================
+
+PROMPT_COMMAND='history -a'
+
+export EDITOR=vim
+export GEDITOR=$EDITOR
+export HISTIGNORE='&'
+export LESS=FRX
+export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
+export PAGER=less
+export PGDATABASE=postgres
+export QUOTING_STYLE=literal
+export VISUAL=$EDITOR
+
+if [ -z "$DISPLAY" ] && is-wsl; then
+    export DISPLAY=localhost:0.0
+fi
+
+if [ -z "$XAUTHORITY" ]; then
+    export XAUTHORITY=$HOME/.Xauthority
+fi
+
+set completion-ignore-case on
+
+shopt -s cdspell
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s histappend
+shopt -s lithist
+shopt -s histreedit
+shopt -s histverify
+shopt -s no_empty_cmd_completion
+
+stty -ixon # Disable Ctrl-S
+tabs -4
+
+
+#---------------------------------------
 # Path
-#===============================================================================
+#---------------------------------------
 
 # Note: The ones lower down take precedence
 PATH="$HOME/go/bin:$PATH"
@@ -53,54 +98,123 @@ PATH="$HOME/.composer/packages/vendor/bin:$PATH"
 
 PATH="$HOME/.bin:$PATH"
 
+# For tab completion with sudo
+PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+
 export PATH
 
 
 #===============================================================================
-# Helper functions
+# Aliases
 #===============================================================================
 
-# These are in separate files because they are used by other scripts too
-source $HOME/.bash/ask.sh
-source $HOME/.bash/color.bash
+alias a2disconf='maybe-sudo a2disconf'
+alias a2dismod='maybe-sudo a2dismod'
+alias a2dissite='maybe-sudo a2dissite'
+alias a2enconf='maybe-sudo a2enconf'
+alias a2enmod='maybe-sudo a2enmod'
+alias a2ensite='maybe-sudo a2ensite'
+alias acs='apt search'
+alias acsh='apt show'
+alias addgroup='maybe-sudo addgroup'
+alias adduser='maybe-sudo adduser'
+alias agi='maybe-sudo apt install'
+alias agr='maybe-sudo apt remove'
+alias agar='maybe-sudo apt autoremove'
+alias agu='maybe-sudo apt update && maybe-sudo apt full-upgrade'
+alias agupdate='maybe-sudo apt update'
+alias agupgrade='maybe-sudo apt upgrade'
+alias apt='maybe-sudo apt'
+alias apt-add-repository='maybe-sudo apt-add-repository'
 
-_domain-command() {
-    command="$1"
-    shift
+alias b='c -'
 
-    # Accept URLs and convert to domain name only
-    domain=$(echo "$1" | sed 's#https\?://\([^/]*\).*/#\1#')
+alias chmox='chmod'
+alias com='composer'
+alias cp='cp -i'
 
-    if [[ -n $domain ]]; then
-        shift
-        command $command "$domain" "$@"
-    else
-        command $command "$@"
-    fi
-}
+alias d='docker'
+alias db='docker build'
+alias dc='docker-compose'
+alias dpkg-reconfigure='maybe-sudo dpkg-reconfigure'
+alias dr='docker run'
+alias dri='docker run -it'
 
-_find-wp-content() {
-    if dir=$(findup -d wp-content); then
-        echo "$dir/wp-content"
-    elif dir=$(findup -d www/wp-content); then
-        echo "$dir/www/wp-content"
-    else
-        echo "Cannot find wp-content/ directory" >&2
-        return 1
-    fi
-}
+alias g='git'
+alias grep="$(command -v grep-less)" # command -v makes it work with sudo
+alias groupadd='maybe-sudo groupadd'
+alias groupdel='maybe-sudo groupdel'
+alias groupmod='maybe-sudo groupmod'
 
-_ls-current-directory() {
-    echo
-    echo -en "\033[4;1m"
-    echo $PWD
-    echo -en "\033[0m"
-    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
-}
+alias history-time='HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S] " history'
+alias host='_domain-command host'
+
+alias ide='t ide-helper'
+
+alias l="ls -hFl --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias la="ls -hFlA --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias ls="ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias lsa="ls -hFA --color=always --hide=*.pyc --hide=*.sublime-workspace"
+
+alias mfs='art migrate:fresh --seed'
+
+alias nslookup='_domain-command nslookup'
+
+alias php5dismod='maybe-sudo php5dismod'
+alias php5enmod='maybe-sudo php5enmod'
+alias phpdismod='maybe-sudo phpdismod'
+alias phpenmod='maybe-sudo phpenmod'
+alias poweroff='maybe-sudo poweroff'
+alias pow='maybe-sudo poweroff'
+alias pu='phpunit'
+
+alias reboot='maybe-sudo reboot'
+alias reload='exec bash -l'
+alias rm='rm -i'
+
+alias service='maybe-sudo service'
+alias shutdown='maybe-sudo poweroff'
+alias snap='maybe-sudo snap'
+alias sshstop='ssh -O stop'
+alias storm='phpstorm'
+alias sudo='sudo ' # Expand aliases
+alias s='s '
+
+alias tree='tree -C'
+
+alias u='c ..'
+alias uu='c ../..'
+alias uuu='c ../../..'
+alias uuuu='c ../../../..'
+alias uuuuu='c ../../../../..'
+alias uuuuuu='c ../../../../../..'
+
+alias ufw='maybe-sudo ufw'
+alias updatedb='maybe-sudo updatedb'
+alias useradd='maybe-sudo useradd'
+alias userdel='maybe-sudo userdel'
+alias usermod='maybe-sudo usermod'
+
+alias v='vagrant'
+
+alias watch='watch --color '
+alias whois='_domain-command whois'
+
+alias yum='maybe-sudo yum'
+
+
+#---------------------------------------
+# Windows-specific aliases
+#---------------------------------------
+
+if is-wsl; then
+    alias multipass='multipass.exe'
+    alias explorer='explorer.exe'
+fi
 
 
 #===============================================================================
-# User functions
+# Functions
 #===============================================================================
 
 c() {
@@ -109,6 +223,11 @@ c() {
         cd "$@" >/dev/null || return
     fi
     _ls-current-directory
+}
+
+cd() {
+    command cd "$@" && \
+        _record-last-directory
 }
 
 cg() {
@@ -292,6 +411,37 @@ hackit() {
     git checkout master
 }
 
+man() {
+    # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
+    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
+    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_me=$(printf "\e[0m") \
+    LESS_TERMCAP_se=$(printf "\e[0m") \
+    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_ue=$(printf "\e[0m") \
+    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+        command man "$@"
+}
+
+mark() {
+    mkdir -p $HOME/.marks
+    local mark="${1:-$(basename "$PWD")}"
+
+    if ! [[ $mark =~ ^[a-zA-Z0-9_-]+$ ]]; then
+        echo "Invalid mark name"
+        return 1
+    fi
+
+    ln -sn "$(pwd)" "$HOME/.marks/$mark" && \
+        alias $mark="c -P '$mark'"
+}
+
+marks() {
+    command ls -l --color=always --classify "$HOME/.marks" | \
+        sed '1d;s/  / /g' | \
+        cut -d' ' -f9-
+}
+
 md() {
     mkdir -p "$1" && cd "$1"
 }
@@ -362,6 +512,16 @@ systemctl() {
     fi
 }
 
+unmark() {
+    local mark="${1:-$(basename "$PWD")}"
+
+    if [[ -L $HOME/.marks/$mark ]]; then
+        rm -f "$HOME/.marks/$mark" && unalias $mark
+    else
+        echo "No such mark: $mark" >&2
+    fi
+}
+
 yarn() {
     if [ "$1" = "update" ]; then
         # yarn run v1.19.1
@@ -375,113 +535,51 @@ yarn() {
 }
 
 
-#===============================================================================
-# Aliases
-#===============================================================================
-
-alias a2disconf='maybe-sudo a2disconf'
-alias a2dismod='maybe-sudo a2dismod'
-alias a2dissite='maybe-sudo a2dissite'
-alias a2enconf='maybe-sudo a2enconf'
-alias a2enmod='maybe-sudo a2enmod'
-alias a2ensite='maybe-sudo a2ensite'
-alias acs='apt search'
-alias acsh='apt show'
-alias addgroup='maybe-sudo addgroup'
-alias adduser='maybe-sudo adduser'
-alias agi='maybe-sudo apt install'
-alias agr='maybe-sudo apt remove'
-alias agar='maybe-sudo apt autoremove'
-alias agu='maybe-sudo apt update && maybe-sudo apt full-upgrade'
-alias agupdate='maybe-sudo apt update'
-alias agupgrade='maybe-sudo apt upgrade'
-alias apt='maybe-sudo apt'
-alias apt-add-repository='maybe-sudo apt-add-repository'
-
-alias b='c -'
-
-alias chmox='chmod'
-alias com='composer'
-alias cp='cp -i'
-
-alias d='docker'
-alias db='docker build'
-alias dc='docker-compose'
-alias dpkg-reconfigure='maybe-sudo dpkg-reconfigure'
-alias dr='docker run'
-alias dri='docker run -it'
-
-alias g='git'
-alias grep="$(command -v grep-less)" # command -v makes it work with sudo
-alias groupadd='maybe-sudo groupadd'
-alias groupdel='maybe-sudo groupdel'
-alias groupmod='maybe-sudo groupmod'
-
-alias history-time='HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S] " history'
-alias host='_domain-command host'
-
-alias ide='t ide-helper'
-
-alias l="ls -hFl --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias la="ls -hFlA --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias ls="ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias lsa="ls -hFA --color=always --hide=*.pyc --hide=*.sublime-workspace"
-
-alias mfs='art migrate:fresh --seed'
-
-alias nslookup='_domain-command nslookup'
-
-alias php5dismod='maybe-sudo php5dismod'
-alias php5enmod='maybe-sudo php5enmod'
-alias phpdismod='maybe-sudo phpdismod'
-alias phpenmod='maybe-sudo phpenmod'
-alias poweroff='maybe-sudo poweroff'
-alias pow='maybe-sudo poweroff'
-alias pu='phpunit'
-
-alias reboot='maybe-sudo reboot'
-alias reload='exec bash -l'
-alias rm='rm -i'
-
-alias service='maybe-sudo service'
-alias shutdown='maybe-sudo poweroff'
-alias snap='maybe-sudo snap'
-alias sshstop='ssh -O stop'
-alias storm='phpstorm'
-alias sudo='sudo ' # Expand aliases
-alias s='s '
-
-alias tree='tree -C'
-
-alias u='c ..'
-alias uu='c ../..'
-alias uuu='c ../../..'
-alias uuuu='c ../../../..'
-alias uuuuu='c ../../../../..'
-alias uuuuuu='c ../../../../../..'
-
-alias ufw='maybe-sudo ufw'
-alias updatedb='maybe-sudo updatedb'
-alias useradd='maybe-sudo useradd'
-alias userdel='maybe-sudo userdel'
-alias usermod='maybe-sudo usermod'
-
-alias v='vagrant'
-
-alias watch='watch --color '
-alias whois='_domain-command whois'
-
-alias yum='maybe-sudo yum'
-
-
 #---------------------------------------
-# Windows-specific aliases
+# Helper functions
 #---------------------------------------
 
-if is-wsl; then
-    alias multipass='multipass.exe'
-    alias explorer='explorer.exe'
-fi
+# These are in separate files because they are used by other scripts too
+source $HOME/.bash/ask.sh
+source $HOME/.bash/color.bash
+
+_domain-command() {
+    command="$1"
+    shift
+
+    # Accept URLs and convert to domain name only
+    domain=$(echo "$1" | sed 's#https\?://\([^/]*\).*/#\1#')
+
+    if [[ -n $domain ]]; then
+        shift
+        command $command "$domain" "$@"
+    else
+        command $command "$@"
+    fi
+}
+
+_find-wp-content() {
+    if dir=$(findup -d wp-content); then
+        echo "$dir/wp-content"
+    elif dir=$(findup -d www/wp-content); then
+        echo "$dir/www/wp-content"
+    else
+        echo "Cannot find wp-content/ directory" >&2
+        return 1
+    fi
+}
+
+_ls-current-directory() {
+    echo
+    echo -en "\033[4;1m"
+    echo $PWD
+    echo -en "\033[0m"
+    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
+}
+
+_record-last-directory() {
+    pwd > ~/.bash_lastdirectory
+}
 
 
 #===============================================================================
@@ -524,16 +622,55 @@ if ! is-wsl; then
 fi
 
 
+#---------------------------------------
+# Bash completion
+#---------------------------------------
+
+if declare -f _completion_loader &>/dev/null; then
+
+    _completion_loader_custom() {
+        # Custom completions
+        local dir="$HOME/.bash_completion.d"
+
+        for file in "${1##*/}" _"${1##*/}"; do
+            file="$dir/$file"
+            source "$file" &>/dev/null && return 124
+        done
+
+        # Standard completions or file listing
+        _completion_loader "$@"
+    }
+
+    complete -D -F _completion_loader_custom
+
+else
+
+    # Lazy-load not available
+    for file in $HOME/.bash_completion.d/*; do
+        source "$file"
+    done
+
+fi
+
+
+#---------------------------------------
+# Load marks
+#---------------------------------------
+
+if [ -d "$HOME/.marks" ]; then
+    for mark in $HOME/.marks/*; do
+        alias $mark="c -P $mark"
+    done
+fi
+
+
 #===============================================================================
-# Automatic updates
+# Outputs
 #===============================================================================
 
-~/.dotfiles/auto-update
-
-
-#===============================================================================
+#---------------------------------------
 # MOTD
-#===============================================================================
+#---------------------------------------
 
 if [[ -n $TMUX ]]; then
     # Show the MOTD inside tmux, since it won't be shown if we load tmux
@@ -546,51 +683,11 @@ if [[ -n $TMUX ]]; then
 fi
 
 
-#===============================================================================
-# cd / ls
-#===============================================================================
+#---------------------------------------
+# Automatic updates
+#---------------------------------------
 
-# Remember the last directory visited
-_record-last-directory() {
-    pwd > ~/.bash_lastdirectory
-}
-
-cd() {
-    command cd "$@" && _record-last-directory
-}
-
-# Detect typos in the cd command
-shopt -s cdspell
-
-# c = cd; ls
-
-# Custom 'ls' colours
-export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
-
-# Stop newer versions of Bash quoting the filenames in ls
-# http://unix.stackexchange.com/a/258687/14368
-export QUOTING_STYLE=literal
-
-
-#===============================================================================
-# Completion
-#===============================================================================
-
-
-# Don't tab-complete an empty line - there's not really any use for it
-shopt -s no_empty_cmd_completion
-
-# Ignore case when tab-completing
-set completion-ignore-case on
-
-
-#===============================================================================
-# Editor
-#===============================================================================
-
-export EDITOR=vim
-export GEDITOR=$EDITOR
-export VISUAL=$EDITOR
+~/.dotfiles/auto-update
 
 
 #===============================================================================
@@ -665,178 +762,41 @@ fi
 
 
 #===============================================================================
-# History
-#===============================================================================
-
-# Don't store duplicate entries in history
-export HISTIGNORE="&"
-
-# Save history immediately, so multiple terminals don't overwrite each other!
-shopt -s histappend
-PROMPT_COMMAND='history -a'
-
-# Record multi-line commands as a single entry
-shopt -s cmdhist
-
-# Preserve new lines in history instead of converting to semi-colons
-shopt -s lithist
-
-# Confirm history expansions (e.g. "!1") before running them
-shopt -s histverify
-
-# If a history expansion fails, let the user re-edit the command
-shopt -s histreedit
-
-
-#===============================================================================
-# man
-#===============================================================================
-
-man()
-{
-    # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
-    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-    LESS_TERMCAP_md=$(printf "\e[1;31m") \
-    LESS_TERMCAP_me=$(printf "\e[0m") \
-    LESS_TERMCAP_se=$(printf "\e[0m") \
-    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-    LESS_TERMCAP_ue=$(printf "\e[0m") \
-    LESS_TERMCAP_us=$(printf "\e[1;32m") \
-        command man "$@"
-}
-
-
-#===============================================================================
-# Mark directories to jump to
-#===============================================================================
-
-# Based on
-# http://jeroenjanssens.com/2013/08/16/quickly-navigate-your-filesystem-from-the-command-line.html
-
-MARKPATH=$HOME/.marks
-
-jump() {
-    c -P "$MARKPATH/$1" 2>/dev/null || echo "No such mark: $1" >&2
-}
-
-mark() {
-    mkdir -p $MARKPATH
-    mark="${1:-$(basename "$PWD")}"
-
-    if ! [[ $mark =~ ^[a-zA-Z0-9_-]+$ ]]; then
-        echo "Invalid mark name"
-        return 1
-    fi
-
-    ln -sn "$(pwd)" "$MARKPATH/$mark" && alias $mark="jump '$mark'"
-}
-
-unmark() {
-    mark="${1:-$(basename "$PWD")}"
-
-    if [[ -L $MARKPATH/$mark ]]; then
-        rm -f "$MARKPATH/$mark" && unalias $mark
-    else
-        echo "No such mark: $mark" >&2
-    fi
-}
-
-marks() {
-    command ls -l --color=always --classify "$MARKPATH" | sed '1d;s/  / /g' | cut -d' ' -f9-
-}
-
-if [ -d "$MARKPATH" ]; then
-    for mark in $(command ls "$MARKPATH"); do
-        alias $mark="jump $mark"
-    done
-fi
-
-
-#===============================================================================
-# Pager
-#===============================================================================
-
-export PAGER=less
-
-# If output fits on one screen exit immediately
-export LESS=FRX
-
-# Use lesspipe to convert non-text files, if available
-if [ -x /usr/bin/lesspipe ]; then
-    eval "$(/usr/bin/lesspipe)"
-fi
-
-
-#===============================================================================
-# Postgres
-#===============================================================================
-
-# Use the 'postgres' database by default because it's more likely to exist than the current username
-export PGDATABASE=postgres
-
-
-#===============================================================================
 # Prompt
 #===============================================================================
 
-# Defaults
-prompt_default=
-prompt_type=
-
-# Load custom config options
-if [ -f ~/.bashrc_config ]; then
-    source ~/.bashrc_config
-fi
-
-# Enable dynamic $COLUMNS and $LINES variables
-shopt -s checkwinsize
+prompt_default=''
+prompt_titlebar=''
+prompt_type=''
 
 # Get hostname
-prompthostname() {
-    if [ -f ~/.hostname ]; then
-        # Custom hostname
-        cat ~/.hostname
-    elif is-wsl; then
-        # Titlecase hostname on Windows (no .localdomain)
-        #hostname | sed 's/\(.\)\(.*\)/\u\1\L\2/'
-        # Lowercase hostname on Windows (no .localdomain)
-        hostname | tr '[:upper:]' '[:lower:]'
-    else
-        # FQDN hostname on Linux
-        hostname -f
-    #elif [ "$1" = "init" ]; then
-    #    hostname -s
-    #else
-    #    echo '\H'
-    fi
-}
+if is-wsl; then
+    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
+else
+    prompt_hostname=$(hostname -f)
+fi
 
 # Set the titlebar & prompt to "[user@host:/full/path]\n$"
 case "$TERM" in
     xterm*|screen*)
-        Titlebar="\u@$(prompthostname):\$PWD"
-        # Set titlebar now, before SSH key is requested, for KeePass
-        echo -ne "\033]2;${USER:-$USERNAME}@$(prompthostname init):$PWD\a"
+        prompt_titlebar="\u@$prompt_hostname:\$PWD"
+        # Update the titlebar immediately
+        echo -ne "\033]2;${USER:-$USERNAME}@$prompt_hostname:$PWD\a"
         ;;
     *)
-        Titlebar=""
+        prompt_titlebar=""
         ;;
 esac
 
-# Git/Mercurial prompt
-vcsprompt()
-{
+_prompt-git() {
     # Walk up the tree looking for a .git directory
-    # This is faster than trying each in turn and means we get the one
-    # that's closer to us if they're nested
     root=$(pwd 2>/dev/null)
-    while [ ! -e "$root/.git" ]; do
-        if [ "$root" = "" ]; then break; fi
+    while [[ ! -e "$root/.git" ]]; do
+        [[ $root = '' ]] && break
         root=${root%/*}
     done
 
-    if [ -e "$root/.git" ]; then
-        # Git
+    if [[ -e "$root/.git" ]]; then
         relative=${PWD#$root}
         if [ "$relative" != "$PWD" ]; then
             echo -en "$root\033[36;1m$relative"
@@ -866,8 +826,7 @@ vcsprompt()
     fi
 }
 
-# Python virtualenvwrapper prompt
-venvprompt()
+_prompt-virtualenv()
 {
     if [ -n "$VIRTUAL_ENV" ]; then
         echo -e " ENV=${VIRTUAL_ENV##*/}"
@@ -917,240 +876,38 @@ MSG()
         # is resized
         spaces="\$(printf '%*s\n' \"\$((\$COLUMNS-${#PromptMessage}-1))\" '')"
         MessageCode="\033[${prompt_color}m $PromptMessage$spaces\033[0m\n"
-        TitlebarCode="\[\033]2;[$PromptMessage] $Titlebar\a\]"
+        TitlebarCode="\[\033]2;[$PromptMessage] $prompt_titlebar\a\]"
     else
         MessageCode=
-        TitlebarCode="\[\033]2;$Titlebar\a\]"
+        TitlebarCode="\[\033]2;$prompt_titlebar\a\]"
     fi
 
     # If changing the titlebar is not supported, remove that code
-    if [ -z "$Titlebar" ]; then
+    if [ -z "$prompt_titlebar" ]; then
         TitlebarCode=
     fi
 
     # Set the prompt
-    PS1="${TitlebarCode}\n"                     # Titlebar (see above)
-    PS1="${PS1}${MessageCode}"                  # Message (see above)
-    PS1="${PS1}\[\033[30;1m\]["                 # [                         Grey
-    PS1="${PS1}\[\033[31;1m\]\u"                # Username                  Red
-    PS1="${PS1}\[\033[30;1m\]@"                 # @                         Grey
-    PS1="${PS1}\[\033[32;1m\]$(prompthostname)" # Hostname                  Green
-    PS1="${PS1}\[\033[30;1m\]:"                 # :                         Grey
-    PS1="${PS1}\[\033[33;1m\]\`vcsprompt\`"     # Working directory / Git   Yellow
-    PS1="${PS1}\[\033[30;1m\]\`venvprompt\`"    # Python virtual env        Grey
-    PS1="${PS1}\[\033[30;1m\] at "              # at                        Grey
-    PS1="${PS1}\[\033[37;0m\]\D{%T}"            # Time                      Light grey
-    PS1="${PS1}\[\033[30;1m\]]"                 # ]                         Grey
-    PS1="${PS1}\[\033[1;35m\]\$KeyStatus"       # SSH key status            Pink
-    PS1="${PS1}\n"                              # (New line)
-    PS1="${PS1}\[\033[31;1m\]\\\$"              # $                         Red
+    PS1="${TitlebarCode}\n"                             # Titlebar (see above)
+    PS1="${PS1}${MessageCode}"                          # Message (see above)
+    PS1="${PS1}\[\033[30;1m\]["                         # [                         Grey
+    PS1="${PS1}\[\033[31;1m\]\u"                        # Username                  Red
+    PS1="${PS1}\[\033[30;1m\]@"                         # @                         Grey
+    PS1="${PS1}\[\033[32;1m\]$prompt_hostname"          # Hostname                  Green
+    PS1="${PS1}\[\033[30;1m\]:"                         # :                         Grey
+    PS1="${PS1}\[\033[33;1m\]\`_prompt-git\`"           # Working directory / Git   Yellow
+    PS1="${PS1}\[\033[30;1m\]\`_prompt-virtualenv\`"    # Python virtual env        Grey
+    PS1="${PS1}\[\033[30;1m\] at "                      # at                        Grey
+    PS1="${PS1}\[\033[37;0m\]\D{%T}"                    # Time                      Light grey
+    PS1="${PS1}\[\033[30;1m\]]"                         # ]                         Grey
+    PS1="${PS1}\[\033[1;35m\]\$KeyStatus"               # SSH key status            Pink
+    PS1="${PS1}\n"                                      # (New line)
+    PS1="${PS1}\[\033[31;1m\]\\\$"                      # $                         Red
     PS1="${PS1}\[\033[0m\] "
 }
 
 # Default to prompt with no message
 MSG
-
-
-#===============================================================================
-# Python
-#===============================================================================
-
-if [ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]; then
-    export VIRTUAL_ENV_DISABLE_PROMPT=1
-    source /usr/local/bin/virtualenvwrapper_lazy.sh
-fi
-
-
-#===============================================================================
-# Ruby
-#===============================================================================
-
-# rvm
-rvm_project_rvmrc=0 # RVM 1.22.1 breaks my 'cd' alias, and I don't need this
-
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
-
-
-#===============================================================================
-# SSH
-#===============================================================================
-
-# Fix running chromium via SSH
-if [ -z "$XAUTHORITY" ]; then
-    export XAUTHORITY=$HOME/.Xauthority
-fi
-
-
-#===============================================================================
-# Sudo
-#===============================================================================
-
-# Add sbin folder to my path so they can be auto-completed
-PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
-
-
-#===============================================================================
-# Terminal settings
-#===============================================================================
-
-# Disable Ctrl-S = Stop output
-if command -v stty &>/dev/null; then
-    stty -ixon
-fi
-
-# Use 4 space tabs
-if command -v tabs &>/dev/null; then
-    # This outputs a blank line, but that doesn't seem preventable - if you
-    # redirect to /dev/null it has no effect
-    tabs -4
-fi
-
-
-#===============================================================================
-# User info
-#===============================================================================
-
-EMAIL=dave@davejamesmiller.com
-
-
-#===============================================================================
-# Vagrant
-#===============================================================================
-
-vagrant() {
-    # WSL support
-    local vagrant=vagrant
-
-    if command -v vagrant.exe >/dev/null; then
-        vagrant=vagrant.exe
-    fi
-
-    # No parameters
-    if [ $# -eq 0 ]; then
-        command $vagrant
-
-        # 1 = Help message displayed (or maybe other errors?)
-        # 127 = Command not found
-        if [ $? -eq 1 ]; then
-            echo "Custom commands:"
-            echo "     exec      Run the given command on the guest machine"
-            echo "     rebuild   Destroy and rebuild the box"
-            echo "     tmux      Run tmux (terminal multiplexer) inside the guest machine"
-            echo
-            echo "Shortcuts:"
-            echo "     bu        box update"
-            echo "     d, down   suspend"
-            echo "     h         tmux"
-            echo "     gs        global-status"
-            echo "     hosts     hostmanager - update /etc/hosts files"
-            echo "     p         provision"
-            echo "     s         status"
-            echo "     u         up"
-            echo "     uh        up && tmux"
-            echo "     x         exec"
-        fi
-
-        return
-    fi
-
-    # Parse the first parameter for shortcuts - because I'm lazy!
-    cmd="$1"
-    shift
-
-    case "$cmd" in
-        d)     cmd=suspend       ;;
-        down)  cmd=suspend       ;;
-        exe)   cmd=exec          ;;
-        gs)    cmd=global-status ;;
-        h)     cmd=tmux          ;;
-        hosts) cmd=hostmanager   ;;
-        p)     cmd=provision     ;;
-        s)     cmd=status        ;;
-        st)    cmd=status        ;;
-        stop)  cmd=halt          ;;
-        u)     cmd=up            ;;
-        x)     cmd=exec          ;;
-    esac
-
-    # Box update
-    if [ "$cmd" = "bu" ]; then
-        command $vagrant box update
-        return
-    fi
-
-    # Execute a command on the guest
-    if [ "$cmd" = "exec" ]; then
-        command $vagrant ssh -c "cd /vagrant; $*"
-        return
-    fi
-
-    # Destroy and rebuild
-    if [ "$cmd" = "rebuild" ]; then
-        command $vagrant destroy "$@" && command vagrant box update && command vagrant up
-        return
-    fi
-
-    # up & tmux
-    if [ "$cmd" = "uh" ]; then
-        command $vagrant up || return
-        cmd="tmux"
-    fi
-
-    # tmux
-    if [ "$cmd" = "tmux" ]; then
-        # TODO Refactor this whole section!
-
-        # if [ -z "$TMUX" ]; then
-        #     # Not running tmux - Run tmux inside Vagrant (if available)
-        #     command vagrant ssh -- -t 'command -v tmux &>/dev/null && { tmux attach || tmux new -s default; } || bash -l'
-        # else
-        #     # We're running tmux on another platform - just connect as normal
-        #     command vagrant ssh
-        # fi
-
-        # For some reason Cygwin -> tmux -> vagrant (ruby) -> ssh is *really* slow
-        # And since I upgraded Vagrant, Cygwin -> vagrant -> ssh doesn't work properly
-        # So bypass Vagrant and use the Cygwin ssh instead, always
-        (umask 077 && command $vagrant ssh-config > /tmp/vagrant-ssh-config)
-
-        if is-wsl; then
-            # Fix this error:
-            # Permissions 0755 for '/mnt/d/path/to/.vagrant/machines/default/virtualbox/private_key' are too open.
-            # It is required that your private key files are NOT accessible by others.
-            # This private key will be ignored.
-            root="$(findup -f .vagrant/machines/default/virtualbox/private_key)"
-            if [ -n "$root" ]; then
-                rm -f /tmp/vagrant-ssh-key
-                cp "$root/.vagrant/machines/default/virtualbox/private_key" /tmp/vagrant-ssh-key
-                chmod 600 /tmp/vagrant-ssh-key
-                sed -i "s#  IdentityFile .*#  IdentityFile /tmp/vagrant-ssh-key#" /tmp/vagrant-ssh-config
-            fi
-        fi
-
-        if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
-            # Not running tmux - Run tmux inside Vagrant (if available)
-            ssh -F /tmp/vagrant-ssh-config default -t 'command -v tmux &>/dev/null && tmux new -A -s default || bash -l'
-        else
-            # We're running tmux already
-            ssh -F /tmp/vagrant-ssh-config default
-        fi
-
-        return
-    fi
-
-    # Other commands
-    command $vagrant "$cmd" "$@"
-}
-
-
-#===============================================================================
-# Windows
-#===============================================================================
-
-# Configure X server display
-if [ -z "$DISPLAY" ] && is-wsl; then
-    export DISPLAY=localhost:0.0
-fi
 
 
 #===============================================================================
