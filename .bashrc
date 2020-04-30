@@ -79,6 +79,17 @@ _domain-command() {
     fi
 }
 
+_find-wp-content() {
+    if dir=$(findup -d wp-content); then
+        echo "$dir/wp-content"
+    elif dir=$(findup -d www/wp-content); then
+        echo "$dir/www/wp-content"
+    else
+        echo "Cannot find wp-content/ directory" >&2
+        return 1
+    fi
+}
+
 _ls-current-directory() {
     echo
     echo -en "\033[4;1m"
@@ -93,17 +104,52 @@ _ls-current-directory() {
 #===============================================================================
 
 c() {
+    # 'cd' and 'ls'
     if [[ $@ != . ]]; then
         cd "$@" >/dev/null || return
     fi
     _ls-current-directory
 }
 
+cg() {
+    # cd to git root
+
+    # Look in parent directories
+    path="$(git rev-parse --show-toplevel 2>/dev/null)"
+
+    # Look in child directories
+    if [[ -z $path ]]; then
+        path="$(find . -mindepth 2 -maxdepth 2 -type d -name .git 2>/dev/null)"
+        if [[ $(echo "$path" | wc -l) -gt 1 ]]; then
+            echo "Multiple repositories found:" >&2
+            echo "$path" | sed 's/^.\//  /g; s/.git$//g' >&2
+            return 2
+        else
+            path="${path%/.git}"
+        fi
+    fi
+
+    # Go to the directory, if found
+    if [[ -z $path ]]; then
+        echo "No Git repository found in parent directories or immediate children" >&2
+        return 1
+    fi
+
+    c "$path"
+}
+
+composer() {
+    if dir="$(findup -x scripts/composer.sh)"; then
+        "$dir/scripts/composer.sh" "$@"
+    else
+        command composer "$@"
+    fi
+}
+
 cw() {
+    # cd to web root
     if [[ -d /vagrant ]]; then
         c /vagrant
-    elif is-wsl; then
-        c "$(wsl-mydocs-path)"
     elif [[ -d ~/repo ]]; then
         c ~/repo
     elif [[ -d /home/www ]]; then
@@ -112,8 +158,45 @@ cw() {
         c /home
     elif [[ -d /var/www ]]; then
         c /var/www
+    elif is-wsl; then
+        c "$(wsl-mydocs-path)"
     else
         c ~
+    fi
+}
+
+cwc() {
+    # cd to wp-content/
+    wp_content=$(_find-wp-content) || return
+    c $wp_content
+}
+
+cwp() {
+    # cd to WordPress plugins
+    wp_content=$(_find-wp-content) || return
+    if [ -d $wp_content/plugins ]; then
+        c $wp_content/plugins
+    else
+        echo "Cannot find wp-content/plugins/ directory" >&2
+        return 1
+    fi
+}
+
+cwt() {
+    # cd to WordPress theme
+    wp_content=$(_find-wp-content) || return
+    if [ -d $wp_content/themes ]; then
+        wp_theme=$(find $wp_content/themes -mindepth 1 -maxdepth 1 -type d -not -name twentyten -not -name twentyeleven)
+        if [ $(echo "$wp_theme" | wc -l) -eq 1 ]; then
+            # Only 1 non-default theme found - assume we want that
+            c $wp_theme
+        else
+            # 0 or 2+ themes found - go to the main directory
+            c $wp_content/themes
+        fi
+    else
+        echo "Cannot find wp-content/themes/ directory" >&2
+        return 1
     fi
 }
 
@@ -121,12 +204,133 @@ dump-path() {
     echo -e "${PATH//:/\\n}"
 }
 
+git() {
+    if [[ $# -gt 0 ]]; then
+        command git "$@"
+    else
+        command git status
+    fi
+}
+
+gs() {
+    if [[ $# -eq 0 ]]; then
+        # 'gs' typo -> 'g s'
+        g s
+    else
+        command gs "$@"
+    fi
+}
+
+hacked() {
+    # Switch a Composer package to dist mode
+    # Has to be a function because it deletes & recreates the working directory
+    if [ "$(basename "$(dirname "$(dirname "$PWD")")")" != "vendor" ]; then
+        echo "Not in a Composer vendor directory" >&2
+        return 1
+    fi
+
+    if [ ! -e .git ]; then
+        echo "Not in development mode" >&2
+        return 1
+    fi
+
+    if [ -n "$(git status --porcelain)" ]; then
+        echo "There are uncommitted changes" >&2
+        return 1
+    fi
+
+    ask "Delete this directory and reinstall in production mode?" Y || return
+
+    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
+    local oldpwd="${OLDPWD:-}"
+    local pwd="$PWD"
+
+    # Delete the dev version
+    cd ../../..
+    rm -rf "$pwd"
+
+    # Install the dist version
+    composer update --prefer-dist "$package"
+
+    # Go back to that directory + restore "cd -" path
+    cd "$pwd"
+    OLDPWD="$oldpwd"
+}
+
+hackit() {
+    # Switch a Composer package to dev (source) mode
+    # Has to be a function because it deletes & recreates the working directory
+    if [ "$(basename "$(dirname "$(dirname "$PWD")")")" != "vendor" ]; then
+        echo "Not in a Composer vendor directory" >&2
+        return 1
+    fi
+
+    if [ -e .git ]; then
+        echo "Already in development mode" >&2
+        return 1
+    fi
+
+    ask "Delete this directory and reinstall in development mode?" Y || return
+
+    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
+    local oldpwd="${OLDPWD:-}"
+    local pwd="$PWD"
+
+    # Delete the dist version
+    cd ../../..
+    rm -rf "$pwd"
+
+    # Install the dev version
+    composer update --prefer-source "$package"
+
+    # Go back to that directory + restore "cd -" path
+    cd "$pwd"
+    OLDPWD="$oldpwd"
+
+    # Switch to the latest development version
+    # TODO: Detect when 'master' is not the main branch?
+    git checkout master
+}
+
 md() {
     mkdir -p "$1" && cd "$1"
 }
 
+mv() {
+    # 'mv' - interactive if only one filename is given
+    # https://gist.github.com/premek/6e70446cfc913d3c929d7cdbfe896fef
+    if [ "$#" -ne 1 ]; then
+        command mv -i "$@"
+    elif [ ! -f "$1" ]; then
+        command file "$@"
+    else
+        read -p "Rename to: " -ei "$1" newfilename &&
+            [ -n "$newfilename" ] &&
+            mv -iv "$1" "$newfilename"
+    fi
+}
+
+php() {
+    if dir="$(findup -x scripts/php.sh)"; then
+        "$dir/scripts/php.sh" "$@"
+    else
+        command php "$@"
+    fi
+}
+
+phpstorm() {
+    # Automatically launch the current project, if possible, and run in the background
+    if [ $# -gt 0 ]; then
+        command phpstorm "$@" &>> ~/.cache/phpstorm.log &
+    elif [ -d .idea ]; then
+        command phpstorm "$PWD" &>> ~/.cache/phpstorm.log &
+    else
+        command phpstorm &>> ~/.cache/phpstorm.log &
+    fi
+}
+
 status() {
-    # Useful for checking the result of the last command (do-something; status)
+    # Show the result of the last command
     local status=$?
 
     if [[ $status -eq 0 ]]; then
@@ -136,6 +340,38 @@ status() {
     fi
 
     return $status
+}
+
+sudo() {
+    # Add additional safety checks for cp, mv, rm
+    if [ "$1" = "cp" -o "$1" = "mv" -o "$1" = "rm" ]; then
+        exe="$1"
+        shift
+        command sudo "$exe" -i "$@"
+    else
+        command sudo "$@"
+    fi
+}
+
+systemctl() {
+    if [ "$1" = "list-units" ]; then
+        # The 'list-units' subcommand is used by tab completion
+        command systemctl "$@"
+    else
+        command maybe-sudo systemctl "$@"
+    fi
+}
+
+yarn() {
+    if [ "$1" = "update" ]; then
+        # yarn run v1.19.1
+        # error Command "update" not found.
+        # info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
+        shift
+        command yarn upgrade "$@"
+    else
+        command yarn "$@"
+    fi
 }
 
 
@@ -429,54 +665,6 @@ fi
 
 
 #===============================================================================
-# Git
-#===============================================================================
-
-# 'git' with no parameters shows current status
-git() {
-    if [[ $# -gt 0 ]]; then
-        command git "$@"
-    else
-        command git status
-    fi
-}
-
-# cd to repo root
-cg() {
-    # Look in parent directories
-    path="$(git rev-parse --show-toplevel 2>/dev/null)"
-
-    # Look in child directories
-    if [[ -z $path ]]; then
-        path="$(find . -mindepth 2 -maxdepth 2 -type d -name .git 2>/dev/null)"
-        if [[ $(echo "$path" | wc -l) -gt 1 ]]; then
-            echo "Multiple repositories found:" >&2
-            echo "$path" | sed 's/^.\//  /g; s/.git$//g' >&2
-            return
-        else
-            path="${path%/.git}"
-        fi
-    fi
-
-    # Go to the directory, if found
-    if [[ -n $path ]]; then
-        c "$path"
-    else
-        echo "No Git repository found in parent directories or immediate children" >&2
-    fi
-}
-
-# 'gs' typo -> 'g s'
-gs() {
-    if [[ $# -eq 0 ]]; then
-        g s
-    else
-        command gs "$@"
-    fi
-}
-
-
-#===============================================================================
 # History
 #===============================================================================
 
@@ -565,24 +753,6 @@ fi
 
 
 #===============================================================================
-# mv
-#===============================================================================
-
-# https://gist.github.com/premek/6e70446cfc913d3c929d7cdbfe896fef
-mv() {
-    if [ "$#" -ne 1 ]; then
-        command mv -i "$@"
-    elif [ ! -f "$1" ]; then
-        command file "$@"
-    else
-        read -p "Rename to: " -ei "$1" newfilename &&
-            [ -n "$newfilename" ] &&
-            mv -iv "$1" "$newfilename"
-    fi
-}
-
-
-#===============================================================================
 # Pager
 #===============================================================================
 
@@ -595,110 +765,6 @@ export LESS=FRX
 if [ -x /usr/bin/lesspipe ]; then
     eval "$(/usr/bin/lesspipe)"
 fi
-
-
-#===============================================================================
-# PHP
-#===============================================================================
-
-composer() {
-    if dir="$(findup -x scripts/composer.sh)"; then
-        "$dir/scripts/composer.sh" "$@"
-    else
-        command composer "$@"
-    fi
-}
-
-php() {
-    if dir="$(findup -x scripts/php.sh)"; then
-        "$dir/scripts/php.sh" "$@"
-    else
-        command php "$@"
-    fi
-}
-
-hackit() {
-    # Has to be a function because it deletes the working directory
-    if [ "$(basename "$(dirname "$(dirname "$PWD")")")" != "vendor" ]; then
-        echo "Not in a Composer vendor directory" >&2
-        return 1
-    fi
-
-    if [ -e .git ]; then
-        echo "Already in development mode" >&2
-        return 1
-    fi
-
-    ask "Delete this directory and reinstall in development mode?" Y || return
-
-    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
-    local oldpwd="${OLDPWD:-}"
-    local pwd="$PWD"
-
-    # Delete the dist version
-    cd ../../..
-    rm -rf "$pwd"
-
-    # Install the dev version
-    composer update --prefer-source "$package"
-
-    # Go back to that directory + restore "cd -" path
-    cd "$pwd"
-    OLDPWD="$oldpwd"
-
-    # Switch to the latest development version
-    # TODO: Detect when 'master' is not the main branch?
-    git checkout master
-}
-
-hacked() {
-    if [ "$(basename "$(dirname "$(dirname "$PWD")")")" != "vendor" ]; then
-        echo "Not in a Composer vendor directory" >&2
-        return 1
-    fi
-
-    if [ ! -e .git ]; then
-        echo "Not in development mode" >&2
-        return 1
-    fi
-
-    if [ -n "$(git status --porcelain)" ]; then
-        echo "There are uncommitted changes" >&2
-        return 1
-    fi
-
-    ask "Delete this directory and reinstall in production mode?" Y || return
-
-    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
-    local oldpwd="${OLDPWD:-}"
-    local pwd="$PWD"
-
-    # Delete the dev version
-    cd ../../..
-    rm -rf "$pwd"
-
-    # Install the dist version
-    composer update --prefer-dist "$package"
-
-    # Go back to that directory + restore "cd -" path
-    cd "$pwd"
-    OLDPWD="$oldpwd"
-}
-
-
-#===============================================================================
-# PhpStorm
-#===============================================================================
-
-phpstorm() {
-    if [ $# -gt 0 ]; then
-        command phpstorm "$@" &>> ~/tmp/phpstorm.log &
-    elif [ -d .idea ]; then
-        command phpstorm "$PWD" &>> ~/tmp/phpstorm.log &
-    else
-        command phpstorm &>> ~/tmp/phpstorm.log &
-    fi
-}
 
 
 #===============================================================================
@@ -896,21 +962,6 @@ fi
 
 
 #===============================================================================
-# Redis
-#===============================================================================
-
-redis()
-{
-    if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
-        # e.g. "redis 1"
-        redis-cli -n "$@"
-    else
-        redis-cli "$@"
-    fi
-}
-
-
-#===============================================================================
 # Ruby
 #===============================================================================
 
@@ -934,38 +985,8 @@ fi
 # Sudo
 #===============================================================================
 
-# s=sudo
-s() {
-    if [[ $# == 0 ]]; then
-        # Use eval to expand aliases
-        eval "sudo $(history -p '!!')"
-    else
-        sudo "$@"
-    fi
-}
-
-systemctl() {
-    if [ "$1" = "list-units" ]; then
-        # The 'list-units' subcommand is used by tab completion
-        command systemctl "$@"
-    else
-        command sudo systemctl "$@"
-    fi
-}
-
 # Add sbin folder to my path so they can be auto-completed
 PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
-
-# Add additional safety checks for cp, mv, rm
-sudo() {
-    if [ "$1" = "cp" -o "$1" = "mv" -o "$1" = "rm" ]; then
-        exe="$1"
-        shift
-        command sudo "$exe" -i "$@"
-    else
-        command sudo "$@"
-    fi
-}
 
 
 #===============================================================================
@@ -983,23 +1004,6 @@ if command -v tabs &>/dev/null; then
     # redirect to /dev/null it has no effect
     tabs -4
 fi
-
-
-#===============================================================================
-# Tmux
-#===============================================================================
-
-# tmux attach (local)
-tm() {
-    local name="${1:-default}"
-
-    if [ -z "$TMUX" ] && [[ "$TERM" != screen* ]]; then
-        tmux -2 new -A -s "$name"
-    else
-        tmux -2 new -d -s "$name" 2>/dev/null
-        tmux -2 switch -t "$name"
-    fi
-}
 
 
 #===============================================================================
@@ -1147,82 +1151,6 @@ vagrant() {
 if [ -z "$DISPLAY" ] && is-wsl; then
     export DISPLAY=localhost:0.0
 fi
-
-
-#===============================================================================
-# WordPress
-#===============================================================================
-
-find_wordpress_wp_content() {
-    if [ -d wp-content ]; then
-        echo wp-content
-    elif [ -d www/wp-content ]; then
-        echo www/wp-content
-    elif [ -d ../wp-content ]; then
-        echo ../wp-content
-    elif [ -d ../../wp-content ]; then
-        echo ../../wp-content
-    elif [ -d ../../../wp-content ]; then
-        echo ../../../wp-content
-    else
-        echo "Cannot find wp-content/ directory" >&2
-        return 1
-    fi
-}
-
-# cwc = "cd wp-content"
-# This is because it's very hard to tab-complete "wp-content" because you have
-# to type "wp-cont" before you get to a non-ambiguous prefix
-cwc() {
-    wp_root=$(find_wordpress_wp_content) || return
-    c $wp_root
-}
-
-# cwp = "cd WordPress plugins"
-cwp() {
-    wp_root=$(find_wordpress_wp_content) || return
-    if [ -d $wp_root/plugins ]; then
-        c $wp_root/plugins
-    else
-        echo "Cannot find wp-content/plugins/ directory" >&2
-        return 1
-    fi
-}
-
-# cwt = "cd WordPress Theme"
-cwt() {
-    wp_root=$(find_wordpress_wp_content) || return
-    if [ -d $wp_root/themes ]; then
-        wp_theme=$(find $wp_root/themes -mindepth 1 -maxdepth 1 -type d -not -name twentyten -not -name twentyeleven)
-        if [ $(echo "$wp_theme" | wc -l) -eq 1 ]; then
-            # Only 1 non-default theme found - assume we want that
-            c $wp_theme
-        else
-            # 0 or 2+ themes found - go to the main directory
-            c $wp_root/themes
-        fi
-    else
-        echo "Cannot find wp-content/themes/ directory" >&2
-        return 1
-    fi
-}
-
-
-#===============================================================================
-# Yarn
-#===============================================================================
-
-yarn() {
-    if [ "$1" = "update" ]; then
-        # yarn run v1.19.1
-        # error Command "update" not found.
-        # info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
-        shift
-        command yarn upgrade "$@"
-    else
-        command yarn "$@"
-    fi
-}
 
 
 #===============================================================================

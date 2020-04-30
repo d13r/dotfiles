@@ -1,0 +1,8 @@
+#!/usr/bin/bash
+
+if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
+    # e.g. "redis 1"
+    exec redis-cli -n "$@"
+fi
+
+exec redis-cli "$@"
