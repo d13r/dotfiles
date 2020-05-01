@@ -15,11 +15,32 @@ BASHRC_SOURCED=true
 
 
 #---------------------------------------
+# Path
+#---------------------------------------
+
+# Note: The ones lower down take precedence
+PATH="$HOME/go/bin:$PATH"
+PATH="$HOME/.rvm/bin:$PATH"
+PATH="$HOME/.yarn/bin:$PATH"
+
+PATH="$HOME/.config/composer/vendor/bin:$PATH"
+PATH="$HOME/.composer/vendor/bin:$PATH"
+PATH="$HOME/.composer/packages/vendor/bin:$PATH"
+
+PATH="$HOME/.bin:$PATH"
+
+# For tab completion with sudo
+PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+
+export PATH
+
+
+#---------------------------------------
 # Umask
 #---------------------------------------
 
 if [[ $(umask) = 0000 ]]; then
-    if ~/.bin/is-root-user; then
+    if is-root-user; then
         umask 022
     else
         umask 002
@@ -51,95 +72,13 @@ if [[ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]]; then
 fi
 
 # Ruby rvm
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+if [[ -s ~/.rvm/scripts/rvm ]]; then
     rvm_project_rvmrc=0
-    source "$HOME/.rvm/scripts/rvm"
+    source ~/.rvm/scripts/rvm
 fi
 
 # The Fuck
 command -v thefuck &>/dev/null && eval $(thefuck --alias)
-
-
-#===============================================================================
-# Settings
-#===============================================================================
-
-export EDITOR='vim'
-export GEDITOR="$EDITOR"
-export HISTIGNORE='&'
-export LESS='FRX'
-export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
-export PAGER='less'
-export PGDATABASE='postgres'
-export QUOTING_STYLE='literal'
-export VISUAL="$EDITOR"
-
-if [ -z "$DISPLAY" ] && is-wsl; then
-    export DISPLAY='localhost:0.0'
-fi
-
-if [ -z "$XAUTHORITY" ]; then
-    export XAUTHORITY="$HOME/.Xauthority"
-fi
-
-set completion-ignore-case on
-
-shopt -s cdspell
-shopt -s checkwinsize
-shopt -s cmdhist
-shopt -s histappend
-shopt -s lithist
-shopt -s histreedit
-shopt -s histverify
-shopt -s no_empty_cmd_completion
-
-stty -ixon # Disable Ctrl-S
-tabs -4
-
-
-#---------------------------------------
-# Path
-#---------------------------------------
-
-# Note: The ones lower down take precedence
-PATH="$HOME/go/bin:$PATH"
-PATH="$HOME/.rvm/bin:$PATH"
-PATH="$HOME/.yarn/bin:$PATH"
-
-PATH="$HOME/.config/composer/vendor/bin:$PATH"
-PATH="$HOME/.composer/vendor/bin:$PATH"
-PATH="$HOME/.composer/packages/vendor/bin:$PATH"
-
-PATH="$HOME/.bin:$PATH"
-
-# For tab completion with sudo
-PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
-
-export PATH
-
-
-#---------------------------------------
-# Prompt
-#---------------------------------------
-
-PROMPT_COMMAND='history -a'
-PS1="\$(_prompt)"
-
-prompt_color=''
-prompt_command=''
-prompt_default=''
-prompt_message=''
-
-if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
-    prompt_color='bg-red'
-    prompt_default='Logged in as ROOT!'
-fi
-
-if is-wsl; then
-    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
-else
-    prompt_hostname=$(hostname -f)
-fi
 
 
 #===============================================================================
@@ -189,10 +128,10 @@ alias host='_domain-command host'
 
 alias ide='t ide-helper'
 
-alias l="ls -hFl --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias la="ls -hFlA --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias ls="ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace"
-alias lsa="ls -hFA --color=always --hide=*.pyc --hide=*.sublime-workspace"
+alias l="ls -hFl --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
+alias la="ls -hFlA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
+alias ls="ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
+alias lsa="ls -hFA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 
 alias mfs='art migrate:fresh --seed'
 
@@ -639,7 +578,7 @@ _ls-current-directory() {
     echo -en "\033[4;1m"
     echo $PWD
     echo -en "\033[0m"
-    ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
+    ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'
 }
 
 _prompt() {
@@ -750,8 +689,70 @@ _record-last-directory() {
 
 
 #===============================================================================
-# Configure Bash environment
+# Settings
 #===============================================================================
+
+export EDITOR='vim'
+export GEDITOR="$EDITOR"
+export HISTIGNORE='&'
+export LESS='FRX'
+export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
+export PAGER='less'
+export PGDATABASE='postgres'
+export QUOTING_STYLE='literal'
+export VISUAL="$EDITOR"
+
+if [ -z "$DISPLAY" ] && is-wsl; then
+    export DISPLAY='localhost:0.0'
+fi
+
+if [ -z "$XAUTHORITY" ]; then
+    export XAUTHORITY="$HOME/.Xauthority"
+fi
+
+shopt -s autocd
+shopt -s cdspell
+shopt -s checkhash
+shopt -s checkjobs
+shopt -s checkwinsize
+shopt -s cmdhist
+shopt -s dirspell
+shopt -s failglob
+shopt -s globstar
+shopt -s histappend
+shopt -s histreedit
+shopt -s histverify
+shopt -s lithist
+shopt -s no_empty_cmd_completion
+shopt -u sourcepath
+
+stty -ixon # Disable Ctrl-S
+tabs -4
+
+
+#---------------------------------------
+# Prompt
+#---------------------------------------
+
+PROMPT_COMMAND='history -a'
+PS1="\$(_prompt)"
+
+prompt_color=''
+prompt_command=''
+prompt_default=''
+prompt_message=''
+
+if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
+    prompt_color='bg-red'
+    prompt_default='Logged in as ROOT!'
+fi
+
+if is-wsl; then
+    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
+else
+    prompt_hostname=$(hostname -f)
+fi
+
 
 #---------------------------------------
 # SSH agent
@@ -887,20 +888,9 @@ if [ -d "$HOME/.marks" ]; then
 fi
 
 
-#===============================================================================
-# Outputs
-#===============================================================================
-
-# Show the MOTD inside tmux, since it won't be shown if we load tmux
-# immediately from ssh instead of Bash
-if [[ -n $TMUX && -f /run/motd.dynamic ]]; then
-    cat /run/motd.dynamic
-    hr="$(printf "%${COLUMNS}s" | tr ' ' -)"
-    echo -e "\033[30;1m$hr\033[0m"
-fi
-
-# Automatic updates
-~/.dotfiles/auto-update
+#---------------------------------------
+# Working directory
+#---------------------------------------
 
 # Change to the last visited directory, unless we're already in a different directory
 if [[ $PWD = $HOME ]]; then
@@ -913,8 +903,27 @@ if [[ $PWD = $HOME ]]; then
     fi
 fi
 
-# Load custom settings for this machine/account
+
+#---------------------------------------
+# Local settings / functions
+#---------------------------------------
+
 [[ -f ~/.bashrc_local ]] && source ~/.bashrc_local
 
-# Finally, show the current directory name & contents
+
+#===============================================================================
+# Outputs
+#===============================================================================
+
+# Show the MOTD inside tmux, since it won't be shown if we load tmux
+# immediately from ssh instead of Bash
+if [[ -n $TMUX && -f /run/motd.dynamic ]]; then
+    cat /run/motd.dynamic
+    color lblack $(printf "%-*s" $COLUMN | tr ' ' -)
+fi
+
+# Automatic updates
+~/.dotfiles/auto-update
+
+# Show the current directory name & contents
 _ls-current-directory
