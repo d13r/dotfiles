@@ -699,8 +699,9 @@ _prompt-pwd-git() {
     elif [[ -f "$root/.git/logs/refs/stash" ]]; then
         color -n lcyan ' (stashed)'
     else
+        local gstatus=$(git status --porcelain=2 --branch)
         local ahead behind
-        read -r ahead behind < <(git status --porcelain=2 --branch | sed -nE 's/^# branch\.ab \+([0-9]+) \-([0-9]+)$/\1\t\2/p')
+        read -r ahead behind < <(echo "$gstatus" | sed -nE 's/^# branch\.ab \+([0-9]+) \-([0-9]+)$/\1\t\2/p')
 
         if [[ $ahead -gt 0 ]]; then
             if [[ $behind -gt 0 ]]; then
@@ -711,6 +712,8 @@ _prompt-pwd-git() {
         else
             if [[ $behind -gt 0 ]]; then
                 color -n lcyan " ($behind behind)"
+            elif ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
+                color -n fg-245 ' (no upstream)'
             fi
         fi
     fi
