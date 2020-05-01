@@ -682,7 +682,19 @@ _prompt-pwd-git() {
     color -n lmagenta "$branch"
 
     # Status (only the most important one, to make it easy to understand)
-    if [[ -n $(git status --porcelain) ]]; then
+    if [[ -f "$root/.git/MERGE_HEAD" ]]; then
+        color -n lcyan ' (merging)'
+    elif [[ -f "$root/.git/rebase-apply/applying" ]]; then
+        color -n lcyan ' (applying)'
+    elif [[ -d "$root/.git/rebase-merge" || -d "$root/.git/rebase-apply/rebase-apply" ]]; then
+        color -n lcyan ' (rebasing)'
+    elif [[ -f "$root/.git/CHERRY_PICK_HEAD" ]]; then
+        color -n lcyan ' (cherry picking)'
+    elif [[ -f "$root/.git/REVERT_HEAD" ]]; then
+        color -n lcyan ' (reverting)'
+    elif [[ -f "$root/.git/BISECT_LOG" ]]; then
+        color -n lcyan ' (bisecting)'
+    elif [[ -n $(git status --porcelain) ]]; then
         color -n lcyan ' (modified)'
     elif [[ -f "$root/.git/logs/refs/stash" ]]; then
         color -n lcyan ' (stashed)'
