@@ -48,24 +48,22 @@ command -v thefuck &>/dev/null && eval $(thefuck --alias)
 # Settings
 #===============================================================================
 
-PROMPT_COMMAND='history -a'
-
-export EDITOR=vim
-export GEDITOR=$EDITOR
+export EDITOR='vim'
+export GEDITOR="$EDITOR"
 export HISTIGNORE='&'
-export LESS=FRX
+export LESS='FRX'
 export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
-export PAGER=less
-export PGDATABASE=postgres
-export QUOTING_STYLE=literal
-export VISUAL=$EDITOR
+export PAGER='less'
+export PGDATABASE='postgres'
+export QUOTING_STYLE='literal'
+export VISUAL="$EDITOR"
 
 if [ -z "$DISPLAY" ] && is-wsl; then
-    export DISPLAY=localhost:0.0
+    export DISPLAY='localhost:0.0'
 fi
 
 if [ -z "$XAUTHORITY" ]; then
-    export XAUTHORITY=$HOME/.Xauthority
+    export XAUTHORITY="$HOME/.Xauthority"
 fi
 
 set completion-ignore-case on
@@ -102,6 +100,30 @@ PATH="$HOME/.bin:$PATH"
 PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
 
 export PATH
+
+
+#---------------------------------------
+# Prompt
+#---------------------------------------
+
+PROMPT_COMMAND='history -a'
+PS1="\$(_prompt)"
+
+prompt_color=''
+prompt_command=''
+prompt_default=''
+prompt_message=''
+
+if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
+    prompt_color='bg-red'
+    prompt_default='Logged in as ROOT!'
+fi
+
+if is-wsl; then
+    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
+else
+    prompt_hostname=$(hostname -f)
+fi
 
 
 #===============================================================================
@@ -479,6 +501,33 @@ phpstorm() {
     fi
 }
 
+prompt() {
+    prompt_color=''
+
+    while [[ -n $1 ]]; do
+        case "$1" in
+            # Stop parsing parameters
+            --)         shift; break ;;
+
+            # Presets
+            -l|--live)     prompt_color='bg-red' ;;
+            -s|--staging)  prompt_color='bg-yellow black' ;;
+            -d|--dev)      prompt_color='bg-green black' ;;
+            -x|--special)  prompt_color='bg-blue' ;;
+
+            # Other colours/styles (see ~/.bash/color.bash)
+            --*)        prompt_color="$prompt_color ${1:2}" ;;
+
+            # Finished parsing parameters
+            *)          break ;;
+        esac
+
+        shift
+    done
+
+    prompt_message="$@"
+}
+
 status() {
     # Show the result of the last command
     local status=$?
@@ -575,6 +624,94 @@ _ls-current-directory() {
     echo $PWD
     echo -en "\033[0m"
     ls -hF --color=always --hide=*.pyc --hide=*.sublime-workspace
+}
+
+_prompt() {
+    # Update the window title (no output)
+    _prompt-titlebar
+
+    # Blank line
+    echo
+
+    # Message
+    local message="${prompt_message:-$prompt_default}"
+    if [[ -n $message ]]; then
+        local spaces=$(printf '%*s\n' $(( $COLUMNS - ${#message} - 1 )) '')
+        color lwhite bg-magenta $prompt_color -- " $message$spaces"
+    fi
+
+    # Information
+    color -n lblack '['
+    color -n lred "$USER"
+    color -n lblack '@'
+    color -n lgreen "$prompt_hostname"
+    color -n lblack ':'
+    _prompt-pwd-git
+    color -n lblack ' at '
+    color -n white "$(date +%H:%M:%S)"
+    color -n lblack ']'
+    echo
+
+    # Prompt
+    color -n lred '$'
+    echo -n ' '
+}
+
+_prompt-pwd-git() {
+    local root
+
+    # Look for .git directory
+    if ! root=$(findup -d .git); then
+        # No .git found - just show the working directory
+        color -n lyellow "$PWD"
+        return
+    fi
+
+    # Display working directory & highlight the git root in a different colour
+    local relative=${PWD#$root}
+    if [[ $relative = $PWD ]]; then
+        color -n lyellow "$PWD"
+    else
+        color -n lyellow "$root"
+        color -n lcyan "$relative"
+    fi
+
+    # Branch/tag/commit
+    local branch=$(command git branch --no-color 2>/dev/null | sed -nE 's/^\* (.*)$/\1/p')
+    color -n lblack ' on '
+    color -n lmagenta "$branch"
+
+    # Status (only the most important one, to make it easy to understand)
+    if [[ -n $(git status --porcelain) ]]; then
+        color -n lcyan ' (modified)'
+    elif [[ -f "$root/.git/logs/refs/stash" ]]; then
+        color -n lcyan ' (stashed)'
+    else
+        local ahead_behind=$(git status --porcelain=2 --branch | sed -nE 's/^# branch\.ab \+([0-9]+) \-([0-9]+)$/\1\t\2/p')
+        local ahead=$(echo "$ahead_behind" | cut -f1)
+        local behind=$(echo "$ahead_behind" | cut -f2)
+
+        if [[ $ahead -gt 0 ]]; then
+            if [[ $behind -gt 0 ]]; then
+                color -n lcyan ' (diverged)'
+            else
+                color -n lcyan " ($ahead ahead)"
+            fi
+        else
+            if [[ $behind -gt 0 ]]; then
+                color -n lcyan " ($behind behind)"
+            fi
+        fi
+    fi
+}
+
+_prompt-titlebar() {
+    echo -ne "\001\e]2;"
+    if [[ -n $prompt_message ]]; then
+        echo -n "[$prompt_message] "
+    fi
+    echo -n "$USER@$prompt_hostname:$PWD"
+    echo -ne "\a\002"
 }
 
 _record-last-directory() {
@@ -759,155 +896,6 @@ if [ -f ~/.fzf.bash ]; then
     _fzf_setup_completion path g
     _fzf_setup_completion path git
 fi
-
-
-#===============================================================================
-# Prompt
-#===============================================================================
-
-prompt_default=''
-prompt_titlebar=''
-prompt_type=''
-
-# Get hostname
-if is-wsl; then
-    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
-else
-    prompt_hostname=$(hostname -f)
-fi
-
-# Set the titlebar & prompt to "[user@host:/full/path]\n$"
-case "$TERM" in
-    xterm*|screen*)
-        prompt_titlebar="\u@$prompt_hostname:\$PWD"
-        # Update the titlebar immediately
-        echo -ne "\033]2;${USER:-$USERNAME}@$prompt_hostname:$PWD\a"
-        ;;
-    *)
-        prompt_titlebar=""
-        ;;
-esac
-
-_prompt-git() {
-    # Walk up the tree looking for a .git directory
-    root=$(pwd 2>/dev/null)
-    while [[ ! -e "$root/.git" ]]; do
-        [[ $root = '' ]] && break
-        root=${root%/*}
-    done
-
-    if [[ -e "$root/.git" ]]; then
-        relative=${PWD#$root}
-        if [ "$relative" != "$PWD" ]; then
-            echo -en "$root\033[36;1m$relative"
-            #         ^yellow  ^aqua
-        else
-            echo -n $PWD
-            #       ^yellow
-        fi
-
-        # Show the branch name / tag / id
-        # Note: Using 'command git' to bypass 'hub' which is slightly slower and not needed here
-        branch=`command git branch --no-color 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/'`
-        if [ -n "$branch" -a "$branch" != "(no branch)" ]; then
-            echo -e "\033[30;1m on \033[35;1m$branch\033[30;1m"
-            #        ^grey       ^pink           ^light grey
-        else
-            tag=`command git describe --always 2>/dev/null`
-            if [ -z "$tag" ]; then
-                tag="(unknown)"
-            fi
-            echo -e "\033[30;1m at \033[35;1m$tag \033[0m(git)\033[30;1m"
-            #        ^grey       ^pink        ^light grey  ^ grey
-        fi
-    else
-        # No .git found
-        echo $PWD
-    fi
-}
-
-_prompt-virtualenv()
-{
-    if [ -n "$VIRTUAL_ENV" ]; then
-        echo -e " ENV=${VIRTUAL_ENV##*/}"
-    fi
-}
-
-# Function to update the prompt with a given message (makes it easier to distinguish between different windows)
-# TODO: Tidy this up, especially the variable names!
-MSG()
-{
-    # Determine prompt colour
-    if [ "${1:0:2}" = "--" ]; then
-        # e.g. --live
-        PromptType="${1:2}"
-        shift
-    else
-        PromptType="$prompt_type"
-    fi
-
-    if [ "$PromptType" = "dev" ]; then
-        prompt_color='30;42' # Green (black text)
-    elif [ "$PromptType" = "live" ]; then
-        prompt_color='41;1' # Red
-    elif [ "$PromptType" = "staging" ]; then
-        prompt_color='30;43' # Yellow (black text)
-    elif [ "$PromptType" = "special" ]; then
-        prompt_color='44;1' # Blue
-    else
-        prompt_color='45;1' # Pink
-    fi
-
-    # Display the provided message above the prompt and in the titlebar
-    if [ -n "$*" ]; then
-        PromptMessage="$*"
-    elif [ -n "$prompt_default" ]; then
-        PromptMessage="$prompt_default"
-    elif is-root-user && ! is-docker; then
-        PromptMessage="Logged in as ROOT!"
-        prompt_color='41;1' # Red
-    else
-        PromptMessage=""
-    fi
-
-    if [ -n "$PromptMessage" ]; then
-        # Lots of escaped characters here to prevent this being executed
-        # until the prompt is displayed, so it can adjust when the window
-        # is resized
-        spaces="\$(printf '%*s\n' \"\$((\$COLUMNS-${#PromptMessage}-1))\" '')"
-        MessageCode="\033[${prompt_color}m $PromptMessage$spaces\033[0m\n"
-        TitlebarCode="\[\033]2;[$PromptMessage] $prompt_titlebar\a\]"
-    else
-        MessageCode=
-        TitlebarCode="\[\033]2;$prompt_titlebar\a\]"
-    fi
-
-    # If changing the titlebar is not supported, remove that code
-    if [ -z "$prompt_titlebar" ]; then
-        TitlebarCode=
-    fi
-
-    # Set the prompt
-    PS1="${TitlebarCode}\n"                             # Titlebar (see above)
-    PS1="${PS1}${MessageCode}"                          # Message (see above)
-    PS1="${PS1}\[\033[30;1m\]["                         # [                         Grey
-    PS1="${PS1}\[\033[31;1m\]\u"                        # Username                  Red
-    PS1="${PS1}\[\033[30;1m\]@"                         # @                         Grey
-    PS1="${PS1}\[\033[32;1m\]$prompt_hostname"          # Hostname                  Green
-    PS1="${PS1}\[\033[30;1m\]:"                         # :                         Grey
-    PS1="${PS1}\[\033[33;1m\]\`_prompt-git\`"           # Working directory / Git   Yellow
-    PS1="${PS1}\[\033[30;1m\]\`_prompt-virtualenv\`"    # Python virtual env        Grey
-    PS1="${PS1}\[\033[30;1m\] at "                      # at                        Grey
-    PS1="${PS1}\[\033[37;0m\]\D{%T}"                    # Time                      Light grey
-    PS1="${PS1}\[\033[30;1m\]]"                         # ]                         Grey
-    PS1="${PS1}\[\033[1;35m\]\$KeyStatus"               # SSH key status            Pink
-    PS1="${PS1}\n"                                      # (New line)
-    PS1="${PS1}\[\033[31;1m\]\\\$"                      # $                         Red
-    PS1="${PS1}\[\033[0m\] "
-}
-
-# Default to prompt with no message
-MSG
 
 
 #===============================================================================

@@ -12,8 +12,11 @@ color() {
     # Save the original parameters
     local args=( "$@" )
 
+    # Help Bash calculate the correct prompt size (Note: "\[" doesn't work here)
+    echo -en "\001"
+
     # Reset to prevent any previous styles interfering
-    echo -en '\e[0m'
+    echo -en "\e[0m"
 
     # Output ANSI codes and text
     while [ $# -gt 0 ]; do
@@ -30,54 +33,54 @@ color() {
 
         case "$color" in
 
-            bold)                   echo -en '\e[1m' ;; # May do the same as the 'l' colours, or may actually be bold
-            dim)                    echo -en '\e[2m' ;;
-            italic)                 echo -en '\e[3m' ;;
-            underline)              echo -en '\e[4m' ;;
-            blink)                  echo -en '\e[5m' ;;
-            rapidblink)             echo -en '\e[6m' ;; # Not widely supported
-            reverse)                echo -en '\e[7m' ;;
-            hide)                   echo -en '\e[8m' ;;
-            strike)                 echo -en '\e[9m' ;;
+            bold)                   echo -en "\e[1m" ;; # May do the same as the "l" colours, or may actually be bold
+            dim)                    echo -en "\e[2m" ;;
+            italic)                 echo -en "\e[3m" ;;
+            underline)              echo -en "\e[4m" ;;
+            blink)                  echo -en "\e[5m" ;;
+            rapidblink)             echo -en "\e[6m" ;; # Not widely supported
+            reverse)                echo -en "\e[7m" ;;
+            hide)                   echo -en "\e[8m" ;;
+            strike)                 echo -en "\e[9m" ;;
 
-            fg-black|black)         echo -en '\e[30m' ;;
-            fg-red|red)             echo -en '\e[31m' ;;
-            fg-green|green)         echo -en '\e[32m' ;;
-            fg-yellow|yellow)       echo -en '\e[33m' ;;
-            fg-blue|blue)           echo -en '\e[34m' ;;
-            fg-magenta|magenta)     echo -en '\e[35m' ;;
-            fg-cyan|cyan)           echo -en '\e[36m' ;;
-            fg-white|white)         echo -en '\e[37m' ;;
+            fg-black|black)         echo -en "\e[30m" ;;
+            fg-red|red)             echo -en "\e[31m" ;;
+            fg-green|green)         echo -en "\e[32m" ;;
+            fg-yellow|yellow)       echo -en "\e[33m" ;;
+            fg-blue|blue)           echo -en "\e[34m" ;;
+            fg-magenta|magenta)     echo -en "\e[35m" ;;
+            fg-cyan|cyan)           echo -en "\e[36m" ;;
+            fg-white|white)         echo -en "\e[37m" ;;
 
-            fg-lblack|lblack)       echo -en '\e[90m' ;;
-            fg-lred|lred)           echo -en '\e[91m' ;;
-            fg-lgreen|lgreen)       echo -en '\e[92m' ;;
-            fg-lyellow|lyellow)     echo -en '\e[93m' ;;
-            fg-lblue|lblue)         echo -en '\e[94m' ;;
-            fg-lmagenta|lmagenta)   echo -en '\e[95m' ;;
-            fg-lcyan|lcyan)         echo -en '\e[96m' ;;
-            fg-lwhite|lwhite)       echo -en '\e[97m' ;;
+            fg-lblack|lblack)       echo -en "\e[90m" ;;
+            fg-lred|lred)           echo -en "\e[91m" ;;
+            fg-lgreen|lgreen)       echo -en "\e[92m" ;;
+            fg-lyellow|lyellow)     echo -en "\e[93m" ;;
+            fg-lblue|lblue)         echo -en "\e[94m" ;;
+            fg-lmagenta|lmagenta)   echo -en "\e[95m" ;;
+            fg-lcyan|lcyan)         echo -en "\e[96m" ;;
+            fg-lwhite|lwhite)       echo -en "\e[97m" ;;
 
             fg-?|fg-??|fg-???)      echo -en "\e[38;5;${1:3}m" ;;
             fg-??????)              echo -en "\e[38;2;$(_color-hex-to-ansi "${1:3}")m" ;;
 
-            bg-black)               echo -en '\e[40m' ;;
-            bg-red)                 echo -en '\e[41m' ;;
-            bg-green)               echo -en '\e[42m' ;;
-            bg-yellow)              echo -en '\e[43m' ;;
-            bg-blue)                echo -en '\e[44m' ;;
-            bg-magenta)             echo -en '\e[45m' ;;
-            bg-cyan)                echo -en '\e[46m' ;;
-            bg-white)               echo -en '\e[47m' ;;
+            bg-black)               echo -en "\e[40m" ;;
+            bg-red)                 echo -en "\e[41m" ;;
+            bg-green)               echo -en "\e[42m" ;;
+            bg-yellow)              echo -en "\e[43m" ;;
+            bg-blue)                echo -en "\e[44m" ;;
+            bg-magenta)             echo -en "\e[45m" ;;
+            bg-cyan)                echo -en "\e[46m" ;;
+            bg-white)               echo -en "\e[47m" ;;
 
-            bg-lblack)              echo -en '\e[100m' ;;
-            bg-lred)                echo -en '\e[101m' ;;
-            bg-lgreen)              echo -en '\e[102m' ;;
-            bg-lyellow)             echo -en '\e[103m' ;;
-            bg-lblue)               echo -en '\e[104m' ;;
-            bg-lmagenta)            echo -en '\e[105m' ;;
-            bg-lcyan)               echo -en '\e[106m' ;;
-            bg-lwhite)              echo -en '\e[107m' ;;
+            bg-lblack)              echo -en "\e[100m" ;;
+            bg-lred)                echo -en "\e[101m" ;;
+            bg-lgreen)              echo -en "\e[102m" ;;
+            bg-lyellow)             echo -en "\e[103m" ;;
+            bg-lblue)               echo -en "\e[104m" ;;
+            bg-lmagenta)            echo -en "\e[105m" ;;
+            bg-lcyan)               echo -en "\e[106m" ;;
+            bg-lwhite)              echo -en "\e[107m" ;;
 
             bg-?|bg-??|bg-???)      echo -en "\e[48;5;${1:3}m" ;;
             bg-??????)              echo -en "\e[48;2;$(_color-hex-to-ansi "${1:3}")m" ;;
@@ -86,8 +89,9 @@ color() {
                 shift
                 ;& # Fall through
             *)
+                echo -en "\002"
                 echo -n "$@"
-                echo -en "\e[0m"
+                echo -en "\001\e[0m\002"
                 if $newline; then
                     echo
                 fi
