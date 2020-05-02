@@ -203,7 +203,10 @@ c() {
 }
 
 cd() {
-    command cd "$@" && \
+    local dir="$PWD"
+
+    builtin cd "$@" &&
+        _dirhistory-push-past "$dir" &&
         _record-last-directory
 }
 
@@ -390,13 +393,13 @@ hackit() {
 
 man() {
     # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
-    LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-    LESS_TERMCAP_md=$(printf "\e[1;31m") \
+    LESS_TERMCAP_mb=$(printf "\e[91m") \
+    LESS_TERMCAP_md=$(printf "\e[91m") \
     LESS_TERMCAP_me=$(printf "\e[0m") \
     LESS_TERMCAP_se=$(printf "\e[0m") \
-    LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
+    LESS_TERMCAP_so=$(printf "\e[93;44m") \
     LESS_TERMCAP_ue=$(printf "\e[0m") \
-    LESS_TERMCAP_us=$(printf "\e[1;32m") \
+    LESS_TERMCAP_us=$(printf "\e[92m") \
         command man "$@"
 }
 
@@ -409,13 +412,13 @@ mark() {
         return 1
     fi
 
-    ln -sn "$(pwd)" "$HOME/.marks/$mark" && \
+    ln -sn "$(pwd)" "$HOME/.marks/$mark" &&
         alias $mark="c -P '$mark'"
 }
 
 marks() {
-    command ls -l --color=always --classify "$HOME/.marks" | \
-        sed '1d;s/  / /g' | \
+    command ls -l --color=always --classify "$HOME/.marks" |
+        sed '1d;s/  / /g' |
         cut -d' ' -f9-
 }
 
@@ -437,6 +440,23 @@ mv() {
     fi
 }
 
+nextd() {
+    local dir="$PWD"
+
+    while [[ ${dirhistory_future[0]} == $dir ]]; do
+        dirhistory_future=("${dirhistory_future[@]:1}")
+    done
+
+    if [[ ${#dirhistory_future[@]} -gt 0 ]]; then
+        if builtin cd "${dirhistory_future[0]}"; then
+            _dirhistory-push-past "$dir"
+            _record-last-directory
+            _ls-current-directory
+        fi
+    fi
+}
+
+
 php() {
     if dir="$(findup -x scripts/php.sh)"; then
         "$dir/scripts/php.sh" "$@"
@@ -453,6 +473,22 @@ phpstorm() {
         command phpstorm "$PWD" &>> ~/.cache/phpstorm.log &
     else
         command phpstorm &>> ~/.cache/phpstorm.log &
+    fi
+}
+
+prevd() {
+    local dir="$PWD"
+
+    while [[ ${dirhistory_past[0]} == $dir ]]; do
+        dirhistory_past=("${dirhistory_past[@]:1}")
+    done
+
+    if [[ ${#dirhistory_past[@]} -gt 0 ]]; then
+        if builtin cd "${dirhistory_past[0]}"; then
+            _dirhistory-push-future "$dir"
+            _record-last-directory
+            _ls-current-directory
+        fi
     fi
 }
 
@@ -544,8 +580,20 @@ yarn() {
 #---------------------------------------
 
 # These are in separate files because they are used by other scripts too
-source $HOME/.bash/ask.sh
-source $HOME/.bash/color.bash
+source ~/.bash/ask.sh
+source ~/.bash/color.bash
+
+_dirhistory-push-future() {
+    if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then
+        dirhistory_future=("$1" "${dirhistory_future[@]:0:49}")
+    fi
+}
+
+_dirhistory-push-past() {
+    if [[ ${#dirhistory_past[@]} -eq 0 || ${dirhistory_past[0]} != "$1" ]]; then
+        dirhistory_past=("$1" "${dirhistory_past[@]:0:49}")
+    fi
+}
 
 _domain-command() {
     command="$1"
@@ -689,8 +737,39 @@ _record-last-directory() {
 
 
 #===============================================================================
+# Key bindings
+#===============================================================================
+# Also see .inputrc
+
+# Helpers
+bind -x '"\200": TEMP_LINE=$READLINE_LINE; TEMP_POINT=$READLINE_POINT'
+bind -x '"\201": READLINE_LINE=$TEMP_LINE; READLINE_POINT=$TEMP_POINT; unset TEMP_POINT; unset TEMP_LINE'
+
+# Ctrl-Alt-Left/Right
+bind '"\e[1;7D": "\200\C-a\C-kprevd\C-m\201"'
+bind '"\e[1;7C": "\200\C-a\C-knextd\C-m\201"'
+
+# Ctrl-Alt-Up
+bind '"\e[1;7A": "\200\C-a\C-kc ..\C-m\201"'
+
+# Ctrl-Alt-Down
+if declare -f _fzf_setup_completion &>/dev/null; then
+    # See .fzf/shell/key-bindings.bash
+    bind '"\e[1;7B": "\ec"'
+else
+    bind '"\e[1;7B": "\C-a\C-kcd \e[Z"'
+fi
+
+# Space - Expand history (!!, !$, etc.) immediately
+bind 'Space: magic-space'
+
+
+#===============================================================================
 # Settings
 #===============================================================================
+
+dirhistory_past=()
+dirhistory_future=()
 
 export EDITOR='vim'
 export GEDITOR="$EDITOR"
@@ -902,6 +981,8 @@ if [[ $PWD = $HOME ]]; then
         cw &>/dev/null
     fi
 fi
+
+_dirhistory-push-past "$PWD"
 
 
 #---------------------------------------

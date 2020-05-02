@@ -27,10 +27,3 @@ $if mode=emacs
     "\e[Z": menu-complete-backward
 
 $endif
-
-$if Bash
-
-    # Space - Expand history (!!, !$, etc.) immediately
-    Space: magic-space
-
-$endif
