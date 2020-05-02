@@ -236,6 +236,25 @@ noremap  <silent> <C-S> :wall<CR>
 vnoremap <silent> <C-S> <C-C>:wall<CR>
 inoremap <silent> <C-S> <Esc>:wall<CR>gi
 
+" Ctrl-Tab / Ctrl-Shift-Tab
+" The 'set' mappings force Vim to use 'ttimeout' not 'timeout' for the Esc key
+set <F30>=[1;5I
+set <F31>=[1;6I
+nnoremap <silent> <F30> :bnext<CR>
+nnoremap <silent> <F31> :bprev<CR>
+inoremap <silent> <F30> <C-o>:bnext<CR>
+inoremap <silent> <F31> <C-o>:bprev<CR>
+
+" Ctrl-Alt-<Arrows>
+nnoremap <silent> <C-M-Up> <C-w><Up>
+nnoremap <silent> <C-M-Down> <C-w><Down>
+nnoremap <silent> <C-M-Left> <C-w><Left>
+nnoremap <silent> <C-M-Right> <C-w><Right>
+inoremap <silent> <C-M-Up> <C-o><C-w><Up>
+inoremap <silent> <C-M-Down> <C-o><C-w><Down>
+inoremap <silent> <C-M-Left> <C-o><C-w><Left>
+inoremap <silent> <C-M-Right> <C-o><C-w><Right>
+
 " Ctrl-Shift-<Arrows>
 nnoremap <silent> <C-S-Up> :<C-u>call <SID>MoveLineUp('.', '')<CR>
 nnoremap <silent> <C-S-Down> :<C-u>call <SID>MoveLineDown('.', '')<CR>
