@@ -1,55 +1,28 @@
+#!/bin/bash
 set -o errexit -o pipefail -o nounset
 
-cd
+PATH="$HOME/bin:$PATH"
 
-# -f to delete the existing configuration (for testing)
-if [ "${1:-}" = '-f' ]; then
-    rm .bashrc_config
-fi
-
-# Install new .bashrc configuration
-if [ ! -f .bashrc_config ]; then
-
-    # Detect operating system and other attributes
-    source .bash/000-vars.bash
-
-    CPANEL=false
-    if [ -d /var/cpanel ]; then
-        CPANEL=true
-    fi
-
-    VAGRANT=false
-    if [ -d /vagrant -o -d /home/vagrant ]; then
-        # The /vagrant directory doesn't always exist at this point, due to
-        # https://github.com/npm/npm/issues/3670#issuecomment-82825408
-        # so we also check for /home/vagrant
-        VAGRANT=true
-    fi
-
-    ROOT=false
-    if [ $UID -eq 0 ]; then
-        ROOT=true
-    fi
-
-    # Generate .bashrc_config
-    (
-        # Prompt message & colour
-        echo "#prompt_default=''"
-
-        if $CPANEL; then
-            echo "prompt_type='live' #live/staging/dev/special"
-        elif $VAGRANT; then
-            echo "prompt_type='dev' #live/staging/dev/special"
-        else
-            echo "prompt_type='' #live/staging/dev/special"
-        fi
-
-    ) > .bashrc_config
-
-fi
+source ~/.bash/color.bash
 
 # No need to check for updates today
-date +%Y%m%d > .cfg_last_update
+date +%Y%m%d > ~/.cfg_last_update
 
 # Run the post-update script too
-.dotfiles/post-update
+color lblue 'Running post-update script'
+~/.dotfiles/post-update
+
+# Fix WSL permissions (defaults to umask 000)
+if is-wsl; then
+    color lblue 'Fixing WSL permissions'
+    umask 002
+    chmod o-w -R "$HOME"
+
+    sudo tee /etc/wsl.conf >/dev/null <<END
+[automount]
+options = "metadata,umask=0022"
+END
+fi
+
+# Reload Bash
+exec bash -l
