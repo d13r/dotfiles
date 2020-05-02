@@ -682,21 +682,21 @@ _prompt-pwd-git() {
 
     # Status (only the most important one, to make it easy to understand)
     if [[ -f "$root/.git/MERGE_HEAD" ]]; then
-        color -n lblue ' (merging)'
+        color -n fg-111 ' (merging)'
     elif [[ -f "$root/.git/rebase-apply/applying" ]]; then
-        color -n lblue ' (applying)'
+        color -n fg-111 ' (applying)'
     elif [[ -d "$root/.git/rebase-merge" || -d "$root/.git/rebase-apply/rebase-apply" ]]; then
-        color -n lblue ' (rebasing)'
+        color -n fg-111 ' (rebasing)'
     elif [[ -f "$root/.git/CHERRY_PICK_HEAD" ]]; then
-        color -n lblue ' (cherry picking)'
+        color -n fg-111 ' (cherry picking)'
     elif [[ -f "$root/.git/REVERT_HEAD" ]]; then
-        color -n lblue ' (reverting)'
+        color -n fg-111 ' (reverting)'
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
-        color -n lblue ' (bisecting)'
+        color -n fg-111 ' (bisecting)'
     elif [[ -n $(git status --porcelain) ]]; then
-        color -n lblue ' (modified)'
+        color -n fg-111 ' (modified)'
     elif [[ -f "$root/.git/logs/refs/stash" ]]; then
-        color -n lblue ' (stashed)'
+        color -n fg-111 ' (stashed)'
     else
         local gstatus=$(git status --porcelain=2 --branch)
         local ahead behind
@@ -704,13 +704,13 @@ _prompt-pwd-git() {
 
         if [[ $ahead -gt 0 ]]; then
             if [[ $behind -gt 0 ]]; then
-                color -n lblue ' (diverged)'
+                color -n fg-111 ' (diverged)'
             else
-                color -n lblue " ($ahead ahead)"
+                color -n fg-111 " ($ahead ahead)"
             fi
         else
             if [[ $behind -gt 0 ]]; then
-                color -n lblue " ($behind behind)"
+                color -n fg-111 " ($behind behind)"
             elif ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
                 color -n fg-245 ' (no upstream)'
             fi
