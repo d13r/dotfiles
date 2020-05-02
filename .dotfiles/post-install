@@ -24,6 +24,12 @@ options = "metadata,umask=0022"
 END
 fi
 
+# Reload tmux config
+if [[ -n ${TMUX:-} ]]; then
+    tmux source ~/.tmux.conf
+    tmux display 'Reloaded ~/.tmux.conf'
+fi
+
 # Reload Bash
 color lblue 'Reloading Bash'
 exec bash -l
