@@ -623,9 +623,7 @@ _find-wp-content() {
 
 _ls-current-directory() {
     echo
-    echo -en "\033[4;1m"
-    echo $PWD
-    echo -en "\033[0m"
+    color lwhite underline -- "$PWD"
     ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'
 }
 
