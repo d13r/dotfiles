@@ -654,10 +654,6 @@ _prompt() {
     color -n white "$(date +%H:%M:%S)"
     color -n lblack ']'
     echo
-
-    # Prompt
-    color -n lred '$'
-    echo -n ' '
 }
 
 _prompt-pwd-git() {
@@ -813,8 +809,8 @@ tabs -4
 # Prompt
 #---------------------------------------
 
-PROMPT_COMMAND='history -a'
-PS1="\$(_prompt)"
+PROMPT_COMMAND='history -a; echo "$(_prompt)"'
+PS1="$(color lred '$') "
 
 prompt_color=''
 prompt_command=''
