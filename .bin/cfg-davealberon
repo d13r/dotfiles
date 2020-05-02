@@ -1,6 +1,0 @@
-#!/bin/bash
-cfg remote set-url origin git://github.com/davealberon/dotfiles.git
-cfg remote set-url origin git@github.com:davealberon/dotfiles.git --push
-git fetch origin
-git reset --hard origin/master
-bin/cfg-update
