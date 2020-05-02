@@ -236,13 +236,13 @@ noremap  <silent> <C-S> :wall<CR>
 vnoremap <silent> <C-S> <C-C>:wall<CR>
 inoremap <silent> <C-S> <Esc>:wall<CR>gi
 
-" Ctrl-Alt-<Arrows>
-nnoremap <silent> <C-A-Up> :<C-u>call <SID>MoveLineUp('.', '')<CR>
-nnoremap <silent> <C-A-Down> :<C-u>call <SID>MoveLineDown('.', '')<CR>
-inoremap <silent> <C-A-Up> <C-o>:<C-u>call <SID>MoveLineUp('.', '')<CR>
-inoremap <silent> <C-A-Down> <C-o>:<C-u>call <SID>MoveLineDown('.', '')<CR>
-vnoremap <silent> <C-A-Up> :<C-u>call <SID>MoveLineUp("'<", "'<,'>")<CR>:normal gv<CR>
-vnoremap <silent> <C-A-Down> :<C-u>call <SID>MoveLineDown("'>", "'<,'>")<CR>:normal gv<CR>
+" Ctrl-Shift-<Arrows>
+nnoremap <silent> <C-S-Up> :<C-u>call <SID>MoveLineUp('.', '')<CR>
+nnoremap <silent> <C-S-Down> :<C-u>call <SID>MoveLineDown('.', '')<CR>
+inoremap <silent> <C-S-Up> <C-o>:<C-u>call <SID>MoveLineUp('.', '')<CR>
+inoremap <silent> <C-S-Down> <C-o>:<C-u>call <SID>MoveLineDown('.', '')<CR>
+vnoremap <silent> <C-S-Up> :<C-u>call <SID>MoveLineUp("'<", "'<,'>")<CR>:normal gv<CR>
+vnoremap <silent> <C-S-Down> :<C-u>call <SID>MoveLineDown("'>", "'<,'>")<CR>:normal gv<CR>
 
 " F5 - Run macro @q (which can be quickly recorded with 'qq')
 nnoremap <F5> @q
