@@ -25,4 +25,5 @@ END
 fi
 
 # Reload Bash
+color lblue 'Reloading Bash'
 exec bash -l
