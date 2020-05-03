@@ -14,7 +14,7 @@ source ~/.bash/color.bash
 # Create user
 color lgreen 'Creating user...'
 useradd \
-    --comment 'Dave James Miller' \
+    --comment "$(git config --get user.name)" \
     --create-home \
     --groups adm,sudo,www-data \
     --shell /bin/bash \
@@ -25,7 +25,7 @@ useradd \
 color lgreen 'Installing SSH key...'
 umask 077
 mkdir ~dave/.ssh
-cat ~/.ssh/davejamesmiller.pub >> ~dave/.ssh/authorized_keys
+ssh-add -L >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
 # Preparing dotfiles...

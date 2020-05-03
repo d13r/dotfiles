@@ -16,6 +16,11 @@ if [[ -n ${TMUX:-} ]]; then
     tmux move-window -t 1 2>/dev/null # Change from 0 to 1
 fi
 
+# Configure for work computers?
+if ask 'Configure for Alberon?' N; then
+    setup-identity 'Dave Miller' 'dave@alberon.co.uk'
+fi
+
 # No need to check for updates today
 date +%Y%m%d > ~/.local/dotfiles-last-auto-update
 

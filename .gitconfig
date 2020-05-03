@@ -104,3 +104,6 @@
 [user]
     email = dave@davejamesmiller.com
     name = Dave James Miller
+
+[include]
+    path = .gitconfig_local
