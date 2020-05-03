@@ -15,6 +15,15 @@ BASHRC_SOURCED=true
 
 
 #---------------------------------------
+# Environment checks
+#---------------------------------------
+
+# $USER is not set inside Docker
+if [[ -z ${USER:-} ]]; then
+    export USER=$(whoami)
+fi
+
+#---------------------------------------
 # Path
 #---------------------------------------
 
