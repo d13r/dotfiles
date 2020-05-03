@@ -727,7 +727,7 @@ _prompt-titlebar() {
 }
 
 _record-last-directory() {
-    pwd > ~/.bash_lastdirectory
+    pwd > ~/.local/bash-last-directory
 }
 
 
@@ -968,9 +968,9 @@ fi
 #---------------------------------------
 
 # Change to the last visited directory, unless we're already in a different directory
-if [[ $PWD = $HOME && -f ~/.bash_lastdirectory ]]; then
+if [[ $PWD = $HOME && -f ~/.local/bash-last-directory ]]; then
     # Throw away errors about that directory not existing (any more)
-    command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
+    command cd "$(cat ~/.local/bash-last-directory)" 2>/dev/null
 fi
 
 _dirhistory-push-past "$PWD"
