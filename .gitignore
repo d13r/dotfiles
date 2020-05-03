@@ -28,7 +28,10 @@
 /.grip/settings-local.py
 
 !/.irbrc
+
 !/.local
+/.local/*
+
 !/.multipass
 !/.railsrc
 !/.rdebugrc
