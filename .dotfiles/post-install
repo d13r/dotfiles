@@ -29,7 +29,7 @@ END
 fi
 
 # Run Ubuntu setup
-if is-ubuntu && is-primary-user && ask "$(color lyellow 'Run Ubuntu setup?')" Y; then
+if is-ubuntu && is-primary-user && ask "$(color lyellow 'Run Ubuntu setup?')" N; then
     setup-ubuntu || true
 fi
 
