@@ -8,5 +8,5 @@ if [ -z "$TMUX" ]; then
 fi
 
 # Already running - switch session
-tmux -2 new -d -s "$session" 2>/dev/null &&
+tmux -2 new -d -s "$session" 2>/dev/null
 tmux -2 switch -t "$session"
