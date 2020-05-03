@@ -1,8 +1,12 @@
 #!/bin/bash
-set -o errexit -o pipefail -o nounset
+set -o errexit -o nounset -o pipefail
+
+# Make sure Bash gets reloaded no matter what
+trap 'exec bash -l' EXIT
 
 PATH="$HOME/.bin:$PATH"
 
+source ~/.bash/ask.sh
 source ~/.bash/color.bash
 
 # No need to check for updates today
@@ -24,13 +28,18 @@ options = "metadata,umask=0022"
 END
 fi
 
+# Run Ubuntu setup
+if is-ubuntu && is-primary-user && ask "$(color lyellow 'Run Ubuntu setup?')" Y; then
+    setup-ubuntu
+fi
+
 # Reload tmux config
 if [[ -n ${TMUX:-} ]]; then
     tmux source ~/.tmux.conf
     tmux display 'Reloaded ~/.tmux.conf'
-    tmux move-window -t 1 # Change from 0 to 1
+    tmux move-window -t 1 2>/dev/null # Change from 0 to 1
 fi
 
 # Reload Bash
 color lblue 'Reloading Bash'
-exec bash -l
+# See EXIT trap above

@@ -1,0 +1,4 @@
+#!/bin/bash
+
+test "$(id -u)" -eq 1000 && \
+    groups | grep -q '\bsudo\b'
