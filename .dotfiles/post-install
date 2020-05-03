@@ -1,6 +1,5 @@
 #!/bin/bash
-#set -o errexit
-set -o nounset -o pipefail
+set -o errexit -o nounset -o pipefail
 
 # Make sure Bash gets reloaded no matter what
 trap 'exec bash -l' EXIT
@@ -31,7 +30,7 @@ fi
 
 # Run Ubuntu setup
 if is-ubuntu && is-primary-user && ask "$(color lyellow 'Run Ubuntu setup?')" Y; then
-    setup-ubuntu
+    setup-ubuntu || true
 fi
 
 # Reload tmux config

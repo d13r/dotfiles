@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o errexit -o pipefail -o nounset
+set -o errexit -o nounset -o pipefail
 
 cd
 
@@ -54,6 +54,3 @@ if [[ -f .cfg_last_update ]]; then
         mv .cfg_last_update .local/dotfiles-last-auto-update
     fi
 fi
-
-# Return true even if the last command above failed
-true

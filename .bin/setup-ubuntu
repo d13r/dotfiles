@@ -17,7 +17,7 @@ if apt show fzf &>/dev/null; then
     # fzf is only included in Ubuntu 20.04+
     packages="$packages fzf"
 fi
-sudo apt install -y $packages
+sudo apt install -y $packages || true
 
 color lblue 'Removing unneeded packages'
 sudo apt autoremove -y
