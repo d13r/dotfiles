@@ -972,8 +972,9 @@ fi
 #---------------------------------------
 
 if [ -d "$HOME/.marks" ]; then
-    for mark in $HOME/.marks/*; do
-        alias $mark="c -P $mark"
+    for target in $HOME/.marks/*; do
+        mark=$(basename "$target")
+        alias $mark="c -P $target"
     done
 fi
 
