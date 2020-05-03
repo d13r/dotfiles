@@ -36,6 +36,8 @@
     gi3          = grep --untracked --break --heading --line-number --ignore-case -C3
     gi6          = grep --untracked --break --heading --line-number --ignore-case -C6
     gi9          = grep --untracked --break --heading --line-number --ignore-case -C9
+    gil          = grep --untracked --break --heading --line-number --ignore-case --name-only
+    gl           = grep --untracked --break --heading --line-number --name-only
     ignored      = ls-files --others -i --exclude-standard --directory
     l            = log --decorate --name-status
     l1           = log --pretty=format:'%C(red)%h%C(reset) -%C(yellow)%d%C(reset) %s %C(green)(%ci) %C(bold blue)<%an>%C(reset)'
