@@ -11,8 +11,8 @@ else
 fi
 
 # Build the command to run a shell on the specified image
-local image="${1:-ubuntu}"
-local entrypoint="${2:-/bin/bash}"
+image="${1:-ubuntu}"
+entrypoint="${2:-/bin/bash}"
 shift $(($# > 2 ? 2 : $#))
 
 exec docker run "${opt[@]}" -it "$@" --entrypoint "$entrypoint" "$image"
