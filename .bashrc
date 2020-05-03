@@ -968,14 +968,9 @@ fi
 #---------------------------------------
 
 # Change to the last visited directory, unless we're already in a different directory
-if [[ $PWD = $HOME ]]; then
-    if [[ -f ~/.bash_lastdirectory ]]; then
-        # Throw away errors about that directory not existing (any more)
-        command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
-    else
-        # If this is the first login, try going to the web root instead
-        cw &>/dev/null
-    fi
+if [[ $PWD = $HOME && -f ~/.bash_lastdirectory ]]; then
+    # Throw away errors about that directory not existing (any more)
+    command cd "$(cat ~/.bash_lastdirectory)" 2>/dev/null
 fi
 
 _dirhistory-push-past "$PWD"
