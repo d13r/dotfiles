@@ -1,5 +1,6 @@
 #!/bin/bash
-set -o errexit -o nounset -o pipefail
+#set -o errexit
+set -o nounset -o pipefail
 
 # Make sure Bash gets reloaded no matter what
 trap 'exec bash -l' EXIT
