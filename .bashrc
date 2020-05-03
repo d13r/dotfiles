@@ -125,7 +125,6 @@ alias groupadd="$sudo groupadd"
 alias groupdel="$sudo groupdel"
 alias groupmod="$sudo groupmod"
 
-alias history-time='HISTTIMEFORMAT="[%Y-%m-%d %H:%M:%S] " history'
 alias host='_domain-command host'
 
 alias ide='t ide-helper'
@@ -770,6 +769,7 @@ dirhistory_future=()
 export EDITOR='vim'
 export GEDITOR="$EDITOR"
 export HISTIGNORE='&'
+export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export LESS='FRX'
 export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
 export PAGER='less'
