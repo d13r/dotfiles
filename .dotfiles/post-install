@@ -9,6 +9,13 @@ PATH="$HOME/.bin:$PATH"
 source ~/.bash/ask.sh
 source ~/.bash/color.bash
 
+# Reload tmux config
+if [[ -n ${TMUX:-} ]]; then
+    tmux source ~/.tmux.conf
+    tmux display 'Reloaded ~/.tmux.conf'
+    tmux move-window -t 1 2>/dev/null # Change from 0 to 1
+fi
+
 # No need to check for updates today
 date +%Y%m%d > ~/.local/dotfiles-last-auto-update
 
@@ -31,13 +38,6 @@ fi
 # Run Ubuntu setup
 if is-ubuntu && is-primary-user && ask "$(color lyellow 'Run Ubuntu setup?')" N; then
     setup-ubuntu || true
-fi
-
-# Reload tmux config
-if [[ -n ${TMUX:-} ]]; then
-    tmux source ~/.tmux.conf
-    tmux display 'Reloaded ~/.tmux.conf'
-    tmux move-window -t 1 2>/dev/null # Change from 0 to 1
 fi
 
 # Reload Bash
