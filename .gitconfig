@@ -78,10 +78,6 @@
 [commit]
     verbose = 2
 
-[core]
-    attributesfile = ~/.gitattributes-global
-    excludesfile = ~/.gitignore-global
-
 [merge]
     conflictstyle = diff3
     tool = vimdiff3
