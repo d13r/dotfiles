@@ -529,6 +529,12 @@ prompt() {
     prompt_message="$@"
 }
 
+setup-docker() {
+    maybe-sudo apt-get install docker.io &&
+    usermod -aG docker "$USER" &&
+    exec sudo su -l "$USER"
+}
+
 status() {
     # Show the result of the last command
     local status=$?
