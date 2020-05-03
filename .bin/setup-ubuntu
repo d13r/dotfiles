@@ -21,6 +21,3 @@ sudo apt install -y $packages
 
 color lblue 'Removing unneeded packages'
 sudo apt autoremove -y
-
-color lblue 'Setting the default editor to Vim'
-sudo update-alternatives --verbose --set editor /usr/bin/vim.basic
