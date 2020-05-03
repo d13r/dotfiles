@@ -2,16 +2,17 @@
 set -o nounset -o pipefail -o errexit
 
 # To test this repeatedly:
-# pkill -u dave; userdel dave && rm -rf /home/dave && create-dave-user && ssh dave@localhost
+# sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
 
 # Must be run as root
 if [ $UID -ne 0 ]; then
-    echo 'This script must be run as root' >&2
-    exit 1
+    exec sudo "$0" "$@"
 fi
 
+source ~/.bash/color.bash
+
 # Create user
-echo 'Creating user...'
+color lgreen 'Creating user...'
 useradd \
     --comment 'Dave James Miller' \
     --create-home \
@@ -21,24 +22,16 @@ useradd \
     dave
 
 # Copy SSH key
-echo 'Installing SSH key...'
+color lgreen 'Installing SSH key...'
 umask 077
 mkdir ~dave/.ssh
 cat ~/.ssh/davejamesmiller.pub >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
-# Copy dotfiles
-echo 'Installing dotfiles...'
-cp -rp ~/.git ~dave/.git
-chown -R dave:dave ~dave/.git
-sudo -u dave bash <<END
-
-cd
-umask 644
-git checkout -f </dev/null
-~/.dotfiles/post-install
-
-END
+# Preparing dotfiles...
+color lgreen 'Preparing dotfiles...'
+echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
+chown dave:dave ~dave/.bashrc
 
 # Done
-echo 'Done.'
+color lgreen 'Done.'
