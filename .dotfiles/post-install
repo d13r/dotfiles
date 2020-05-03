@@ -17,7 +17,7 @@ if [[ -n ${TMUX:-} ]]; then
 fi
 
 # Configure for work computers?
-if ask 'Configure for Alberon?' N; then
+if ask "$(color lyellow 'Configure for Alberon?')" N; then
     setup-identity 'Dave Miller' 'dave@alberon.co.uk'
 fi
 
