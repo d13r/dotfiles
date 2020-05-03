@@ -27,20 +27,10 @@
 /.grip/cache*
 /.grip/settings-local.py
 
-!/.irbrc
-
 !/.local
 /.local/*
 
 !/.multipass
-!/.railsrc
-!/.rdebugrc
-
-!/.rvm
-/.rvm/*
-!/.rvm/hooks/
-/.rvm/hooks/*
-!/.rvm/hooks/after_cd_record_bash_lastdirectory
 
 !/.ssh
 /.ssh/*
