@@ -19,6 +19,22 @@ primary-name() {
     $multipass get client.primary-name | tr -d '\r'
 }
 
+read-name() {
+    name="${1:-}"
+    if [[ -z $name ]]; then
+        name="$(primary-name)"
+
+        if [[ -z $name ]]; then
+            echo 'Cannot get the primary instance name' >&2
+            exit 1
+        fi
+    fi
+
+    if [[ $# -gt 1 ]]; then
+        shift
+    fi
+}
+
 case "${1:-}" in
 
     '') # Help
@@ -45,12 +61,7 @@ case "${1:-}" in
         cmd="$1"
         shift
 
-        name="${1:-}"
-        if [[ -z $name ]]; then
-            name="$(primary-name)"
-        else
-            shift
-        fi
+        read-name
 
         ip=$($multipass list --format csv | awk -F , -v name="$name" 'NR > 1 && $1 == name { print $3 }')
 
@@ -82,12 +93,7 @@ case "${1:-}" in
     l) # Launch
         shift
 
-        name="${1:-}"
-        if [[ -z $name ]]; then
-            name="$(primary-name)"
-        else
-            shift
-        fi
+        read-name
 
         $multipass launch \
             --cloud-init ~/.multipass/cloud-config.yaml \
