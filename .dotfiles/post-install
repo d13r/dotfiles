@@ -13,6 +13,10 @@ if [[ -n ${TMUX:-} ]]; then
     tmux source ~/.tmux.conf
     tmux display 'Reloaded ~/.tmux.conf'
     tmux move-window -t 1 2>/dev/null || true # Change from 0 to 1
+
+    if [[ $TERM = 'screen' ]]; then
+        export TERM='xterm-256color'
+    fi
 fi
 
 # No need to check for updates today
