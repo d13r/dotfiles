@@ -691,8 +691,12 @@ _prompt-pwd-git() {
 
     # Branch/tag/commit
     local branch=$(command git branch --no-color 2>/dev/null | sed -nE 's/^\* (.*)$/\1/p')
+    if [[ -z $branch ]]; then
+        # e.g. Before any commits are made
+        branch=$(command git symbolic-ref --short HEAD 2>/dev/null)
+    fi
     color -n lblack ' on '
-    color -n lmagenta "$branch"
+    color -n lmagenta "${branch:-(unknown)}"
 
     # Status (only the most important one, to make it easy to understand)
     if [[ -f "$root/.git/MERGE_HEAD" ]]; then
