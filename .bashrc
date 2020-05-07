@@ -1025,13 +1025,6 @@ _dirhistory-push-past "$PWD"
 # Outputs
 #===============================================================================
 
-# Show the MOTD inside tmux, since it won't be shown if we load tmux
-# immediately from ssh instead of Bash
-if [[ -n $TMUX && -f /run/motd.dynamic ]]; then
-    cat /run/motd.dynamic
-    color lblack $(printf "%-*s" $COLUMN | tr ' ' -)
-fi
-
 # Automatic updates
 ~/.dotfiles/auto-update
 
