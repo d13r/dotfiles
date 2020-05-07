@@ -27,6 +27,8 @@
 /.grip/cache*
 /.grip/settings-local.py
 
+!/.hushlogin
+
 !/.local
 /.local/*
 
