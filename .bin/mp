@@ -43,7 +43,7 @@ case "${1:-}" in
         echo "$(color lwhite 'mp h  [name]')  SSH to the given instance (or the first one listed)"
         echo "$(color lwhite 'mp d  [name]')  Suspend a running instance (down)"
         echo "$(color lwhite 'mp u  [name]')  Resume a stopped instance (up)"
-        echo "$(color lwhite 'mp rm <name>')  Delete & purge instance (or --all)"
+        echo "$(color lwhite 'mp rm [name]')  Delete & purge instance (or --all)"
         echo
         echo "To list other commands run '$(color lwhite 'mp help')'."
         echo
@@ -100,7 +100,7 @@ case "${1:-}" in
             --disk 5G \
             --mem 2G \
             --name "$name" \
-            "$@"
+            "${1:-focal}"
 
         echo
         list-instances
@@ -108,10 +108,11 @@ case "${1:-}" in
 
     rm) # Delete & purge
         shift
-        $multipass delete --purge "$@"
+
+        read-name
+
+        $multipass delete --purge "$name"
         echo 'Instance deleted.'
-        echo
-        list-instances
         ;;
 
     scp) # Transfer
