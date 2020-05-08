@@ -459,7 +459,7 @@ mv() {
     # https://gist.github.com/premek/6e70446cfc913d3c929d7cdbfe896fef
     if [ "$#" -ne 1 ]; then
         command mv -i "$@"
-    elif [ ! -f "$1" ]; then
+    elif [ ! -e "$1" ]; then
         command file "$@"
     else
         read -p "Rename to: " -ei "$1" newfilename &&
