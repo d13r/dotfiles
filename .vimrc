@@ -34,6 +34,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
     Plug 'junegunn/fzf.vim'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
+    Plug 'posva/vim-vue'
     Plug 'preservim/nerdcommenter'
     Plug 'tomtom/tlib_vim' " Dependency of SnipMate
     Plug 'tpope/vim-eunuch' " :Rename, :Delete, :SudoWrite, etc.
