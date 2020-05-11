@@ -58,6 +58,7 @@ case "${1:-}" in
         ;;
 
     h|ssh) # SSH
+        cmd="$1"
         shift
 
         read-name
@@ -68,8 +69,8 @@ case "${1:-}" in
             # Remove the IP from the known hosts file because IPs are reused
             ssh-keygen -f ~/.ssh/known_hosts -R "$ip" &>/dev/null
 
-            # Connect via regular WSL SSH not Windows SSH
-            exec h "ubuntu@$ip" "$@"
+            # Connect via regular WSL SSH not Windows SSH, and launch tmux
+            exec $cmd "ubuntu@$ip" "$@"
         fi
 
         if [[ "$ip" = 'UNKNOWN' ]]; then
