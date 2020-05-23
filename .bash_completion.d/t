@@ -6,8 +6,8 @@ _t_completion()
     compopt +o default
 
     # Locate the scripts directory
-    root=$(findup -d scripts) || return
-    scripts="$root/scripts"
+    local root=$(findup -d scripts) || return
+    local scripts="$root/scripts"
 
     # Subdirectory?
     for ((i = 1; i < $COMP_CWORD; i++)); do
@@ -25,12 +25,13 @@ _t_completion()
     # List matching scripts
     COMPREPLY=()
 
-    for file in "$scripts/${COMP_WORDS[$COMP_CWORD]}"*; do
+    local input="${COMP_WORDS[$COMP_CWORD]}"
+    for file in "$scripts/$input"*; do
         [[ -e $file ]] || continue
 
         name="$(basename "$file")" # Remove path
         name="${name%%.*}"         # Remove extension
-        if [[ "${name:0:1}" = "_" ]]; then
+        if [[ $name == _* && $input != _* ]]; then
             : # Skip includes (files starting with "_")
         elif [[ "$name" == *" "* ]]; then
             # Quote anything with spaces in the name
