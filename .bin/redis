@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
     # e.g. "redis 1"
