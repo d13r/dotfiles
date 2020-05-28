@@ -15,7 +15,7 @@
     d            = diff --find-copies
     da           = diff --find-copies --text
     dc           = diff --cached --find-copies
-    dca          = diff --cached --find-copies--text
+    dca          = diff --cached --find-copies --text
     dcf          = diff --cached --stat
     dcw          = diff --cached --ignore-all-space --find-copies
     dcwa         = diff --cached --ignore-all-space --find-copies --text
