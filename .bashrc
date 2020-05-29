@@ -768,9 +768,10 @@ export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
 
 # Stop Perl complaining on cPanel servers
-# I did set it to en_GB in MinTTY, but it's not picked up
+# I did set in MinTTY, but it's not picked up
+# Using en_US instead of en_GB to stop Vim and less complaining
 if [[ ${LANG:-} = 'C.UTF-8' ]]; then
-    export LANG='en_GB.UTF-8'
+    export LANG='en_US.UTF-8'
 fi
 
 shopt -s autocd
