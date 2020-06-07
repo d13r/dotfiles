@@ -9,4 +9,4 @@ else
 fi
 
 echo
-exec git s
+exec git --no-pager status
