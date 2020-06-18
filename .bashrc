@@ -689,7 +689,7 @@ _prompt-pwd-git() {
         color -n fg-111 ' (reverting)'
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
         color -n fg-111 ' (bisecting)'
-    elif [[ -n $(git status --porcelain) ]]; then
+    elif [[ -n $(timeout 0.3 git status --porcelain) ]]; then
         color -n fg-111 ' (modified)'
     elif [[ -f "$root/.git/logs/refs/stash" ]]; then
         color -n fg-111 ' (stashed)'
