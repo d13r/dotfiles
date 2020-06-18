@@ -362,7 +362,7 @@ hackit() {
 }
 
 m() {
-    session="${1:-default}"
+    session="${1:-$USER}"
 
     # Launch tmux, replacing the current shell (so when we quit, we don't have to exit again)
     if [ -z "$TMUX" ]; then
