@@ -28,10 +28,13 @@ mkdir ~dave/.ssh
 ssh-add -L >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
-# Preparing dotfiles...
+# Prepare dotfiles
 color lgreen 'Preparing dotfiles...'
 echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
 chown dave:dave ~dave/.bashrc
+
+# Prompt for a password
+passwd dave
 
 # Done
 color lgreen 'Done.'
