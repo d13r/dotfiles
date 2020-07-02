@@ -692,7 +692,7 @@ _prompt-pwd-git() {
     else
         # Must be split into two lines - https://unix.stackexchange.com/a/346880/14368
         local gstatus
-        gstatus=$(timeout 0.3 git status --porcelain=2 --branch)
+        gstatus=$(timeout 0.5 git status --porcelain=2 --branch)
 
         if [[ $? -eq 124 ]]; then
             color -n fg-245 ' (git timeout)'
