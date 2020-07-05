@@ -30,9 +30,7 @@ read-name() {
         fi
     fi
 
-    if [[ $# -gt 1 ]]; then
-        shift
-    fi
+    [[ $# -gt 1 ]]
 }
 
 case "${1:-}" in
@@ -61,7 +59,7 @@ case "${1:-}" in
         cmd="$1"
         shift
 
-        read-name
+        read-name "$@" && shift
 
         ip=$($multipass list --format csv | awk -F , -v name="$name" 'NR > 1 && $1 == name { print $3 }')
 
@@ -93,7 +91,7 @@ case "${1:-}" in
     l) # Launch
         shift
 
-        read-name
+        read-name "$@" && shift
 
         $multipass launch \
             --cloud-init ~/.multipass/cloud-config.yaml \
@@ -110,9 +108,9 @@ case "${1:-}" in
     rm) # Delete & purge
         shift
 
-        read-name
+        read-name "$@" && shift
 
-        $multipass delete --purge "$name"
+        $multipass delete --purge "$name" "$@"
         echo 'Instance deleted.'
         ;;
 
