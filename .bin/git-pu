@@ -19,6 +19,10 @@ elif ! git config --get remote.origin.url >/dev/null; then
             echo "Cancelled." >&2
             exit 1
         fi
+        echo
+        echo "  If this is a new repo, configure it here:"
+        echo "  https://davejamesmiller.com/dave/$slug/settings"
+        echo
         git remote add origin "$url"
     fi
 fi
