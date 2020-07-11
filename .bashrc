@@ -781,7 +781,6 @@ shopt -s checkjobs
 shopt -s checkwinsize
 shopt -s cmdhist
 shopt -s dirspell
-shopt -s failglob
 shopt -s globstar
 shopt -s histappend
 shopt -s histreedit
