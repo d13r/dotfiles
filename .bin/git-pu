@@ -13,7 +13,7 @@ elif ! git config --get remote.origin.url >/dev/null; then
     root=$(git rev-parse --show-toplevel)
     if [[ -n $root ]]; then
         slug=$(basename "$root")
-        url="git@davejamesmiller.com:dave/$slug"
+        url="git@djm.me:dave/$slug.git"
         source ~/.bash/ask.sh
         if ! ask "No origin is set. Use $url?" Y; then
             echo "Cancelled." >&2
