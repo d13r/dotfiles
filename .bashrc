@@ -118,7 +118,6 @@ alias reload='exec bash -l'
 alias rm='rm -i'
 
 alias s='sudo '
-alias sc='systemctl'
 alias service="maybe-sudo service"
 alias shutdown="maybe-sudo poweroff"
 alias snap="maybe-sudo snap"
@@ -506,6 +505,20 @@ prompt() {
     prompt_message="$@"
 }
 
+sc() {
+    case "${1:-}" in
+        d|down) shift; systemctl stop "$@" ;;
+        e) shift; systemctl edit "$@" ;;
+        l) shift; systemctl log "$@" ;;
+        r) shift; systemctl reload-or-restart "$@" ;;
+        rl) shift; systemctl reload "$@" ;;
+        rs) shift; systemctl restart "$@" ;;
+        s) shift; systemctl status "$@" ;;
+        u|up) shift; systemctl start "$@" ;;
+        *) systemctl "$@"
+    esac
+}
+
 setup-docker() {
     maybe-sudo apt-get install docker.io &&
     maybe-sudo usermod -aG docker "$USER" &&
@@ -539,6 +552,14 @@ sudo() {
 systemctl() {
     if in_array '--user' "$@"; then
         command systemctl "$@"
+    elif [[ ${1:-} = 'log' ]]; then
+        if [[ -n ${3:-} ]]; then
+            maybe-sudo journalctl --follow --unit "$2" --grep "$3"
+        elif [[ -n ${2:-} ]]; then
+            maybe-sudo journalctl --follow --unit "$2"
+        else
+            maybe-sudo journalctl --follow
+        fi
     else
         maybe-sudo systemctl "$@"
     fi
