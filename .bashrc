@@ -54,26 +54,24 @@ command -v thefuck &>/dev/null && eval $(thefuck --alias)
 # Aliases
 #===============================================================================
 
-sudo=~/.bin/maybe-sudo
-
-alias a2disconf="$sudo a2disconf"
-alias a2dismod="$sudo a2dismod"
-alias a2dissite="$sudo a2dissite"
-alias a2enconf="$sudo a2enconf"
-alias a2enmod="$sudo a2enmod"
-alias a2ensite="$sudo a2ensite"
+alias a2disconf="maybe-sudo a2disconf"
+alias a2dismod="maybe-sudo a2dismod"
+alias a2dissite="maybe-sudo a2dissite"
+alias a2enconf="maybe-sudo a2enconf"
+alias a2enmod="maybe-sudo a2enmod"
+alias a2ensite="maybe-sudo a2ensite"
 alias acs='apt search'
 alias acsh='apt show'
-alias addgroup="$sudo addgroup"
-alias adduser="$sudo adduser"
-alias agi="$sudo apt install"
-alias agr="$sudo apt remove"
-alias agar="$sudo apt autoremove"
-alias agu="$sudo apt update && maybe-sudo apt full-upgrade"
-alias agupdate="$sudo apt update"
-alias agupgrade="$sudo apt upgrade"
-alias apt="$sudo apt"
-alias apt-add-repository="$sudo apt-add-repository"
+alias addgroup="maybe-sudo addgroup"
+alias adduser="maybe-sudo adduser"
+alias agi="maybe-sudo apt install"
+alias agr="maybe-sudo apt remove"
+alias agar="maybe-sudo apt autoremove"
+alias agu="maybe-sudo apt update && maybe-sudo apt full-upgrade"
+alias agupdate="maybe-sudo apt update"
+alias agupgrade="maybe-sudo apt upgrade"
+alias apt="maybe-sudo apt"
+alias apt-add-repository="maybe-sudo apt-add-repository"
 
 alias b='c -'
 
@@ -84,15 +82,15 @@ alias cp='cp -i'
 alias d='docker'
 alias db='docker build'
 alias dc='docker-compose'
-alias dpkg-reconfigure="$sudo dpkg-reconfigure"
+alias dpkg-reconfigure="maybe-sudo dpkg-reconfigure"
 alias dr='docker run'
 alias dri='docker run -it'
 
 alias g='git'
 alias grep="$(command -v grep-less)" # command -v makes it work with sudo
-alias groupadd="$sudo groupadd"
-alias groupdel="$sudo groupdel"
-alias groupmod="$sudo groupmod"
+alias groupadd="maybe-sudo groupadd"
+alias groupdel="maybe-sudo groupdel"
+alias groupmod="maybe-sudo groupmod"
 
 alias host='_domain-command host'
 
@@ -107,22 +105,23 @@ alias mfs='art migrate:fresh --seed'
 
 alias nslookup='_domain-command nslookup'
 
-alias php5dismod="$sudo php5dismod"
-alias php5enmod="$sudo php5enmod"
-alias phpdismod="$sudo phpdismod"
-alias phpenmod="$sudo phpenmod"
-alias poweroff="$sudo poweroff"
-alias pow="$sudo poweroff"
+alias php5dismod="maybe-sudo php5dismod"
+alias php5enmod="maybe-sudo php5enmod"
+alias phpdismod="maybe-sudo phpdismod"
+alias phpenmod="maybe-sudo phpenmod"
+alias poweroff="maybe-sudo poweroff"
+alias pow="maybe-sudo poweroff"
 alias pu='phpunit'
 
-alias reboot="$sudo reboot"
+alias reboot="maybe-sudo reboot"
 alias reload='exec bash -l'
 alias rm='rm -i'
 
 alias s='sudo '
-alias service="$sudo service"
-alias shutdown="$sudo poweroff"
-alias snap="$sudo snap"
+alias sc='systemctl'
+alias service="maybe-sudo service"
+alias shutdown="maybe-sudo poweroff"
+alias snap="maybe-sudo snap"
 alias sshstop='ssh -O stop'
 alias storm='phpstorm'
 alias sudo='sudo ' # Expand aliases
@@ -136,18 +135,18 @@ alias uuuu='c ../../../..'
 alias uuuuu='c ../../../../..'
 alias uuuuuu='c ../../../../../..'
 
-alias ufw="$sudo ufw"
-alias updatedb="$sudo updatedb"
-alias useradd="$sudo useradd"
-alias userdel="$sudo userdel"
-alias usermod="$sudo usermod"
+alias ufw="maybe-sudo ufw"
+alias updatedb="maybe-sudo updatedb"
+alias useradd="maybe-sudo useradd"
+alias userdel="maybe-sudo userdel"
+alias usermod="maybe-sudo usermod"
 
 alias v='vagrant'
 
 alias watch='watch --color '
 alias whois='_domain-command whois'
 
-alias yum="$sudo yum"
+alias yum="maybe-sudo yum"
 
 
 #---------------------------------------
@@ -509,8 +508,8 @@ prompt() {
 
 setup-docker() {
     maybe-sudo apt-get install docker.io &&
-    usermod -aG docker "$USER" &&
-    exec sudo su -l "$USER"
+    maybe-sudo usermod -aG docker "$USER" &&
+    exec maybe-sudo su -l "$USER"
 }
 
 status() {
@@ -538,11 +537,10 @@ sudo() {
 }
 
 systemctl() {
-    if [ "$1" = "list-units" ]; then
-        # The 'list-units' subcommand is used by tab completion
+    if in_array '--user' "$@"; then
         command systemctl "$@"
     else
-        command maybe-sudo systemctl "$@"
+        maybe-sudo systemctl "$@"
     fi
 }
 
@@ -576,6 +574,7 @@ yarn() {
 # These are in separate files because they are used by other scripts too
 source ~/.bash/ask.sh
 source ~/.bash/color.bash
+source ~/.bash/in_array.bash
 
 _dirhistory-push-future() {
     if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then

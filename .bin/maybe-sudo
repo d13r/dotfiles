@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [[ $EUID -eq 0 ]]; then
+if [[ $EUID -eq 0 ]] || [[ -n ${COMP_CWORD:-} ]]; then
     exec "$@"
-else
-    exec sudo "$@"
 fi
+
+exec sudo "$@"
