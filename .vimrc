@@ -81,9 +81,11 @@ set lazyredraw
 set list
 set listchars=tab:→\ ,trail:·
 set modeline
+set mouse=a
 set nojoinspaces
 set noshowmode
 set number
+set selectmode=
 set shiftwidth=4
 set showcmd
 set smartcase
