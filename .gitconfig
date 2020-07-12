@@ -1,12 +1,11 @@
 [alias]
     ai           = add --interactive
+    amend        = !git commit --amend --no-edit --reset-author && echo && git --no-pager status
     ap           = add --patch
     b            = branch
     ba           = branch -avv
     bm           = branch --merged
     bnm          = branch --no-merged
-    ca           = !git commit --amend --no-edit --reset-author && echo && git --no-pager status
-    ce           = !git commit --amend --reset-author && echo && git --no-pager status
     ci           = commit
     changedfiles = diff --name-only
     co           = checkout
@@ -24,6 +23,7 @@
     dw           = diff --ignore-all-space --find-copies
     dwa          = diff --ignore-all-space --find-copies --text
     dww          = diff --ignore-all-space --find-copies --word-diff=color
+    edit         = !git commit --amend --reset-author && echo && git --no-pager status
     f            = fetch -v --prune
     g            = grep --untracked --break --heading --line-number
     g3           = grep --untracked --break --heading --line-number -C3
