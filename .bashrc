@@ -713,9 +713,18 @@ _prompt-pwd-git() {
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
         color -n fg-111 ' (bisecting)'
     else
-        # Must be split into two lines - https://unix.stackexchange.com/a/346880/14368
+        local using_status_v2=true
+
+        # Must be split into two lines to get the exist code
+        # https://unix.stackexchange.com/a/346880/14368
         local gstatus
-        gstatus=$(timeout 1 git status --porcelain=2 --branch)
+        gstatus=$(timeout 1 git status --porcelain=2 --branch 2>/dev/null)
+
+        if [[ $? -eq 129 ]]; then
+            # Old version of Git - we won't be able to get ahead/behind info
+            gstatus=$(timeout 1 git status --porcelain --branch 2>/dev/null)
+            using_status_v2=false
+        fi
 
         if [[ $? -eq 124 ]]; then
             color -n fg-245 ' (git timeout)'
@@ -736,7 +745,7 @@ _prompt-pwd-git() {
             else
                 if [[ $behind -gt 0 ]]; then
                     color -n fg-111 " ($behind behind)"
-                elif ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
+                elif $using_status_v2 && ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
                     color -n fg-245 ' (no upstream)'
                 fi
             fi
