@@ -802,6 +802,7 @@ bind 'Space: magic-space'
 dirhistory_past=()
 dirhistory_future=()
 
+export HISTCONTROL='ignoreboth'
 export HISTIGNORE='&'
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
@@ -990,3 +991,18 @@ _dirhistory-push-past "$PWD"
 
 # Show the current directory name & contents
 _ls-current-directory
+
+
+#===============================================================================
+# Cloud Shell
+#===============================================================================
+
+#---------------------------------------
+# Azure Cloud Shell
+#---------------------------------------
+
+#ADDED_HIST_CONTROL_CHECK
+#ADDED_HIST_PROMPT_COMMAND_CHECK
+#source /etc/bash_completion.d/azure-cli
+#PS1=${PS1//\\h/Azure}
+#source /usr/bin/cloudshellhelp
