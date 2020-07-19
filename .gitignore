@@ -51,6 +51,7 @@
 !/.vagrant.d/Vagrantfile
 
 !/.vim
+/.vim/autoload/plug.vim.old
 /.vim/plugged/
 
 .ea-php-cli.cache

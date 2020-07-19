@@ -28,11 +28,10 @@ call plug#begin('~/.vim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'bogado/file-line'
     Plug 'chrisbra/csv.vim'
+    Plug 'ctrlpvim/ctrlp.vim'
     Plug 'garbas/vim-snipmate'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'itchyny/lightline.vim'
-    Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
-    Plug 'junegunn/fzf.vim'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
     Plug 'posva/vim-vue'
     Plug 'preservim/nerdcommenter'
@@ -108,6 +107,15 @@ set wildmenu
 " Plugin settings
 "---------------------------------------
 
+let g:ctrlp_user_command = 'find -L %s
+\   -name .cache -prune -o
+\   -name .git -prune -o
+\   -name .hg -prune -o
+\   -name .svn -prune -o
+\   \( -type d -o -type f -o -type l \)
+\   \( -type d -printf "%%p/\n" -o -print \)
+\   2>/dev/null'
+
 let g:lightline = {
 \   'colorscheme': 'wombat',
 \}
@@ -119,14 +127,6 @@ let g:NERDSpaceDelims = 1
 let g:netrw_banner = 0
 let g:netrw_home = $HOME.'/.cache/vim'
 let g:netrw_liststyle = 3
-
-" Fix :Buffers not allowing the most recent buffer to be selected when in Netrw (by overriding --header-lines=1)
-command! -bar -bang -nargs=? -complete=buffer Buffers
-\   call fzf#vim#buffers(
-\       <q-args>,
-\       fzf#vim#with_preview({ "placeholder": "{1}", "options": ["-d", "\t", "--header-lines=0"] }),
-\       <bang>0
-\   )
 
 
 "---------------------------------------
@@ -231,9 +231,6 @@ onoremap <C-A> <C-C>ggvG$
 snoremap <C-A> <C-C>ggvG$
 xnoremap <C-A> <C-C>ggvG$
 
-" Ctrl-P
-nnoremap <C-p> :Files<CR>
-
 " Ctrl-S
 noremap  <silent> <C-S> :wall<CR>
 vnoremap <silent> <C-S> <C-C>:wall<CR>
@@ -271,7 +268,7 @@ nnoremap <F5> @q
 vnoremap <F5> @q
 
 " Spacebar
-nmap <Space> :Buffers<CR>
+nmap <Space> :CtrlPBuffer<CR>
 
 " gf = Goto file under cursor (even if it doesn't exist yet)
 nmap gf :e <cfile><CR>
