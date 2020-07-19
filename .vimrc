@@ -31,7 +31,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'garbas/vim-snipmate'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'itchyny/lightline.vim'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+    Plug 'junegunn/fzf', { 'do': ':call fzf#install()' }
     Plug 'junegunn/fzf.vim'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
     Plug 'posva/vim-vue'
