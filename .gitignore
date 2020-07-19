@@ -1,6 +1,14 @@
 # Ignore everything in the root except the specified files
 /*
 
+!/.azure
+/.azure/*
+!/.azure/config
+
+!/.azure-shell
+/.azure-shell/*
+!/.azure-shell/shell-config
+
 !/.bash
 !/.bash_completion.d
 !/.bin
