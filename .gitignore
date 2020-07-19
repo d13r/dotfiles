@@ -3,6 +3,7 @@
 
 !/.azure
 /.azure/*
+!/.azure/alias
 !/.azure/config
 
 !/.azure-shell
