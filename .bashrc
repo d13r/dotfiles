@@ -713,20 +713,21 @@ _prompt-pwd-git() {
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
         color -n fg-111 ' (bisecting)'
     else
-        local using_status_v2=true
-
-        # Must be split into two lines to get the exist code
+        # This must be split into two lines to get the exist code
         # https://unix.stackexchange.com/a/346880/14368
         local gstatus
         gstatus=$(timeout 1 git status --porcelain=2 --branch 2>/dev/null)
+        local exitcode=$?
+        local using_status_v2=true
 
-        if [[ $? -eq 129 ]]; then
+        if [[ $exitcode -eq 129 ]]; then
             # Old version of Git - we won't be able to get ahead/behind info
             gstatus=$(timeout 1 git status --porcelain --branch 2>/dev/null)
+            exitcode=$?
             using_status_v2=false
         fi
 
-        if [[ $? -eq 124 ]]; then
+        if [[ $exitcode -eq 124 ]]; then
             color -n fg-245 ' (git timeout)'
         elif [[ -n $(echo "$gstatus" | grep -v '^#' | head -1) ]]; then
             color -n fg-111 ' (modified)'
