@@ -191,7 +191,7 @@ cg() {
     if [[ -z $path ]]; then
         path="$(find . -mindepth 2 -maxdepth 2 -type d -name .git 2>/dev/null)"
         if [[ $(echo "$path" | wc -l) -gt 1 ]]; then
-            echo "Multiple repositories found:" >&2
+            echo 'Multiple repositories found:' >&2
             echo "$path" | sed 's/^.\//  /g; s/.git$//g' >&2
             return 2
         else
@@ -201,11 +201,20 @@ cg() {
 
     # Go to the directory, if found
     if [[ -z $path ]]; then
-        echo "No Git repository found in parent directories or immediate children" >&2
+        echo 'No Git repository found in parent directories or immediate children' >&2
         return 1
     fi
 
     c "$path"
+}
+
+cva() {
+    if dir="$(findup -d vendor/alberon)"; then
+        c "$dir/vendor/alberon"
+    else
+        echo 'No vendor/alberon/ directory found' >&2
+        return 1
+    fi
 }
 
 composer() {
