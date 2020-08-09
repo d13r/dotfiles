@@ -532,7 +532,8 @@ sc() {
 }
 
 setup-docker() {
-    maybe-sudo apt-get install docker.io &&
+    maybe-sudo add-apt-repository universe &&
+    maybe-sudo apt install docker.io &&
     maybe-sudo usermod -aG docker "$USER" &&
     exec maybe-sudo su -l "$USER"
 }
