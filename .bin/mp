@@ -39,10 +39,12 @@ case "${1:-}" in
     '') # Help
         color lcyan 'Multipass Shortcuts'
         echo "$(color lwhite 'mp l  [name]')  Launch a new instance with sensible defaults"
-        echo "$(color lwhite 'mp h  [name]')  SSH to the given instance (or the first one listed)"
+        echo "$(color lwhite 'mp h  [name]')  SSH to the given instance"
         echo "$(color lwhite 'mp d  [name]')  Suspend a running instance (down)"
         echo "$(color lwhite 'mp u  [name]')  Resume a stopped instance (up)"
         echo "$(color lwhite 'mp rm [name]')  Delete & purge instance (or --all)"
+        echo
+        echo "The default name is '$(color lwhite 'primary')'."
         echo
         echo "To list other commands run '$(color lwhite 'mp help')'."
         echo
