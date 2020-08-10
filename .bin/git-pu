@@ -5,26 +5,8 @@ set -o errexit -o nounset -o pipefail
 url="${1:-}"
 
 if [[ -n $url ]]; then
-    # Specified URL
     git remote rm origin 2>/dev/null || true
     git remote add origin "$url"
-elif ! git config --get remote.origin.url >/dev/null; then
-    # Automatic URL
-    root=$(git rev-parse --show-toplevel)
-    if [[ -n $root ]]; then
-        slug=$(basename "$root")
-        url="git@djm.me:dave/$slug.git"
-        source ~/.bash/ask.sh
-        if ! ask "No origin is set. Use $url?" Y; then
-            echo "Cancelled." >&2
-            exit 1
-        fi
-        echo
-        echo "  If this is a new repo, configure it here:"
-        echo "  https://davejamesmiller.com/dave/$slug/settings"
-        echo
-        git remote add origin "$url"
-    fi
 fi
 
 exec git push -u origin HEAD
