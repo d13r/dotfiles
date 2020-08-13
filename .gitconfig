@@ -6,6 +6,7 @@
     ba           = branch -avv
     bm           = branch --merged
     bnm          = branch --no-merged
+    ce           = !git commit --amend --reset-author && echo && git --no-pager status
     ci           = commit
     changedfiles = diff --name-only
     co           = checkout
