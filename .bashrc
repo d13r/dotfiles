@@ -367,7 +367,7 @@ hackit() {
     OLDPWD="$oldpwd"
 
     # Switch to the latest development version
-    # TODO: Detect when 'master' is not the main branch?
+    echo
     git checkout master
 }
 
