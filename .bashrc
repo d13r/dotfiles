@@ -589,7 +589,7 @@ unmark() {
 }
 
 yarn() {
-    if [ "$1" = "update" ]; then
+    if [[ $1 = update || $1 = up ]]; then
         # yarn run v1.19.1
         # error Command "update" not found.
         # info Visit https://yarnpkg.com/en/docs/cli/run for documentation about this command.
