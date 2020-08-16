@@ -1,0 +1,13 @@
+#!/bin/bash
+
+export GIT_PAGER='cat'
+
+for dir in */; do
+    if [[ -d $dir/.git ]]; then
+        echo
+        echo -en "\e[95m"
+        echo -n "$dir"
+        echo -e "\e[0m"
+        (cd "$dir" && git "$@")
+    fi
+done
