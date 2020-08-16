@@ -75,12 +75,14 @@ alias agupdate="$sudo apt update"
 alias agupgrade="$sudo apt upgrade"
 alias apt="$sudo apt"
 alias apt-add-repository="$sudo apt-add-repository"
+alias art='artisan'
 
 alias b='c -'
 
 alias chmox='chmod'
 alias com='composer'
 alias cp='cp -i'
+alias cy='cypress'
 
 alias d='docker'
 alias db='docker build'

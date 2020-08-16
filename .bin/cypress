@@ -1,16 +1,16 @@
 #!/bin/bash
 
-exe=scripts/phpunit.sh
+exe=scripts/cypress.sh
 if dir="$(findup -f $exe)"; then
     cd "$dir"
     exec $exe "$@"
 fi
 
-exe=vendor/bin/phpunit
+exe=node_modules/.bin/cypress
 if dir="$(findup -f $exe)"; then
     cd "$dir"
     exec $exe "$@"
 fi
 
-echo "You do not appear to be within a project with PHPUnit installed ($exe)" >&2
+echo "You do not appear to be within a project with Cypress installed ($exe)" >&2
 exit 1
