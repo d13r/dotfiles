@@ -86,22 +86,47 @@ fi
 # SSH agent
 #---------------------------------------
 
-# wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
-if is-wsl; then
+if is-wsl 1; then
+
+    # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
+    # Must be running already
     temp=$(wsl-temp-path)
     if [ -f "$temp/wsl-ssh-pageant.sock" ]; then
         export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
     fi
-fi
 
-# Workaround for losing SSH agent connection when reconnecting tmux
-# It doesn't work on WSL, but isn't necessary when using wsl-ssh-pageant
-if ! is-wsl; then
+elif is-wsl 2; then
+
+    # wsl2-ssh-pageant - https://github.com/BlackReloaded/wsl2-ssh-pageant
+    if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
+        color lblue 'Downloading wsl2-ssh-pageant...'
+        mkdir -p ~/.ssh
+        curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.2.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
+    fi
+
+    if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
+        chmod +x ~/.ssh/wsl2-ssh-pageant.exe
+        export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+        if ! command -v socat >/dev/null; then
+            color lblue 'Installing socat...'
+            sudo apt-get install socat
+        fi
+        if ! ss -a | grep -q $SSH_AUTH_SOCK; then
+            rm -f $SSH_AUTH_SOCK
+            setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe >/dev/null 2>&1
+        fi
+    fi
+
+else
+
+    # Any other platform
+    # Workaround for losing SSH agent connection when reconnecting tmux
     link="$HOME/.ssh/ssh_auth_sock"
     if [[ $SSH_AUTH_SOCK != $link ]] && [[ -S $SSH_AUTH_SOCK ]]; then
         ln -nsf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
     fi
     export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+
 fi
 
 
