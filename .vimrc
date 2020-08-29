@@ -112,6 +112,7 @@ let g:ctrlp_user_command = 'find -L %s
 \   -name .git -prune -o
 \   -name .hg -prune -o
 \   -name .svn -prune -o
+\   -name node_modules -prune -o
 \   \( -type d -o -type f -o -type l \)
 \   \( -type d -printf "%%p/\n" -o -print \)
 \   2>/dev/null'
