@@ -12,7 +12,7 @@ sudo apt full-upgrade -y
 
 color lblue 'Installing additional packages'
 # Note: vim-gtk adds X11 clipboard support - but it takes much longer to install :(
-packages='dos2unix net-tools php-cli rename tree unzip vim-gtk whois zip'
+packages='curl dos2unix net-tools php-cli rename tree unzip vim-gtk whois zip'
 if apt show fzf &>/dev/null; then
     # fzf is only included in Ubuntu 20.04+
     packages="$packages fzf"
