@@ -26,6 +26,7 @@
     dww          = diff --ignore-all-space --find-copies --word-diff=color
     edit         = !git commit --amend --reset-author && echo && git --no-pager status
     f            = fetch -v --prune
+    fe           = fetch -v --prune
     g            = grep --untracked --break --heading --line-number
     g3           = grep --untracked --break --heading --line-number -C3
     g6           = grep --untracked --break --heading --line-number -C6
