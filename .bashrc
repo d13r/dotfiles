@@ -815,6 +815,7 @@ bind 'Space: magic-space'
 dirhistory_past=()
 dirhistory_future=()
 
+export GDK_SCALE=2 # HiDPI
 export HISTCONTROL='ignoreboth'
 export HISTIGNORE='&'
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
