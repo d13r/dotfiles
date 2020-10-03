@@ -167,6 +167,17 @@ fi
 # Functions
 #===============================================================================
 
+1x() {
+    rm -f $HOME/.config/bash/hidpi
+    _update-dpi
+}
+
+2x() {
+    mkdir -p $HOME/.config/bash
+    touch $HOME/.config/bash/hidpi
+    _update-dpi
+}
+
 c() {
     # 'cd' and 'ls'
     if [[ $@ != . ]]; then
@@ -779,6 +790,18 @@ _record-last-directory() {
     pwd > ~/.local/bash-last-directory
 }
 
+_update-dpi() {
+    if [[ -f $HOME/.config/bash/hidpi ]]; then
+        export GDK_SCALE=2
+        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="11"/' $HOME/.config/JetBrains/*/jba_config/editor.xml
+        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="10"/' $HOME/.config/JetBrains/*/options/other.xml
+    else
+        export GDK_SCALE=1
+        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="15"/' $HOME/.config/JetBrains/*/jba_config/editor.xml
+        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="13"/' $HOME/.config/JetBrains/*/options/other.xml
+    fi
+}
+
 
 #===============================================================================
 # Key bindings
@@ -815,7 +838,6 @@ bind 'Space: magic-space'
 dirhistory_past=()
 dirhistory_future=()
 
-export GDK_SCALE=2 # HiDPI
 export HISTCONTROL='ignoreboth'
 export HISTIGNORE='&'
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
@@ -838,6 +860,8 @@ shopt -u sourcepath
 
 stty -ixon # Disable Ctrl-S
 tabs -4
+
+_update-dpi
 
 
 #---------------------------------------
