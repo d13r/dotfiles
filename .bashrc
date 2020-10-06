@@ -793,12 +793,12 @@ _record-last-directory() {
 _update-dpi() {
     if [[ -f $HOME/.config/bash/hidpi ]]; then
         export GDK_SCALE=2
-        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="11"/' $HOME/.config/JetBrains/*/jba_config/editor.xml
-        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="10"/' $HOME/.config/JetBrains/*/options/other.xml
+        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="11"/' $HOME/.config/JetBrains/*/jba_config/editor.xml 2>/dev/null
+        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="10"/' $HOME/.config/JetBrains/*/options/other.xml 2>/dev/null
     else
         export GDK_SCALE=1
-        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="15"/' $HOME/.config/JetBrains/*/jba_config/editor.xml
-        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="13"/' $HOME/.config/JetBrains/*/options/other.xml
+        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="15"/' $HOME/.config/JetBrains/*/jba_config/editor.xml 2>/dev/null
+        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="13"/' $HOME/.config/JetBrains/*/options/other.xml 2>/dev/null
     fi
 }
 
