@@ -57,7 +57,6 @@
     p            = push
     pl           = pull
     plr          = pull --rebase
-    pt           = push --tags
     r            = remote
     rb           = rebase
     rba          = rebase --abort
