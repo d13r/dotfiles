@@ -604,7 +604,7 @@ unmark() {
 yarn() {
     # Make 'yarn' more like 'composer'
     case $1 in
-        in) shift; command yarn install "$@" ;;
+        in|ins) shift; command yarn install "$@" ;;
         out) shift; command yarn outdated "$@" ;;
         up|update) shift; command yarn upgrade "$@" ;;
         *) command yarn "$@" ;;
