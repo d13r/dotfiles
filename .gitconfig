@@ -68,6 +68,7 @@
     root         = rev-parse --show-toplevel
     rv           = revert
     s            = status
+    sa           = all status --short
     sub          = submodule
     sync         = !git submodule sync --recursive && git submodule update --init --recursive
     t            = tag
