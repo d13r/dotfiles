@@ -223,7 +223,7 @@ cg() {
     c "$path"
 }
 
-cva() {
+cv() {
     if ! local dir="$(findup -d vendor/alberon)"; then
         echo 'No vendor/alberon/ directory found' >&2
         return 1
