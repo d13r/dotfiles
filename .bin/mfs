@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if ! dir="$(findup -f artisan)"; then
+    echo "You do not appear to be within a Laravel directory" >&2
+    exit 1
+fi
+
+cd "$dir"
+
+artisan migrate:fresh --seed
+
+if [[ -x scripts/ide-helper.sh ]]; then
+    scripts/ide-helper.sh
+fi
