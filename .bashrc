@@ -87,7 +87,6 @@ alias cy='cypress'
 alias d='docker'
 alias db='docker build'
 alias dc='docker-compose'
-alias dev='tmux split-window -v -b -l 15 "bash -c \"a h\"" && tmux select-pane -D && storm'
 alias dpkg-reconfigure="$sudo dpkg-reconfigure"
 alias dr='docker run'
 alias dri='docker run -it'
