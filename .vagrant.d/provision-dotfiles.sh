@@ -6,7 +6,7 @@ set -eu
 #===============================================================================
 
 github_user=davejamesmiller
-public_key=~/.ssh/davejamesmiller.pub
+public_key=~/.ssh/dave.pub
 
 #===============================================================================
 # Helpers
