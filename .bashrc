@@ -197,7 +197,7 @@ cg() {
     # cd to git root
 
     # Look in parent directories
-    path="$(git rev-parse --show-toplevel 2>/dev/null)"
+    path="$(cd .. && git rev-parse --show-toplevel 2>/dev/null)"
 
     # Look in child directories
     if [[ -z $path ]]; then
