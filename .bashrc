@@ -897,9 +897,10 @@ if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
 fi
 
 if is-wsl; then
-    prompt_hostname=$(hostname | tr '[:upper:]' '[:lower:]')
+    prompt_hostname=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
 else
-    prompt_hostname=$(hostname -f)
+    # This way works even if the 'hostname' command is not installed
+    prompt_hostname=$(cat /proc/sys/kernel/hostname)
 fi
 
 
