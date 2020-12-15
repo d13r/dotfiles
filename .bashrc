@@ -896,12 +896,8 @@ if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
     prompt_default='Logged in as ROOT!'
 fi
 
-if is-wsl; then
-    prompt_hostname=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
-else
-    # This way works even if the 'hostname' command is not installed
-    prompt_hostname=$(cat /proc/sys/kernel/hostname)
-fi
+# This way works even if the 'hostname' command is not installed
+prompt_hostname=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
 
 
 #---------------------------------------
