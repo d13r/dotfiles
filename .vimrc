@@ -129,6 +129,8 @@ let g:netrw_banner = 0
 let g:netrw_home = $HOME.'/.cache/vim'
 let g:netrw_liststyle = 3
 
+let g:snipMate = { 'snippet_version' : 1 }
+
 
 "---------------------------------------
 " Colour scheme
