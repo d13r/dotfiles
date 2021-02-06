@@ -28,6 +28,12 @@ if [[ ! -f .ssh/known_hosts ]]; then
     chmod 600 .ssh/known_hosts
 fi
 
+if ! grep -q ^git.djm.me .ssh/known_hosts; then
+    echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBO27ODu61VqIGthWYoMdn/jWbGPpqKfHUs7hFERj9QXixZRikbW5As6qqoLfSG/5mxNzARF0Ev0iOxTZVV/VJlM=' >> .ssh/known_hosts
+    echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBQm0DERJ3Q/aRoAJO+JJF+L2JR0JLcdEa0ikGn6dTIb' >> .ssh/known_hosts
+    echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDK+u0K1CVUAeHGvjn/GOAu/fim2VeoEEWGHCb/Q8ONMdLtoRQbWN/4Ng+TzP2ZmU04LuDl4id+YPa8pzjK3DpNbdCf/fwBu3V8q8br8/nc9XsTUJd/70wNG0kRx3A7Jg5aJ5JbHrIKJSfC7zd9eItc6GRWZbG4YgQ94azR7rKraek8dxHfGiXSmcekuCqJDhwq4GZUuSkPM9cxcj9o2qKGIZ3v2wnRYrOismHmxclLvQFCLEjlSRrrUaz9MIxc9Nl/pP/YmXdsGXwBq56zAHaeJxHbht1KKjnK+t9w+PhRyeIYYo3rVIeuy87wiv1cpTUXk8IPKJETWUbERGPJ9uI6K6BahkBwoYSGjnFKMtcqDFTi1jQjLm8y2aU9a2dY8v869c4rgsFH50vla9VUI+wkxFqQWgIF901I75TcI5+HGCDJI63rYtbqvGjPBxYlNbhaLPQlovM5eReUFJMxBD+RnoeAEU60lw4yxRsWD0U9EiGVLh5GbXO/X0xLD4MEhvE=' >> .ssh/known_hosts
+fi
+
 if ! grep -q ^github.com .ssh/known_hosts; then
     echo "github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==" >> .ssh/known_hosts
 fi
