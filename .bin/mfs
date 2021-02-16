@@ -8,6 +8,12 @@ fi
 
 cd "$dir"
 
+source $HOME/.bash/ask.sh
+
+if ! ask 'This will drop and rebuild the database - are you sure?'; then
+    exit 1
+fi
+
 artisan migrate:fresh --seed
 
 if [[ -x scripts/ide-helper.sh ]]; then
