@@ -75,12 +75,10 @@ alias agupdate="$sudo apt update"
 alias agupgrade="$sudo apt upgrade"
 alias apt="$sudo apt"
 alias apt-add-repository="$sudo apt-add-repository"
-alias art='artisan'
 
 alias b='c -'
 
 alias chmox='chmod'
-alias com='composer'
 alias cp='cp -i'
 alias cy='cypress'
 
@@ -91,7 +89,6 @@ alias dpkg-reconfigure="$sudo dpkg-reconfigure"
 alias dr='docker run'
 alias dri='docker run -it'
 
-alias g='git'
 alias grep="$(command -v grep-less)" # command -v makes it work with sudo
 alias groupadd="$sudo groupadd"
 alias groupdel="$sudo groupdel"
@@ -177,6 +174,10 @@ fi
     _update-dpi
 }
 
+art() {
+    artisan "$@"
+}
+
 c() {
     # 'cd' and 'ls'
     if [[ $@ != . ]]; then
@@ -218,6 +219,10 @@ cg() {
     fi
 
     c "$path"
+}
+
+com() {
+    composer "$@"
 }
 
 cv() {
@@ -311,6 +316,22 @@ cwt() {
 
 dump-path() {
     echo -e "${PATH//:/\\n}"
+}
+
+for-intranet-laravel() (
+    # This has to be a function not a command so it can call other functions like 'art', 'com' and 'g'
+    # Note: It can't call aliases - they need to be converted to functions instead
+    #       "For almost every purpose, aliases are superseded by shell functions"
+    for app in cases intranet kb ops passwords php sync users wol; do
+        echo
+        command cd "/home/www/$app.$(hostname -f)/repo"
+        color magenta bold "$PWD"
+        "$@" || return
+    done
+)
+
+g() {
+    git "$@"
 }
 
 git() {
