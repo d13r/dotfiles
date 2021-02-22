@@ -103,6 +103,8 @@ alias la="ls -hFlA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 alias ls="ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 alias lsa="ls -hFA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 
+alias mux='tmuxinator'
+
 alias nslookup='_domain-command nslookup'
 
 alias php5dismod="$sudo php5dismod"
