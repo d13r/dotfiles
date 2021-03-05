@@ -98,6 +98,9 @@
     ls-files = true
     status = true
 
+[pull]
+    rebase = false
+
 [push]
     default = upstream
     followTags = true
