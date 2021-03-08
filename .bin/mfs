@@ -14,7 +14,7 @@ if ! ask 'This will drop and rebuild the database - are you sure?'; then
     exit 1
 fi
 
-artisan migrate:fresh --seed
+artisan migrate:fresh --drop-views --seed
 
 if [[ -x scripts/ide-helper.sh ]]; then
     scripts/ide-helper.sh
