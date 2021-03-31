@@ -97,6 +97,7 @@
 [pager]
     ls-files = true
     status = true
+    tag = false
 
 [pull]
     rebase = false
@@ -107,6 +108,9 @@
 
 [rerere]
     enabled = true
+
+[tag]
+    sort = version:refname
 
 [user]
     email = d@djm.me
