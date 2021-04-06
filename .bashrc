@@ -847,12 +847,14 @@ _record-last-directory() {
 _update-dpi() {
     if [[ -f $HOME/.config/bash/hidpi ]]; then
         export GDK_SCALE=2
-        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="11"/' $HOME/.config/JetBrains/*/jba_config/editor.xml 2>/dev/null
-        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="10"/' $HOME/.config/JetBrains/*/options/other.xml 2>/dev/null
+        if command -v php &>/dev/null; then
+            _set-phpstorm-font-size 10 11
+        fi
     else
         export GDK_SCALE=1
-        sed -i 's/name="FONT_SIZE" value="[0-9]\+"/name="FONT_SIZE" value="15"/' $HOME/.config/JetBrains/*/jba_config/editor.xml 2>/dev/null
-        sed -i 's/name="fontSize" value="[0-9]\+"/name="fontSize" value="13"/' $HOME/.config/JetBrains/*/options/other.xml 2>/dev/null
+        if command -v php &>/dev/null; then
+            _set-phpstorm-font-size 13 15
+        fi
     fi
 }
 
