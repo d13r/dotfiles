@@ -722,8 +722,18 @@ _ls-current-directory() {
 }
 
 _prompt() {
+    local status=$?
+
+    # Save (append) the Bash history after every command, instead of waiting until exit
+    history -a
+
     # Update the window title (no output)
     _prompt-titlebar
+
+    # Exit status
+    if [[ $status -gt 0 ]]; then
+        color bg-lred black "Exited with code $status"
+    fi
 
     # Blank line
     echo
@@ -924,7 +934,8 @@ _update-dpi
 # Prompt
 #---------------------------------------
 
-PROMPT_COMMAND='history -a; echo "$(_prompt)"'
+# Note: The 'echo' forces all output to happen at once, instead of section-by-section
+PROMPT_COMMAND='echo "$(_prompt)"'
 PS1="$(color lred '$') "
 
 prompt_color=''
