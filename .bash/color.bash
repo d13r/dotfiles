@@ -13,7 +13,8 @@ color() {
     local args=( "$@" )
 
     # Help Bash calculate the correct prompt size (Note: "\[" doesn't work here)
-    echo -en "\001"
+    # This doesn't work in Windows Terminal
+    #echo -en "\001"
 
     # Reset to prevent any previous styles interfering
     echo -en "\e[0m"
@@ -89,9 +90,10 @@ color() {
                 shift
                 ;& # Fall through
             *)
-                echo -en "\002"
+                #echo -en "\002"
                 echo -n "$@"
-                echo -en "\001\e[0m\002"
+                #echo -en "\001\e[0m\002"
+                echo -en "\e[0m"
                 if $newline; then
                     echo
                 fi

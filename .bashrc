@@ -842,12 +842,15 @@ _prompt-pwd-git() {
 }
 
 _prompt-titlebar() {
-    echo -ne "\001\e]2;"
+    # This doesn't work in Windows Terminal
+    #echo -ne "\001\e]2;"
+    echo -ne "\e]2;"
     if [[ -n $prompt_message ]]; then
         echo -n "[$prompt_message] "
     fi
     echo -n "$USER@$prompt_hostname:$PWD"
-    echo -ne "\a\002"
+    #echo -ne "\a\002"
+    echo -ne "\a"
 }
 
 _record-last-directory() {
