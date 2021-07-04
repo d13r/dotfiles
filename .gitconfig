@@ -84,6 +84,9 @@
 [commit]
     verbose = 2
 
+[init]
+    defaultBranch = main
+
 [merge]
     conflictstyle = diff3
     tool = vimdiff3
