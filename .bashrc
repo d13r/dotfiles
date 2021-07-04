@@ -939,7 +939,7 @@ _update-dpi
 
 # Note: The 'echo' forces all output to happen at once, instead of section-by-section
 PROMPT_COMMAND='echo "$(_prompt)"'
-PS1="$(color lred '$') "
+PS1='\[\e[91m\]$\[\e[0m\] '
 
 prompt_color=''
 prompt_command=''
