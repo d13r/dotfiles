@@ -86,6 +86,8 @@ fi
 # SSH agent
 #---------------------------------------
 
+source ~/.bash/color.bash
+
 if is-wsl 1; then
 
     # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
@@ -99,6 +101,7 @@ elif is-wsl 2; then
 
     # wsl2-ssh-pageant - https://github.com/BlackReloaded/wsl2-ssh-pageant
     if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
+        echo
         color lblue 'Downloading wsl2-ssh-pageant...'
         mkdir -p ~/.ssh
         curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.2.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
@@ -108,7 +111,8 @@ elif is-wsl 2; then
         chmod +x ~/.ssh/wsl2-ssh-pageant.exe
         export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
         if ! command -v socat >/dev/null; then
-            color lblue 'Installing socat...'
+            echo
+            color lblue 'Installing socat for wsl2-ssh-pageant...'
             sudo apt-get install socat
         fi
         if ! ss -a | grep -q $SSH_AUTH_SOCK; then
