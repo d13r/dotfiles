@@ -158,6 +158,8 @@ alias yum="$sudo yum"
 #---------------------------------------
 
 if is-wsl; then
+    alias kubectl='kubectl.exe'
+    alias minikube='minikube.exe'
     alias multipass='multipass.exe'
     alias explorer='explorer.exe'
 fi
