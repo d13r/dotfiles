@@ -110,7 +110,7 @@ elif is-wsl 2; then
         echo
         color lblue 'Downloading wsl2-ssh-pageant...'
         mkdir -p ~/.ssh
-        curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.2.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
+        curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.3.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
     fi
 
     if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
