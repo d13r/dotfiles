@@ -1,3 +1,9 @@
+#
+# This file is executed when Bash is loaded, but ONLY in an interactive session
+#
+# Also see: .bash_profile
+#
+
 #===============================================================================
 # Setup
 #===============================================================================

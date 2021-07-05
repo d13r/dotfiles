@@ -1,3 +1,9 @@
+#
+# This file is executed every time Bash is loaded, even if it is NOT an interactive session
+#
+# Also see: .bashrc
+#
+
 #===============================================================================
 # Setup
 #===============================================================================
