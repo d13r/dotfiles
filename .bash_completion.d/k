@@ -1,0 +1,13 @@
+# Load 'kubectl' completion
+if ! declare -f __start_kubectl >/dev/null 2>&1; then
+    source $HOME/.bash_completion.d/kubectl
+fi
+
+# Duplicate it
+if declare -f __start_kubectl >/dev/null 2>&1; then
+    if [[ $(type -t compopt) = "builtin" ]]; then
+        complete -o default -F __start_kubectl k
+    else
+        complete -o default -o nospace -F __start_kubectl k
+    fi
+fi
