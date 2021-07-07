@@ -918,7 +918,7 @@ dirhistory_future=()
 
 export HISTCONTROL='ignoreboth'
 export HISTIGNORE='&'
-export HISTSIZE=10000
+export HISTSIZE=50000
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
 
