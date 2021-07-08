@@ -41,6 +41,8 @@
 !/.local
 /.local/*
 
+!/.multipass
+
 !/.ssh
 /.ssh/*
 !/.ssh/config
