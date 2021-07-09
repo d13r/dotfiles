@@ -961,8 +961,7 @@ if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
     prompt_default='Logged in as ROOT!'
 fi
 
-# This way works even if the 'hostname' command is not installed
-prompt_hostname=$(cat /proc/sys/kernel/hostname | tr '[:upper:]' '[:lower:]')
+prompt_hostname=$(get-full-hostname)
 
 
 #---------------------------------------
