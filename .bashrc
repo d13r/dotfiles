@@ -105,6 +105,14 @@ alias host='_domain-command host'
 alias ide='t ide-helper'
 
 alias k='kubectl'
+alias ka='kubectl apply -f'
+alias kg='kubectl get'
+alias kgd='kubectl get deployment'
+alias kgi='kubectl get ingress'
+alias kgn='kubectl get namespace'
+alias kgp='kubectl get pod'
+alias kgs='kubectl get service'
+alias krm='kubectl delete -f'
 
 alias l="ls -hFl --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 alias la="ls -hFlA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
