@@ -69,8 +69,8 @@ alias a2dissite="$sudo a2dissite"
 alias a2enconf="$sudo a2enconf"
 alias a2enmod="$sudo a2enmod"
 alias a2ensite="$sudo a2ensite"
-alias acs='apt search'
-alias acsh='apt show'
+alias acs='command apt search'
+alias acsh='command apt show'
 alias addgroup="$sudo addgroup"
 alias adduser="$sudo adduser"
 alias agi="$sudo apt install"
@@ -84,7 +84,7 @@ alias apt-add-repository="$sudo apt-add-repository"
 
 alias b='c -'
 
-alias chmox='chmod'
+alias chmox='chmod' # Common typo
 alias cp='cp -i'
 alias cy='cypress'
 
@@ -106,13 +106,14 @@ alias ide='t ide-helper'
 
 alias k='kubectl'
 alias ka='kubectl apply -f'
+alias ke='kubectl edit'
 alias kg='kubectl get'
 alias kgd='kubectl get deployment'
 alias kgi='kubectl get ingress'
 alias kgn='kubectl get namespace'
 alias kgp='kubectl get pod'
 alias kgs='kubectl get service'
-alias krm='kubectl delete -f'
+alias krm='kubectl delete'
 
 alias l="ls -hFl --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
 alias la="ls -hFlA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
@@ -172,10 +173,10 @@ alias yum="$sudo yum"
 #---------------------------------------
 
 if is-wsl; then
+    alias explorer='explorer.exe'
     alias kubectl='kubectl.exe'
     alias minikube='minikube.exe'
     alias multipass='multipass.exe'
-    alias explorer='explorer.exe'
 fi
 
 
@@ -634,9 +635,14 @@ sudo() {
 }
 
 systemctl() {
-    if in_array '--user' "$@"; then
+    if [[ -n ${COMP_WORDS:-} ]]; then
+        # Bash completion (no sudo because it would interrupt the prompt asking for a password)
+        command systemctl "$@"
+    elif in_array '--user' "$@"; then
+        # User mode (no sudo)
         command systemctl "$@"
     elif [[ ${1:-} = 'log' ]]; then
+        # Custom command: sc log [unit] [grep]
         if [[ -n ${3:-} ]]; then
             maybe-sudo journalctl --follow --unit "$2" --grep "$3"
         elif [[ -n ${2:-} ]]; then

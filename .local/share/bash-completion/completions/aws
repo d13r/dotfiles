@@ -1,0 +1,11 @@
+if command -v aws_completer &>/dev/null; then
+    # Workaround for this bug:
+    # https://github.com/aws/aws-cli/issues/2947
+    complete -C aws_completer aws
+
+    #_aws_completer() {
+    #    aws_completer | sed "s/ $//"
+    #}
+
+    #complete -C _aws_completer aws
+fi

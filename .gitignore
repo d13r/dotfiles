@@ -40,6 +40,11 @@
 
 !/.local
 /.local/*
+!/.local/share/
+/.local/share/*
+!/.local/share/bash-completion/
+/.local/share/bash-completion/*
+!/.local/share/bash-completion/completions/
 
 !/.multipass
 
