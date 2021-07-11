@@ -4,4 +4,4 @@ fi
 
 __load_completion kubectl
 
-complete -F _complete_alias kgn
+complete -F _complete_alias kgsec

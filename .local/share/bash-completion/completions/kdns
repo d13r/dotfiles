@@ -4,4 +4,4 @@ fi
 
 __load_completion kubectl
 
-complete -F _complete_alias kdn
+complete -F _complete_alias kdns
