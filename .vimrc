@@ -34,6 +34,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'itchyny/lightline.vim'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
     Plug 'posva/vim-vue'
+    Plug 'pprovost/vim-ps1'
     Plug 'preservim/nerdcommenter'
     Plug 'tomtom/tlib_vim' " Dependency of SnipMate
     Plug 'tpope/vim-eunuch' " :Rename, :Delete, :SudoWrite, etc.
