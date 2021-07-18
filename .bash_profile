@@ -46,6 +46,10 @@ PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
 
 export PATH
 
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 
 #---------------------------------------
 # Umask
