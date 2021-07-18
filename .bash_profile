@@ -31,6 +31,10 @@ fi
 #---------------------------------------
 
 # Note: The ones lower down take precedence
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 PATH="$HOME/go/bin:$PATH"
 PATH="$HOME/.rvm/bin:$PATH"
 PATH="$HOME/.yarn/bin:$PATH"
@@ -41,14 +45,17 @@ PATH="$HOME/.composer/packages/vendor/bin:$PATH"
 
 PATH="$HOME/.bin:$PATH"
 
+if is-wsl; then
+    # Note: Can't use aliases because they interfere with _complete_alias
+    PATH="$HOME/.bin/windows:$PATH"
+fi
+
 # For tab completion with sudo
-PATH="$PATH:/usr/local/sbin:/usr/sbin:/sbin"
+PATH="$PATH:/usr/local/sbin"
+PATH="$PATH:/usr/sbin"
+PATH="$PATH:/sbin"
 
 export PATH
-
-if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
-    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
-fi
 
 
 #---------------------------------------

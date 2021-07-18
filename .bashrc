@@ -178,18 +178,6 @@ alias whois='_domain-command whois'
 alias yum="$sudo yum"
 
 
-#---------------------------------------
-# Windows-specific aliases
-#---------------------------------------
-
-if is-wsl; then
-    alias explorer='explorer.exe'
-    alias kubectl='kubectl.exe'
-    alias minikube='minikube.exe'
-    alias multipass='multipass.exe'
-fi
-
-
 #===============================================================================
 # Functions
 #===============================================================================
