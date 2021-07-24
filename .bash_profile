@@ -83,8 +83,13 @@ export PAGER='less'
 export PGDATABASE='postgres'
 export VISUAL="$EDITOR"
 
-if [ -z "$DISPLAY" ] && is-wsl; then
-    export DISPLAY='localhost:0.0'
+if [ -z "$DISPLAY" ]; then
+    if is-wsl 1; then
+        export DISPLAY='localhost:0'
+    elif is-wsl 2; then
+        # https://blog.nimamoh.net/wsl2-and-vcxsrv/
+        export DISPLAY="$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0"
+    fi
 fi
 
 # Stop Perl complaining on cPanel servers
