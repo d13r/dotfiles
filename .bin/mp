@@ -3,20 +3,14 @@ set -o nounset -o pipefail -o errexit
 
 source $HOME/.bash/color.bash
 
-if is-wsl; then
-    multipass='multipass.exe'
-else
-    multipass='multipass'
-fi
-
 list-instances() {
-    instances=$($multipass list)
+    instances=$(multipass list)
     color lwhite -- "$(echo "$instances" | head -n1)"
     echo "$instances" | tail -n+2
 }
 
 primary-name() {
-    $multipass get client.primary-name | tr -d '\r'
+    multipass get client.primary-name | tr -d '\r'
 }
 
 read-name() {
@@ -54,7 +48,7 @@ case "${1:-}" in
 
     d|down) # Down
         shift
-        $multipass suspend "$@"
+        multipass suspend "$@"
         list-instances
         ;;
 
@@ -64,7 +58,7 @@ case "${1:-}" in
 
         read-name "$@" && shift
 
-        ip=$($multipass list --format csv | awk -F , -v name="$name" 'NR > 1 && $1 == name { print $3 }')
+        ip=$(multipass list --format csv | awk -F , -v name="$name" 'NR > 1 && $1 == name { print $3 }')
 
         if [[ -n $ip ]] && [[ $ip != '--' ]] && [[ $ip != 'UNKNOWN' ]]; then
             # Remove the IP from the known hosts file because IPs are reused
@@ -96,7 +90,7 @@ case "${1:-}" in
 
         read-name "$@" && shift
 
-        $multipass launch \
+        multipass launch \
             --cloud-init ~/.multipass/cloud-config.yaml \
             --cpus 4 \
             --disk 5G \
@@ -113,23 +107,23 @@ case "${1:-}" in
 
         read-name "$@" && shift
 
-        $multipass delete --purge "$name" "$@"
+        multipass delete --purge "$name" "$@"
         echo 'Instance deleted.'
         ;;
 
     scp) # Transfer
         shift
-        exec $multipass transfer "$@"
+        exec multipass transfer "$@"
         ;;
 
     u|up) # Up
         shift
-        $multipass start "$@"
+        multipass start "$@"
         list-instances
         ;;
 
     *)
-        exec $multipass "$@"
+        exec multipass "$@"
         ;;
 
 esac
