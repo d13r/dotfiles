@@ -50,6 +50,7 @@
     lp           = log --decorate -p
     lpa          = log --decorate -p -a
     lpaw         = log --decorate -p -a --ignore-all-space
+    lpf          = log --decorate -p --follow
     lpw          = log --decorate -p --ignore-all-space
     lpwa         = log --decorate -p -a --ignore-all-space
     m            = merge
