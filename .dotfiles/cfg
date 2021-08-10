@@ -1,0 +1,117 @@
+#!/bin/bash
+
+#================================================================================
+# USAGE:
+# wget djm.me/cfg
+# . cfg
+#================================================================================
+
+# Run this in a sub-process
+(
+    set -o errexit -o pipefail -o nounset
+
+    # Should be in home directory anyway, but just in case...
+    cd
+
+    # WSL defaults to umask 000
+    umask 022
+
+    # Helpers
+    say() {
+        echo -en "\e[94m" # Light blue
+        echo -n "$1"
+        echo -e "\e[0m"
+    }
+
+    fail() {
+        echo >&2 -en "\e[91m" # Light red
+        echo >&2 -n "$1"
+        echo >&2 -e "\e[0m"
+        exit 1
+    }
+
+    # Sanity checks
+    [ -f cfg ] || fail 'This script must be named ~/cfg'
+    [ -d .git ] && fail '~/.git already exists'
+
+    # Check git is available
+    if ! command -v git >/dev/null; then
+        # Attempt to install it if not
+        say 'Installing Git'
+        if ! (sudo apt-get update && sudo apt-get install -y git); then
+            fail 'Git could not be installed'
+        fi
+    fi
+
+    # Set up SSH agent, if needed
+    if grep -iq 'microsoft' /proc/version && [ -z "${SSH_AUTH_SOCK:-}" ]; then
+        if [[ $(grep -oE 'gcc version ([0-9]+)' /proc/version | awk '{print $3}') -gt 5 ]]; then
+
+            # WSL 2 (wsl2-ssh-pageant needs to run in Linux)
+            if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
+                say 'Downloading wsl2-ssh-pageant'
+                mkdir -p ~/.ssh
+                curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.2.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
+            fi
+            if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
+                chmod +x ~/.ssh/wsl2-ssh-pageant.exe
+                export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+                if ! command -v socat >/dev/null; then
+                    say 'Installing socat'
+                    sudo apt-get install socat
+                fi
+                if ! ss -a | grep -q $SSH_AUTH_SOCK; then
+                    rm -f $SSH_AUTH_SOCK
+                    setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe >/dev/null 2>&1
+                    sleep 1 # Ensure it is ready
+                fi
+            fi
+
+        else
+
+            # WSL 1 (wsl-ssh-pageant already running in Windows)
+            temp=$(cd /mnt/c && cmd.exe /C 'echo %TEMP%' | tr -d '\r')
+            temp=$(wslpath "$temp")
+            if [[ -f $temp/wsl-ssh-pageant.sock ]]; then
+                export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
+            fi
+
+        fi
+    fi
+
+    # Ensure SSH keys are loaded
+    say 'Checking for SSH keys'
+
+    if ! ssh-add -l >/dev/null; then
+        fail 'SSH key not found'
+    fi
+
+    # Add SSH public key
+    say 'Adding SSH public key'
+    mkdir -p .ssh
+    chmod 700 .ssh
+    if ! grep -qs ^git.djm.me .ssh/known_hosts; then
+        echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLDe4GfSc5+r3DZsL9JHrGyMPrmswdHoOni8BQ2y6yAb6GdXDNtrfrcSy7/a8tfgT1wcUObKyKWVG+tn+foLfPY=' >> .ssh/known_hosts
+        echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPGgKlbrX/hJ+zvs2At5i6HtBdCe5MY9XvmguctjofQs' >> .ssh/known_hosts
+        echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPZN6vSLWSUMZX6NRsH0WchOshw81YM3H9Wd5V83PdnU+cNQWJ31oml0pwE+0eUR09IjcE+0Rl1LVQBGpYfsWllGC2ZQUkXWnmqwVg73EAkq4Xu7yb27bKaBNLlw5w4cS2CULyEUozEYU0y7j7bSa/zO6rlZykfvEzT9/KGRbGM/SuTazQVkEWVq7gHhLLXWNJWgo5ngx6zArBXE2gHGEtSgowXgqQKrAqzWwm1VZZ3XZYS08jC2bYZ0NtUWPrLHgbs9N/l4/TnOMYiChxYSEc9b5T6oCaY55z8qHrBmKk2x5AyLPs8EsAGbwntYmTMcEgk6U3jctS0yDtZ/XpukFN2VqDVg/rs+04RKdmyNFUBiWlrC5qGnrAwv92mCnQgCF2nLITM6ju1Df6xuKcOrGj53kiKyyjpWsGBwMYV7DUIeTqUjfbDeUbiicj5tIZ8LT15ASXkXQX/ssIW9GmqJUhRqpFb8a7Uqksn22BIQqecucnmmLCx3/ChVXtjjGs96k=' >> .ssh/known_hosts
+    fi
+    chmod 600 .ssh/known_hosts
+
+    # Download the repository
+    say 'Downloading dotfiles repository'
+    git init || fail 'Failed to initialise the Git repo'
+    git remote add origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git remote'
+    git fetch --depth=1 origin || fail 'Failed to download the Git repository'
+
+    # Check out the files
+    say 'Checking out files'
+    git checkout -f origin/main -b main
+
+    # Remove this script
+    # (Note: $0 is not set because we 'source' this file)
+    say "Removing the 'cfg' bootstrap script"
+    rm -f cfg
+
+    # Run any post-install commands, e.g. prepare config file
+    say 'Running post-install script'
+) && exec ~/.dotfiles/post-install
