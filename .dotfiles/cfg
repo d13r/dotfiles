@@ -43,49 +43,6 @@
         fi
     fi
 
-    # Set up SSH agent, if needed
-    if grep -iq 'microsoft' /proc/version && [ -z "${SSH_AUTH_SOCK:-}" ]; then
-        if [[ $(grep -oE 'gcc version ([0-9]+)' /proc/version | awk '{print $3}') -gt 5 ]]; then
-
-            # WSL 2 (wsl2-ssh-pageant needs to run in Linux)
-            if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
-                say 'Downloading wsl2-ssh-pageant'
-                mkdir -p ~/.ssh
-                curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.2.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
-            fi
-            if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
-                chmod +x ~/.ssh/wsl2-ssh-pageant.exe
-                export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
-                if ! command -v socat >/dev/null; then
-                    say 'Installing socat'
-                    sudo apt-get install socat
-                fi
-                if ! ss -a | grep -q $SSH_AUTH_SOCK; then
-                    rm -f $SSH_AUTH_SOCK
-                    setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe >/dev/null 2>&1
-                    sleep 1 # Ensure it is ready
-                fi
-            fi
-
-        else
-
-            # WSL 1 (wsl-ssh-pageant already running in Windows)
-            temp=$(cd /mnt/c && cmd.exe /C 'echo %TEMP%' | tr -d '\r')
-            temp=$(wslpath "$temp")
-            if [[ -f $temp/wsl-ssh-pageant.sock ]]; then
-                export SSH_AUTH_SOCK="$temp/wsl-ssh-pageant.sock"
-            fi
-
-        fi
-    fi
-
-    # Ensure SSH keys are loaded
-    say 'Checking for SSH keys'
-
-    if ! ssh-add -l >/dev/null; then
-        fail 'SSH key not found'
-    fi
-
     # Add SSH public key
     say 'Adding SSH public key'
     mkdir -p .ssh
