@@ -1,3 +1,5 @@
+scriptencoding utf-8
+
 " Debugging
 "set verbose=9
 
