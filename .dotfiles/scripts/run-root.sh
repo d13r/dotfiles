@@ -14,4 +14,4 @@ if [[ -n $SSH_AUTH_SOCK ]]; then
     opt=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
 fi
 
-exec docker run "${opt[@]}" -it -u root --entrypoint /usr/bin/tmux dotfiles -2 new -A -s root
+exec docker run "${opt[@]}" -it --rm -u root --entrypoint /usr/bin/tmux dotfiles -2 new -A -s root
