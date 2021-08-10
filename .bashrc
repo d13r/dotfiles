@@ -965,37 +965,6 @@ prompt_hostname=$(get-full-hostname)
 
 
 #---------------------------------------
-# Bash completion
-#---------------------------------------
-
-if declare -f _completion_loader &>/dev/null; then
-
-    _completion_loader_custom() {
-        # Custom completions
-        local dir="$HOME/.bash_completion.d"
-
-        for file in "${1##*/}" _"${1##*/}"; do
-            file="$dir/$file"
-            source "$file" &>/dev/null && return 124
-        done
-
-        # Standard completions or file listing
-        _completion_loader "$@"
-    }
-
-    complete -D -F _completion_loader_custom
-
-else
-
-    # Lazy-load not available
-    for file in $HOME/.bash_completion.d/*; do
-        source "$file"
-    done
-
-fi
-
-
-#---------------------------------------
 # fzf - fuzzy finder
 #---------------------------------------
 
