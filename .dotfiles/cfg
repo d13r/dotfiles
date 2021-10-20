@@ -15,6 +15,9 @@
 (
     set -o errexit -o pipefail -o nounset
 
+    # Settings
+    branch='main'
+
     # Should be in home directory anyway, but just in case...
     cd
 
@@ -46,7 +49,7 @@
     # Check git is available
     if ! command -v git >/dev/null; then
         # Attempt to install it if not
-        say 'Installing Git'
+        say 'Installing Git...'
         if ! (sudo apt-get update && sudo apt-get install -y git); then
             fail 'Git could not be installed'
         fi
@@ -54,7 +57,7 @@
 
 
     # Download the repository
-    say 'Downloading dotfiles repository'
+    say 'Downloading dotfiles repository...'
     git init || fail 'Failed to initialise the Git repo'
     git remote add origin 'https://git.djm.me/dave/dotfiles.git' || fail 'Failed to configure the Git remote'
     git remote set-url --push origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git push URL'
@@ -63,7 +66,7 @@
 
     # Automatically delete known skeleton files
     echo
-    echo 'Checking for known skeleton files...'
+    say 'Checking for known skeleton files...'
     if [[ -f .bashrc ]]; then
         md5="$(md5sum .bashrc | cut -d' ' -f1)"
         if [[ $md5 = 'cf277664b1771217d7006acdea006db1' ]] || [[ $md5 = '1f98b8f3f3c8f8927eca945d59dcc1c6' ]]; then
@@ -79,13 +82,12 @@
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)
     echo
-    echo 'Updating working directory...'
-    echo
+    say 'Updating working directory...'
     i=0
     while true; do
 
         # Try to update
-        result="$(git checkout origin/main -b main 2>&1)"
+        result="$(git checkout "origin/$branch" -b "$branch" 2>&1)"
 
         # If it succeeds, we're done
         if [[ $? -eq 0 ]]; then
@@ -141,9 +143,9 @@
 
     # Remove this script
     # (Note: $0 is not set because we 'source' this file)
-    say "Removing the 'cfg' bootstrap script"
+    say "Removing the 'cfg' bootstrap script..."
     rm -f cfg
 
     # Run any post-install commands, e.g. prepare config file
-    say 'Running post-install script'
+    say 'Running post-install script...'
 ) && exec ~/.dotfiles/post-install
