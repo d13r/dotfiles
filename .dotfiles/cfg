@@ -1,9 +1,14 @@
 #!/bin/bash
 
 #================================================================================
+#
 # USAGE:
-# wget djm.me/cfg
-# . cfg
+#   wget djm.me/cfg
+#   . cfg
+#
+# MORE INFORMATION:
+#   https://git.djm.me/dave/dotfiles
+#
 #================================================================================
 
 # Run this in a sub-process
@@ -23,16 +28,20 @@
         echo -e "\e[0m"
     }
 
-    fail() {
+    error() {
         echo >&2 -en "\e[91m" # Light red
         echo >&2 -n "$1"
         echo >&2 -e "\e[0m"
+    }
+
+    fail() {
+        error "$1"
         exit 1
     }
 
     # Sanity checks
-    [ -f cfg ] || fail 'This script must be named ~/cfg'
-    [ -d .git ] && fail '~/.git already exists'
+    [[ -f cfg ]] || fail 'This script must be named ~/cfg'
+    [[ -d .git ]] && fail '~/.git already exists'
 
     # Check git is available
     if ! command -v git >/dev/null; then
@@ -43,26 +52,92 @@
         fi
     fi
 
-    # Add SSH public key
-    say 'Adding SSH public key'
-    mkdir -p .ssh
-    chmod 700 .ssh
-    if ! grep -qs ^git.djm.me .ssh/known_hosts; then
-        echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBLDe4GfSc5+r3DZsL9JHrGyMPrmswdHoOni8BQ2y6yAb6GdXDNtrfrcSy7/a8tfgT1wcUObKyKWVG+tn+foLfPY=' >> .ssh/known_hosts
-        echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPGgKlbrX/hJ+zvs2At5i6HtBdCe5MY9XvmguctjofQs' >> .ssh/known_hosts
-        echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDPZN6vSLWSUMZX6NRsH0WchOshw81YM3H9Wd5V83PdnU+cNQWJ31oml0pwE+0eUR09IjcE+0Rl1LVQBGpYfsWllGC2ZQUkXWnmqwVg73EAkq4Xu7yb27bKaBNLlw5w4cS2CULyEUozEYU0y7j7bSa/zO6rlZykfvEzT9/KGRbGM/SuTazQVkEWVq7gHhLLXWNJWgo5ngx6zArBXE2gHGEtSgowXgqQKrAqzWwm1VZZ3XZYS08jC2bYZ0NtUWPrLHgbs9N/l4/TnOMYiChxYSEc9b5T6oCaY55z8qHrBmKk2x5AyLPs8EsAGbwntYmTMcEgk6U3jctS0yDtZ/XpukFN2VqDVg/rs+04RKdmyNFUBiWlrC5qGnrAwv92mCnQgCF2nLITM6ju1Df6xuKcOrGj53kiKyyjpWsGBwMYV7DUIeTqUjfbDeUbiicj5tIZ8LT15ASXkXQX/ssIW9GmqJUhRqpFb8a7Uqksn22BIQqecucnmmLCx3/ChVXtjjGs96k=' >> .ssh/known_hosts
-    fi
-    chmod 600 .ssh/known_hosts
 
     # Download the repository
     say 'Downloading dotfiles repository'
     git init || fail 'Failed to initialise the Git repo'
-    git remote add origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git remote'
+    git remote add origin 'https://git.djm.me/dave/dotfiles.git' || fail 'Failed to configure the Git remote'
+    git remote set-url --push origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git push URL'
+    git remote add alberon https://github.com/alberon/dotfiles.git
     git fetch --depth=1 origin || fail 'Failed to download the Git repository'
 
-    # Check out the files
-    say 'Checking out files'
-    git checkout -f origin/main -b main
+    # Automatically delete known skeleton files
+    echo
+    echo 'Checking for known skeleton files...'
+    if [[ -f .bashrc ]]; then
+        md5="$(md5sum .bashrc | cut -d' ' -f1)"
+        if [[ $md5 = 'cf277664b1771217d7006acdea006db1' ]] || [[ $md5 = '1f98b8f3f3c8f8927eca945d59dcc1c6' ]]; then
+            # cf277664b1771217d7006acdea006db1 = Ubuntu 18.04, 19.10 (DigitalOcean)
+            # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 18.04 (Multipass)
+            echo 'Deleting .bashrc'
+            rm -f .bashrc
+        else
+            echo "Skipping unknown .bashrc (MD5=$md5)"
+        fi
+    fi
+
+    # Update the working directory
+    # Delete or move any conflicting files (usually .bashrc and .bash_logout)
+    echo
+    echo 'Updating working directory...'
+    echo
+    i=0
+    while true; do
+
+        # Try to update
+        result="$(git checkout origin/main -b main 2>&1)"
+
+        # If it succeeds, we're done
+        if [[ $? -eq 0 ]]; then
+            if [[ $i -gt 0 ]]; then
+                echo
+            fi
+            echo "$result"
+            break
+        fi
+
+        # If it fails, move or delete the conflicting file
+        # Old versions of git have this message:
+        file="$(echo "$result" | sed -n "/error: Untracked working tree file/ { s/error: Untracked working tree file '\\(.*\\)' would be overwritten by merge./\\1/; p; q }")"
+        if [[ -z $file ]]; then
+            # Newer versions of git have a different message, split across two lines:
+            file="$(echo "$result" | sed -n "/error: The following untracked working tree files would be overwritten by checkout:/ { n; s/\\s\\+\\(.*\\)/\\1/; p; q }")"
+        fi
+        if [[ -n $file ]] && [[ $file != $result ]]; then
+
+            read -p "Backup $file? [y/N] " answer
+            case $answer in
+                y*|Y*)
+                    dest="$file.orig"
+                    rm -f "$dest"
+                    mv "$file" "$dest"
+                    echo "  Moved to $dest"
+                    ;;
+                *)
+                    rm -f "$file"
+                    ;;
+            esac
+
+        else
+
+            # Unknown error
+            echo "Unknown error in 'git checkout':" >&2
+            echo "$result" >&2
+            exit 9
+
+        fi
+
+        # Prevent infinite loop - just in case
+        ((i++))
+        if [[ $i -ge 100 ]]; then
+            echo
+            echo 'Detected possible infinite loop - giving up' >&2
+            exit 10
+        fi
+
+    done
+
+    echo
 
     # Remove this script
     # (Note: $0 is not set because we 'source' this file)
