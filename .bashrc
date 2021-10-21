@@ -60,7 +60,7 @@ command -v thefuck &>/dev/null && eval $(thefuck --alias)
 # Aliases
 #===============================================================================
 
-# This is needed for 'sudo <alias>' to work correctly
+# The full path is needed for 'sudo <alias>' to work correctly
 sudo="$HOME/.bin/maybe-sudo"
 
 alias a2disconf="$sudo a2disconf"
@@ -1085,6 +1085,7 @@ _ls-current-directory
 # Azure Cloud Shell
 #---------------------------------------
 
+# Azure will automatically add these if they're not in the file :-\
 #ADDED_HIST_CONTROL_CHECK
 #ADDED_HIST_PROMPT_COMMAND_CHECK
 #source /etc/bash_completion.d/azure-cli
