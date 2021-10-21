@@ -732,22 +732,24 @@ _ls-current-directory() {
     ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'
 }
 
-_prompt() {
-    local status=$?
-
+_prompt-before() {
     # Save (append) the Bash history after every command, instead of waiting until exit
     history -a
 
     # Update the window title (no output)
     _prompt-titlebar
 
-    # Exit status
+    # Leave a blank line between the previous command's output and this one
+    # (Not part of '_prompt' so it's not triggered by Ctrl-L or tab completion)
+    echo
+}
+
+_prompt() {
+    # Exit status for the previous command
+    local status=$?
     if [[ $status -gt 0 ]]; then
         color bg-lred black "Exited with code $status"
     fi
-
-    # Blank line
-    echo
 
     # Message
     local message="${prompt_message:-$prompt_default}"
@@ -766,7 +768,6 @@ _prompt() {
     color -n lblack ' at '
     color -n white "$(date +%H:%M:%S)"
     color -n lblack ']'
-    echo
 }
 
 _prompt-pwd-git() {
@@ -948,9 +949,8 @@ _update-dpi
 # Prompt
 #---------------------------------------
 
-# Note: The 'echo' forces all output to happen at once, instead of section-by-section
-PROMPT_COMMAND='echo "$(_prompt)"'
-PS1='\[\e[91m\]$\[\e[0m\] '
+PROMPT_COMMAND='_prompt-before'
+PS1='$(_prompt)\n\[\e[91m\]$\[\e[0m\] '
 
 prompt_color=''
 prompt_command=''
