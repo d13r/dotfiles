@@ -58,7 +58,7 @@
 
     # Download the repository
     say 'Downloading dotfiles repository...'
-    git init || fail 'Failed to initialise the Git repo'
+    git init --initial-branch main 2>/dev/null || git init || fail 'Failed to initialise the Git repo'
     git remote add origin 'https://git.djm.me/dave/dotfiles.git' || fail 'Failed to configure the Git remote'
     git remote set-url --push origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git push URL'
     git remote add alberon https://github.com/alberon/dotfiles.git
