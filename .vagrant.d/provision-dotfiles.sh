@@ -5,8 +5,8 @@ set -eu
 # Settings
 #===============================================================================
 
-github_user=davejamesmiller
-public_key=~/.ssh/dave.pub
+github_user='davejamesmiller'
+public_key="$HOME/.ssh/id_rsa.pub"
 
 #===============================================================================
 # Helpers

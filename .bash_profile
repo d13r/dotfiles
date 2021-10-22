@@ -83,7 +83,7 @@ export PAGER='less'
 export PGDATABASE='postgres'
 export VISUAL="$EDITOR"
 
-if [ -z "$DISPLAY" ]; then
+if [[ -z $DISPLAY ]]; then
     if is-wsl 1; then
         export DISPLAY='localhost:0'
     elif is-wsl 2; then

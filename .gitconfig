@@ -9,7 +9,7 @@
     ca           = !git commit --amend --no-edit --reset-author && echo && git --no-pager status
     ce           = !git commit --amend --reset-author && echo && git --no-pager status
     ci           = commit
-    changedfiles = diff --name-only
+    changed      = diff --name-only
     co           = checkout
     cob          = checkout -b
     cp           = cherry-pick
@@ -25,7 +25,6 @@
     dw           = diff --ignore-all-space --find-copies
     dwa          = diff --ignore-all-space --find-copies --text
     dww          = diff --ignore-all-space --find-copies --word-diff=color
-    edit         = !git commit --amend --reset-author && echo && git --no-pager status
     f            = fetch -v --prune
     fe           = fetch -v --prune
     g            = grep --untracked --break --heading --line-number
@@ -74,6 +73,7 @@
     sub          = submodule
     sync         = !git submodule sync --recursive && git submodule update --init --recursive
     t            = tag
+    todo         = grep --untracked --line-number 'TODO\\|XXX\\|FIXME'
     unshallow    = fetch --unshallow
 
 [color]

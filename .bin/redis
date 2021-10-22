@@ -1,8 +1,13 @@
 #!/bin/bash
 
-if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
-    # e.g. "redis 1"
-    exec redis-cli -n "$@"
+opts=()
+if [[ -S $HOME/redis/redis.sock ]]; then
+    opts+=(-s $HOME/redis/redis.sock)
 fi
 
-exec redis-cli "$@"
+if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
+    # e.g. redis 1 keys '*'
+    opts+=(-n)
+fi
+
+exec redis-cli "${opts[@]}" "$@"
