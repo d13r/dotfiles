@@ -86,7 +86,7 @@
     verbose = 2
 
 [init]
-    defaultBranch = main
+    defaultBranch = master
 
 [merge]
     conflictstyle = diff3
@@ -117,8 +117,9 @@
     sort = version:refname
 
 [user]
-    email = d@djm.me
-    name = Dave James Miller
+    email = info@alberon.co.uk
+    name = Alberon Ltd.
 
 [include]
+    path = .gitconfig_personal
     path = .gitconfig_local
