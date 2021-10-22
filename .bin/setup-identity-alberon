@@ -1,2 +1,0 @@
-#!/bin/sh
-exec setup-identity 'Dave Miller' 'dave@alberon.co.uk'
