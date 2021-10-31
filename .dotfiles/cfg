@@ -7,7 +7,7 @@
 #   . cfg
 #
 # MORE INFORMATION:
-#   https://git.djm.me/dave/dotfiles
+#   https://github.com/davejamesmiller/dotfiles
 #
 #================================================================================
 
@@ -59,8 +59,8 @@
     # Download the repository
     say 'Downloading dotfiles repository...'
     git init --initial-branch main 2>/dev/null || git init || fail 'Failed to initialise the Git repo'
-    git remote add origin 'https://git.djm.me/dave/dotfiles.git' || fail 'Failed to configure the Git remote'
-    git remote set-url --push origin 'git@git.djm.me:dave/dotfiles.git' || fail 'Failed to configure the Git push URL'
+    git remote add origin 'https://github.com/davejamesmiller/dotfiles.git' || fail 'Failed to configure the Git remote'
+    git remote set-url --push origin 'git@github.com:davejamesmiller/dotfiles.git' || fail 'Failed to configure the Git push URL'
     git remote add alberon https://github.com/alberon/dotfiles.git
     git fetch --depth=1 origin || fail 'Failed to download the Git repository'
 
