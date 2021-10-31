@@ -8,23 +8,6 @@ if [[ -n $url ]]; then
     # Set origin to the specified URL
     git remote rm origin 2>/dev/null || true
     git remote add origin "$url"
-elif ! git config --get remote.origin.url >/dev/null; then
-    # Automatically guess the URL
-    root=$(git rev-parse --show-toplevel)
-    if [[ -n $root ]]; then
-        slug=$(basename "$root")
-        url="git@git.djm.me:dave/$slug.git"
-        source ~/.bash/ask.sh
-        if ! ask "No origin is set. Use $url?" Y; then
-            echo "Cancelled." >&2
-            exit 1
-        fi
-        echo
-        echo "  If this is a new repo, configure it here:"
-        echo "  https://git.djm.me/dave/$slug/settings"
-        echo
-        git remote add origin "$url"
-    fi
 fi
 
 exec git push -u origin HEAD
