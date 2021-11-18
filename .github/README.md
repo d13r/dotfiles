@@ -351,3 +351,28 @@ You can also:
 - Type `t` alone to list all the scripts available
 - Type `t <dir>` to list all the scripts in a subdirectory (e.g. `t download`)
 - Use tab-completion (e.g. `t d<tab> s<tab>` is 7 keys instead of 18)
+
+## Uninstalling Dotfiles
+
+The recommended way to uninstall Dotfiles is to delete and recreate your account - that ensures everything is cleaned up.
+
+However, if that is not convenient, this will clean up most things:
+
+```bash
+# Prepare an (almost) empty branch
+git checkout --orphan empty-branch
+git reset
+git add .gitignore
+git commit -m "Empty branch"
+
+# Delete the files by checking out the empty branch (leaves the ignored files alone)
+git add -A
+git checkout -f && reload
+
+# Delete the repo and a few ignored files
+rm -rf .git .gitignore .local/dotfiles-last-auto-update .ssh/config_dynamic .vim
+
+# Optionally, restore the default (skeleton) files
+cp -ir /etc/skel/. .
+exec bash -l
+```
