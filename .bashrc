@@ -345,6 +345,10 @@ dump-path() {
     echo -e "${PATH//:/\\n}"
 }
 
+exitif() {
+    test "$@" && exit || return 0
+}
+
 g() {
     git "$@"
 }
