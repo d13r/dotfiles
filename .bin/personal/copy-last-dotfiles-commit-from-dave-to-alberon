@@ -1,0 +1,23 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+################################################################################
+# Copy the last commit from my dotfiles to the Alberon dotfiles.
+################################################################################
+
+if [[ ! -d ~/dotfiles/alberon ]]; then
+    mkdir -p ~/dotfiles
+    git clone git@github.com:alberon/dotfiles.git ~/dotfiles/alberon
+    cd ~/dotfiles/alberon
+    git remote add dave https://github.com/davejamesmiller/dotfiles.git
+fi
+
+cd ~/dotfiles/alberon
+
+git checkout master
+git pull
+
+git fetch dave
+git cherry-pick dave/main
+
+git push

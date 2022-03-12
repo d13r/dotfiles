@@ -1,0 +1,16 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+################################################################################
+# Copy the last commit from the Alberon dotfiles to my dotfiles.
+################################################################################
+
+cd
+
+git checkout main
+git pull
+
+git fetch alberon
+git cherry-pick alberon/master
+
+git push
