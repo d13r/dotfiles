@@ -12,6 +12,9 @@ if [[ ! -d ~/dotfiles/alberon ]]; then
     git remote add dave https://github.com/davejamesmiller/dotfiles.git
 fi
 
+cd
+git push
+
 cd ~/dotfiles/alberon
 
 git checkout master
