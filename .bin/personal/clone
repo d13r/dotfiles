@@ -13,8 +13,12 @@ if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
     exec git clone "$repo" "$@"
 fi
 
+if [[ $repo == alberon/* ]]; then
+    exec git clone "git@gitlab.com:alberon/$repo.git" "$@"
+fi
+
 if [[ $repo == */* ]]; then
-    exec git clone "git@git.djm.me:$repo.git" "$@"
+    exec git clone "git@github.com:$repo.git" "$@"
 fi
 
 exec git clone "git@git.djm.me:dave/$repo.git" "$@"
