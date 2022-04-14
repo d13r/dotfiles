@@ -10,15 +10,16 @@ if [[ -z $repo ]]; then
 fi
 
 if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
-    exec git clone "$repo" "$@"
+    : # No change
+elif [[ $repo == alberon/* ]]; then
+    repo="git@gitlab.com:$repo.git"
+elif [[ $repo == */* ]]; then
+    repo="git@github.com:$repo.git"
+else
+    repo="git@git.djm.me:dave/$repo.git"
 fi
 
-if [[ $repo == alberon/* ]]; then
-    exec git clone "git@gitlab.com:alberon/$repo.git" "$@"
-fi
+source $HOME/.bash/color.bash
 
-if [[ $repo == */* ]]; then
-    exec git clone "git@github.com:$repo.git" "$@"
-fi
-
-exec git clone "git@git.djm.me:dave/$repo.git" "$@"
+color lblue "$repo"
+exec git clone "$repo" "$@"
