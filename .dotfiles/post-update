@@ -35,9 +35,9 @@ if [[ ! -f .ssh/known_hosts ]]; then
 fi
 
 if ! grep -q ^git.djm.me .ssh/known_hosts; then
-    echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAAvjfEHQP4NDo01eJ2rtceVu0q4jTdDYX8HKofDevaJ' >> .ssh/known_hosts
-    echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBJF6u2xfuY6jFzp/rRlPe1ft/EgggRF8vERuTPS6sy6aS5qpqC63Jjg6fq+vSxSWmbNS/C6EWEnbzG8UBXitqfk=' >> .ssh/known_hosts
-    echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC+sEGoKRL0JbTta+a6/iM4uOH403igaKx+WldJMxts8f7geJ7O5HFPKIGDhs29iksGGS1ZCV+u6V4arzLP+VUBA+DuoBa29L2EUwpSRKaIsi1i+YG9lMs8Bpmr0rdxV4vompyWCIT5XU2mgVr4oPvH1rLlolaoJu7AeG472TX86aeACNhkJiDVdO4VSV+krqvkDid02Yn0hBdE9zBaEwbnCCdKgWWGNSMpGux40jLTSZjEotDZRV/nRk/lnXlMqp9/DDc2ainuTU4tN0HOgUTVRDjMfDMaszu434+b4pQmqfi4OittAqfb8DNgWs+OJ7zGA+ym9x24MzpPfrC8rT1ohYClmkTO2GFMCvfTb7N7hyqElgAFlF/3NocP9eiYmYpOL0lOo5z6djvU7Ptb2rUX3hZ20orhZhv116ZGZxpb5vI3lSCNQnfC1x2EpoTprR6UPv2haYVo37O3TufXwwWGEXn0o1A1EdncXs0nRCdm9UwKC16XKQKjkwlzaaw4Ums=' >> .ssh/known_hosts
+    echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO4RhJ+ePGUQJvBEyoZOs6P48aSILAFA83GU949z0hO2' >> .ssh/known_hosts
+    echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAU+u+TCabWU+aB5ouGEIn7k8PYwKOwKxQXhEa1hY4IjP3NjPAeWV20UDGjMdAngZCCwtoGYWsMJwFRKEVed/AA=' >> .ssh/known_hosts
+    echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDZHGxj6SF0+dtaYhWzrtcrAEnmAx9Bp7W9Tt4iAqV6rbyChGthB7dZ9VQYt4bVFWJurJ426F1jucka7bmZfEgig3UefwTrxkOqrCeQXe4p2AIx681qVGzo0pBUgosVAQZX17CuUBRk+nvn0JA5LzdlH0XCO1ogDs2vfVKqeQmM3ZVW47sPSMHuOa6spZDaoYX+EFcV8J8AQtP77e82y7WHD+yuQY9nXgXjRheNt2w2bXHU/Mxh8uph1B07klayj4Ck7CQqpn6m3u83i4hEcGV8OIxVeRK/NKR/G9SuOrwn9W9EHbRUf1YoHWoS+GK4VU32vXCXG6YQ6SddJabt5ZtqZNaxxwLJJgtIahnEDBrItKJU5Igd/QkiWshP9y/WJd2EzFKTxtXDIIJTeUQiAO6NF6OOGYjFu1d8oqq4U+9XbDu8440edFJbJUt6wClnLupIkbstonB0c6ZrHehx0OY5FLSZrBo8+7ZaSXcsj+bdH9P/TgI8iQ2EE4ug3EMwMdE=' >> .ssh/known_hosts
 fi
 
 if ! grep -q ^github.com .ssh/known_hosts; then
