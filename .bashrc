@@ -146,6 +146,7 @@ fi
 
 alias mux='tmuxinator'
 
+alias ncdu='ncdu --color dark'
 alias nslookup='_domain-command nslookup'
 
 alias php5dismod="$sudo php5dismod"
