@@ -9,7 +9,7 @@ if [[ ! -d ~/dotfiles/alberon ]]; then
     mkdir -p ~/dotfiles
     git clone git@github.com:alberon/dotfiles.git ~/dotfiles/alberon
     cd ~/dotfiles/alberon
-    git remote add dave https://github.com/davejamesmiller/dotfiles.git
+    git remote add dave https://git.djm.me/dave/dotfiles.git
 fi
 
 cd
