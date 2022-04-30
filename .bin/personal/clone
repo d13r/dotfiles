@@ -9,7 +9,7 @@ if [[ -z $repo ]]; then
     exit 2
 fi
 
-if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
+if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == /* ]] || [[ $repo == *..* ]]; then
     : # No change
 elif [[ $repo == alberon/* ]]; then
     repo="git@gitlab.com:$repo.git"
