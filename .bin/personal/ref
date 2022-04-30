@@ -15,11 +15,11 @@ if [[ ! $topic =~ ^[a-z0-9-]+$ ]]; then
     exit 1
 fi
 
-if curl -f "https://git.djm.me/dave/ref/raw/branch/main/$topic.txt"; then
+if curl -f "https://git.djm.me/d13r/ref/raw/branch/main/$topic.txt"; then
     echo
-    color lblack underline "https://git.djm.me/dave/ref/_edit/main/$topic.txt"
+    color lblack underline "https://git.djm.me/d13r/ref/_edit/main/$topic.txt"
 else
     echo
     color lwhite 'Create it?'
-    color underline "https://git.djm.me/dave/ref/_new/main?filename=$topic.txt"
+    color underline "https://git.djm.me/d13r/ref/_new/main?filename=$topic.txt"
 fi

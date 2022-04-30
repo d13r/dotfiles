@@ -16,7 +16,7 @@ elif [[ $repo == alberon/* ]]; then
 elif [[ $repo == */* ]]; then
     repo="git@github.com:$repo.git"
 else
-    repo="git@git.djm.me:dave/$repo.git"
+    repo="git@git.djm.me:d13r/$repo.git"
 fi
 
 source $HOME/.bash/color.bash

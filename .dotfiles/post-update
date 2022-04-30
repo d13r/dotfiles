@@ -91,9 +91,9 @@ if [[ -f .bash_lastdirectory ]]; then
 fi
 
 # Add/update remote repositories
-if [[ $(git config remote.origin.url) = 'https://github.com/davejamesmiller/dotfiles.git' ]]; then
-    git remote set-url origin https://git.djm.me/dave/dotfiles.git
-    git remote set-url origin --push git@git.djm.me:dave/dotfiles.git
+if [[ $(git config remote.origin.url) != 'https://git.djm.me/d13r/dotfiles.git' ]]; then
+    git remote set-url origin https://git.djm.me/d13r/dotfiles.git
+    git remote set-url origin --push git@git.djm.me:d13r/dotfiles.git
 fi
 
 if [[ $(git config remote.origin.url) = 'https://github.com/alberon/dotfiles.git' ]]; then
