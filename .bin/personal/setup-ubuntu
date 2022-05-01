@@ -1,0 +1,10 @@
+#!/bin/bash
+set -o errexit -o pipefail -o nounset
+
+source ~/.bash/color.bash
+
+color lblue 'Adding my personal APT repository'
+curl -fsS https://apt.djm.me/install | bash
+echo
+
+$HOME/.bin/setup-ubuntu
