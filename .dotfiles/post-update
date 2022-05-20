@@ -34,12 +34,6 @@ if [[ ! -f .ssh/known_hosts ]]; then
     chmod 600 .ssh/known_hosts
 fi
 
-if ! grep -q ^git.djm.me .ssh/known_hosts; then
-    echo 'git.djm.me ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO4RhJ+ePGUQJvBEyoZOs6P48aSILAFA83GU949z0hO2' >> .ssh/known_hosts
-    echo 'git.djm.me ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBAU+u+TCabWU+aB5ouGEIn7k8PYwKOwKxQXhEa1hY4IjP3NjPAeWV20UDGjMdAngZCCwtoGYWsMJwFRKEVed/AA=' >> .ssh/known_hosts
-    echo 'git.djm.me ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDZHGxj6SF0+dtaYhWzrtcrAEnmAx9Bp7W9Tt4iAqV6rbyChGthB7dZ9VQYt4bVFWJurJ426F1jucka7bmZfEgig3UefwTrxkOqrCeQXe4p2AIx681qVGzo0pBUgosVAQZX17CuUBRk+nvn0JA5LzdlH0XCO1ogDs2vfVKqeQmM3ZVW47sPSMHuOa6spZDaoYX+EFcV8J8AQtP77e82y7WHD+yuQY9nXgXjRheNt2w2bXHU/Mxh8uph1B07klayj4Ck7CQqpn6m3u83i4hEcGV8OIxVeRK/NKR/G9SuOrwn9W9EHbRUf1YoHWoS+GK4VU32vXCXG6YQ6SddJabt5ZtqZNaxxwLJJgtIahnEDBrItKJU5Igd/QkiWshP9y/WJd2EzFKTxtXDIIJTeUQiAO6NF6OOGYjFu1d8oqq4U+9XbDu8440edFJbJUt6wClnLupIkbstonB0c6ZrHehx0OY5FLSZrBo8+7ZaSXcsj+bdH9P/TgI8iQ2EE4ug3EMwMdE=' >> .ssh/known_hosts
-fi
-
 if ! grep -q ^github.com .ssh/known_hosts; then
     echo "github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=" >> .ssh/known_hosts
     echo "github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl" >> .ssh/known_hosts
@@ -91,9 +85,9 @@ if [[ -f .bash_lastdirectory ]]; then
 fi
 
 # Add/update remote repositories
-if [[ $(git config remote.origin.url) != 'https://git.djm.me/d13r/dotfiles.git' ]]; then
-    git remote set-url origin https://git.djm.me/d13r/dotfiles.git
-    git remote set-url origin --push git@git.djm.me:d13r/dotfiles.git
+if [[ $(git config remote.origin.url) != 'https://github.com/d13r/dotfiles.git' ]]; then
+    git remote set-url origin https://github.com/d13r/dotfiles.git
+    git remote set-url origin --push git@github.com:d13r/dotfiles.git
 fi
 
 if [[ $(git config remote.origin.url) = 'https://github.com/alberon/dotfiles.git' ]]; then
