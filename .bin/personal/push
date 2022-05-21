@@ -1,0 +1,36 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+source $HOME/.bash/ask.sh
+source $HOME/.bash/color.bash
+
+repo="${1:-}"
+
+if [[ $# -gt 0 ]]; then
+    shift
+fi
+
+if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
+    : # No change
+elif [[ $repo == alberon/* ]]; then
+    repo="git@gitlab.com:$repo.git"
+elif [[ $repo == */* ]]; then
+    repo="git@github.com:$repo.git"
+elif [[ -n $repo ]]; then
+    repo="git@github.com:d13r/$repo.git"
+else
+    repo="git@github.com:d13r/$(basename "$PWD").git"
+fi
+
+color lblue "$repo"
+
+current_repo=$(git config --get remote.origin.url 2>/dev/null || true)
+if [[ -n $current_repo && $current_repo != $repo ]]; then
+    echo "The 'origin' remote is already set to '$current_repo'" >&2
+    exit 2
+fi
+
+git remote add origin "$repo" &>/dev/null ||
+    git remote set-url origin "$repo"
+
+exec git push -u "$@" origin HEAD
