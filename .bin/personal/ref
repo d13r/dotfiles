@@ -1,0 +1,25 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+source $HOME/.bash/color.bash
+
+topic=${1:-}
+
+if [[ -z $topic ]]; then
+    echo "$(color lwhite Usage:) ref <topic>"
+    exit
+fi
+
+if [[ ! $topic =~ ^[a-z0-9-]+$ ]]; then
+    color lred "Invalid topic name '$topic'"
+    exit 1
+fi
+
+if curl -f "https://raw.githubusercontent.com/d13r/ref/main/$topic.txt"; then
+    echo
+    color lblack underline "https://github.com/d13r/ref/edit/main/$topic.txt"
+else
+    echo
+    color lwhite 'Create it?'
+    color underline "https://github.com/d13r/ref/new/main?filename=$topic.txt"
+fi
