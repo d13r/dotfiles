@@ -20,7 +20,7 @@ cd ~/dotfiles/alberon
 git checkout master
 git pull
 
-git set-url dave https://github.com/d13r/dotfiles.git
+git remote set-url dave https://github.com/d13r/dotfiles.git
 git fetch dave
 git cherry-pick dave/main
 
