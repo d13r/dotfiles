@@ -8,8 +8,15 @@ for dir in */; do
     echo -n "$dir"
     echo -e "\e[0m"
     if [[ -d $dir/.git ]]; then
-        (cd "$dir" && git "$@")
+        (
+            cd "$dir" && \
+            git \
+                -c color.diff=always \
+                -c color.status=always \
+                -c color.ui=always \
+                "$@"
+        )
     else
         echo -e "\e[90mNo Git repo found.\e[0m"
     fi
-done
+done | less
