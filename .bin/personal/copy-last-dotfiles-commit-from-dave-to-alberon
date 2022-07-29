@@ -5,7 +5,11 @@ set -o errexit -o nounset -o pipefail
 # Copy the last commit from my dotfiles to the Alberon dotfiles.
 ################################################################################
 
+LCYAN="\e[96m"
+RESET="\e[0m"
+
 if [[ ! -d ~/dotfiles/alberon ]]; then
+    echo -e "${LCYAN}Cloning Alberon dotfiles...${RESET}"
     mkdir -p ~/dotfiles
     git clone git@github.com:alberon/dotfiles.git ~/dotfiles/alberon
     cd ~/dotfiles/alberon
@@ -13,15 +17,24 @@ if [[ ! -d ~/dotfiles/alberon ]]; then
 fi
 
 cd
+
+echo -e "${LCYAN}Pushing local dotfiles changes...${RESET}"
 git push
 
 cd ~/dotfiles/alberon
 
+echo -e "${LCYAN}Checking out Alberon master branch...${RESET}"
 git checkout master
+
+echo -e "${LCYAN}Pulling remote changes...${RESET}"
 git pull
 
+echo -e "${LCYAN}Fetching my changes...${RESET}"
 git remote set-url dave https://github.com/d13r/dotfiles.git
 git fetch dave
+
+echo -e "${LCYAN}Cherry picking the latest commit...${RESET}"
 git cherry-pick dave/main
 
+echo -e "${LCYAN}Pushing changes...${RESET}"
 git push
