@@ -13,7 +13,7 @@ fi
 if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
     : # No change
 elif [[ $repo == alberon/* ]]; then
-    repo="git@gitlab.com:$repo.git"
+    repo="git@git.ti2.in:$repo.git"
 elif [[ $repo == */* ]]; then
     repo="git@github.com:$repo.git"
 elif [[ -n $repo ]]; then
