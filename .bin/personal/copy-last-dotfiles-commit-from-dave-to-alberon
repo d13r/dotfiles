@@ -14,6 +14,7 @@ if [[ ! -d ~/dotfiles/alberon ]]; then
     git clone git@github.com:alberon/dotfiles.git ~/dotfiles/alberon
     cd ~/dotfiles/alberon
     git remote add dave https://github.com/d13r/dotfiles.git
+    echo
 fi
 
 cd
@@ -23,18 +24,23 @@ git push
 
 cd ~/dotfiles/alberon
 
+echo
 echo -e "${LCYAN}Checking out Alberon master branch...${RESET}"
 git checkout master
 
+echo
 echo -e "${LCYAN}Pulling remote changes...${RESET}"
 git pull
 
+echo
 echo -e "${LCYAN}Fetching my changes...${RESET}"
 git remote set-url dave https://github.com/d13r/dotfiles.git
 git fetch dave
 
+echo
 echo -e "${LCYAN}Cherry picking the latest commit...${RESET}"
 git cherry-pick dave/main
 
+echo
 echo -e "${LCYAN}Pushing changes...${RESET}"
 git push

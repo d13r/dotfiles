@@ -13,14 +13,18 @@ cd
 echo -e "${LCYAN}Checking out main branch...${RESET}"
 git checkout main
 
+echo
 echo -e "${LCYAN}Pulling remote changes...${RESET}"
 git pull
 
+echo
 echo -e "${LCYAN}Fetching alberon changes...${RESET}"
 git fetch alberon
 
+echo
 echo -e "${LCYAN}Cherry picking the latest commit...${RESET}"
 git cherry-pick alberon/master
 
+echo
 echo -e "${LCYAN}Pushing changes...${RESET}"
 git push
