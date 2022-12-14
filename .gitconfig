@@ -12,7 +12,7 @@
     changed      = diff --name-only
     co           = checkout
     cob          = checkout -b
-    cp           = cherry-pick
+    cp           = cherry-pick --ff
     d            = diff --find-copies
     da           = diff --find-copies --text
     dc           = diff --cached --find-copies
