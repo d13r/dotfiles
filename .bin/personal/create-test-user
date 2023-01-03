@@ -1,0 +1,43 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+user='test'
+
+# Delete existing account
+if grep -q "^$user:" /etc/passwd; then
+    source ~/.bash/ask.sh
+    if ask 'Delete and recreate the account?' N; then
+        echo "Deleting $user user..."
+        echo
+        sudo pkill -u "$user" && sleep 1
+        sudo deluser --remove-home "$user"
+    fi
+fi
+
+# Create new account
+if ! grep -q "^$user:" /etc/passwd; then
+
+    echo
+    echo "Recreating $user user..."
+    sudo useradd --create-home --skel=/etc/skel --shell=/bin/bash "$user"
+
+    if grep -q "^docker:" /etc/group; then
+        sudo usermod -aG docker "$user"
+    fi
+
+    # Setup SSH key, so I can use SSH to connect without a password, and so SSH
+    # agent forwarding still works (unlike when using sudo)
+    sudo mkdir "/home/$user/.ssh"
+    ssh-add -L | sudo tee "/home/$user/.ssh/authorized_keys" >/dev/null
+    sudo chown "$user:$user" -R "/home/$user/.ssh"
+    sudo chmod go-rwx -R "/home/$user/.ssh"
+
+    # Populate Bash history so pressing <Up><Enter> downloads and runs the installation script
+    # Delete 'cfg' and '.git' if they exist, to help with testing the installation script
+    sudo su "$user" -c "echo 'cd; rm -rf .git cfg; wget djm.me/cfg && source cfg' >> ~/.bashrc"
+
+fi
+
+# Switch to the alberon user account
+echo
+ssh "$user@localhost"
