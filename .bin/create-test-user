@@ -38,6 +38,6 @@ if ! grep -q "^$user:" /etc/passwd; then
 
 fi
 
-# Switch to the alberon user account
+# Switch to the test user account
 echo
 ssh "$user@localhost"

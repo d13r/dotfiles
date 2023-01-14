@@ -7,7 +7,7 @@
 #   . cfg
 #
 # MORE INFORMATION:
-#   https://github.com/davejamesmiller/dotfiles
+#   https://github.com/d13r/dotfiles
 #
 #================================================================================
 
@@ -16,8 +16,7 @@
     set -o errexit -o pipefail -o nounset
 
     # Settings
-    # If you want to make your own copy of this script on your own domain, set this to your GitHub username
-    user='davejamesmiller'
+    user='d13r'
     branch='main'
 
     # Should be in home directory anyway, but just in case...
@@ -55,34 +54,6 @@
         if ! (sudo apt-get update && sudo apt-get install -y git); then
             fail 'Git could not be installed'
         fi
-    fi
-
-    # Ask which repository to use
-    if [[ -z $user ]]; then
-        echo
-        say 'Please enter the GitHub username to use'
-        echo 'For a shared account please accept the default (alberon).'
-        echo 'To set up your own Dotfiles see https://github.com/alberon/dotfiles.'
-        echo
-        while [[ -z $user ]]; do
-            read -p '> [alberon] ' answer || exit 4
-
-            # Default
-            if [ -z "$answer" ]; then
-                answer="alberon"
-            fi
-
-            # Make sure it exists
-            if git ls-remote "https://github.com/$answer/dotfiles.git" >/dev/null; then
-                user="$answer"
-            else
-                echo
-                error "Cannot find repo at https://github.com/$answer/dotfiles"
-                echo "Please check and try again"
-                echo
-            fi
-        done
-        echo
     fi
 
     # Download the repository
@@ -179,12 +150,4 @@
     say 'Running post-install script...'
 ) || return
 
-# Current version (Oct 2021)
-if [[ -f ~/.dotfiles/post-install ]]; then
-    exec ~/.dotfiles/post-install
-fi
-
-# Legacy version
-[[ -x ~/bin/cfg-install ]] && ~/bin/cfg-install
-[[ -x ~/bin/cfg-update ]] && ~/bin/cfg-update
-exec bash -l
+exec ~/.dotfiles/post-install

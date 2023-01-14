@@ -1174,9 +1174,6 @@ _dirhistory-push-past "$PWD"
 # Custom settings / functions
 #---------------------------------------
 
-# Personal settings, for use in forks
-[[ -f ~/.bashrc_personal ]] && source ~/.bashrc_personal
-
 # Local settings, not committed to Git
 [[ -f ~/.bashrc_local ]] && source ~/.bashrc_local
 

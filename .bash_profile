@@ -44,13 +44,11 @@ PATH="$HOME/.composer/vendor/bin:$PATH"
 PATH="$HOME/.composer/packages/vendor/bin:$PATH"
 
 PATH="$HOME/.bin:$PATH"
-PATH="$HOME/.bin/personal:$PATH"
 PATH="$HOME/.bin/local:$PATH"
 
 if is-wsl; then
     # Note: Can't use aliases because they interfere with _complete_alias
     PATH="$HOME/.bin/windows:$PATH"
-    PATH="$HOME/.bin/personal/windows:$PATH"
     PATH="$HOME/.bin/local/windows:$PATH"
 fi
 
@@ -224,9 +222,6 @@ chmod 600 ~/.ssh/config_dynamic
 #---------------------------------------
 # Custom settings / functions
 #---------------------------------------
-
-# Personal settings, for use in forks
-[[ -f ~/.bash_profile_personal ]] && source ~/.bash_profile_personal
 
 # Local settings, not committed to Git
 [[ -f ~/.bash_profile_local ]] && source ~/.bash_profile_local

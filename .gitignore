@@ -13,9 +13,7 @@
 !/.bash
 !/.bash_completion
 !/.bash_profile
-!/.bash_profile_personal
 !/.bashrc
-!/.bashrc_personal
 
 !/.bin
 /.bin/local/*
@@ -33,7 +31,6 @@
 !/.elinks/elinks.conf
 
 !/.gitconfig
-!/.gitconfig_personal
 !/.github
 !/.gitignore
 
@@ -58,7 +55,6 @@
 !/.ssh
 /.ssh/*
 !/.ssh/config
-!/.ssh/config_personal
 !/.ssh/*.pub
 /.ssh/google_compute_engine.pub
 /.ssh/id_rsa.pub

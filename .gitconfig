@@ -150,9 +150,8 @@
     sort = version:refname
 
 [user]
-    email = info@alberon.co.uk
-    name = Alberon Ltd.
+    email = d@djm.me
+    name = Dave James Miller
 
 [include]
-    path = .gitconfig_personal
     path = .gitconfig_local
