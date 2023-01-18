@@ -190,6 +190,7 @@ alias uuuuuu='c ../../../../../..'
 
 alias ufw="$sudo ufw"
 alias updatedb="$sudo updatedb"
+alias update-grub="$sudo update-grub"
 alias useradd="$sudo useradd"
 alias userdel="$sudo userdel"
 alias usermod="$sudo usermod"
