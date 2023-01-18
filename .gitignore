@@ -38,6 +38,7 @@
 /.grip/cache*
 /.grip/settings-local.py
 
+!/.hidden
 !/.hushlogin
 !/.inputrc
 
