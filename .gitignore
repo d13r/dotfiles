@@ -53,6 +53,8 @@
 !/.minttyrc
 !/.multipass
 
+!/.ref
+
 !/.ssh
 /.ssh/*
 !/.ssh/config
