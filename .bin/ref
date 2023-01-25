@@ -6,7 +6,7 @@ source $HOME/.bash/color.bash
 topic=${1:-}
 
 if [[ -z $topic ]]; then
-    echo "$(color lwhite Usage:) ref <topic> [edit]"
+    echo "$(color lwhite Usage:) ref <topic> [edit|delete]"
     exit
 fi
 
@@ -17,8 +17,11 @@ fi
 
 if [[ ${2:-} = 'edit' ]]; then
     e "$HOME/.ref/$topic.txt"
-elif [[ -f "$HOME/.ref/$topic.txt" ]]; then
-    cat "$HOME/.ref/$topic.txt"
-else
+elif [[ ! -f "$HOME/.ref/$topic.txt" ]]; then
     color lred 'Not Found'
+elif [[ ${2:-} = 'delete' ]]; then
+    rm -f "$HOME/.ref/$topic.txt"
+    color lgreen 'Deleted'
+else
+    cat "$HOME/.ref/$topic.txt"
 fi
