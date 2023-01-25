@@ -1,0 +1,2 @@
+Ctrl-Alt-Left       prevd (Go back a directory)
+Ctrl-Alt-Right      nextd (Go forward a directory)

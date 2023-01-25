@@ -1,0 +1,89 @@
+a           webpack / gulp / npm run
+art         artisan
+
+acs         apt search              }
+acsh        apt show                } originally 'apt-cache' and 'apt-get'
+agac        apt autoclean           }
+agar        apt autoremove          }
+agi         apt install             }
+agr         apt remove              }
+agu         apt update && upgrade   }
+
+b           cd - (back)
+
+c           cd && ls
+cfg         cd && git ...
+cg          cd $(git root)
+com         composer
+cv          cd vendor/alberon/ (or vendor/alberon/$1)
+cw          cd <web root> (e.g. /var/www)
+cwc         cd wp-content/
+cwp         cd wp-content/plugins/
+cwt         cd wp-content/themes/<theme>/
+cy          cypress
+
+d           docker
+db          docker build
+dc          docker-compose
+dclean      docker container prune; docker image prune
+dkill       docker kill <most recent container>
+dkillall    docker kill <all running containers>
+dr          docker run
+dresume     docker start -ai <most recently stopped container>
+dri         docker run -it
+dsh         docker run ... /bin/bash (with SSH agent forwarding)
+dstop       docker stop <most recent container>
+dstopall    docker stop <all running containers>
+
+dev         'a h' and 'phpstorm' in Tmux split panes
+dus         du -sh ... | sort -h
+
+e           vim
+
+g           git
+
+h           ssh $1 tmux ...
+
+ide         scripts/ide-helper.sh
+
+l           ls -l
+la          ls -lA
+lsa         ls -A
+
+m           exec tmux ... (Launch Tmux or switch sessions)
+mark        create alias for 'cd $PWD'
+marks       list existing directory aliases
+md          mkdir && cd
+mfs         php artisan migrate:fresh --seed
+mp          multipass
+mux         tmuxinator
+myip        curl ipinfo.io
+pow         poweroff
+pping       Pretty ping
+pu          phpunit
+pwgen       Password generator
+redis       redis-cli
+reload      exec bash -l
+
+s           sudo
+sc          systemctl
+se          sudo vim
+sf          symfony
+sl          sudo ls
+sls         serverless
+storm       phpstorm
+
+t           ./scripts/...
+tarc        tar jcvf ... or 7z a ...
+tf          terraform
+
+u           cd ..
+uu          cd ../.. (repeat 'u' up to 6 times)
+unmark      delete directory alias
+
+v           vagrant
+
+xdebug on   export XDEBUG_SESSION=1
+xdebug off  unset XDEBUG_SESSION
+xe          vim && chmod +x
+xp          explorer.exe (in WSL)
