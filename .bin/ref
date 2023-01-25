@@ -7,6 +7,12 @@ topic=${1:-}
 
 if [[ -z $topic ]]; then
     echo "$(color lwhite Usage:) ref <topic> [edit|delete]"
+    echo
+    color lyellow 'Topics:'
+    cd $HOME/.ref
+    for file in *.txt; do
+        echo "${file//.txt}"
+    done
     exit
 fi
 
