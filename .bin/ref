@@ -29,5 +29,5 @@ elif [[ ${2:-} = 'delete' ]]; then
     rm -f "$HOME/.ref/$topic.txt"
     color lgreen 'Deleted'
 else
-    cat "$HOME/.ref/$topic.txt"
+    bat-or-cat "$HOME/.ref/$topic.txt"
 fi
