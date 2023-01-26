@@ -3,17 +3,11 @@ set -o nounset -o pipefail -o errexit
 shopt -s nullglob
 
 #================================================================================
-# Script runner - (c) Dave James Miller 2015 - MIT License
-# See README.md for details of how it works
+# Script runner - (c) Dave James Miller 2015-2023 - MIT License
 #================================================================================
 
-aqua()            { echo -en "\e[36;1m"; echo "$@"; echo -en "\e[0m"; }
-blue()            { echo -en "\e[34;1m"; echo "$@"; echo -en "\e[0m"; }
-green()           { echo -en "\e[32;1m"; echo "$@"; echo -en "\e[0m"; }
-red()             { echo -en "\e[31;1m"; echo "$@"; echo -en "\e[0m"; }
-white()           { echo -en "\e[37;1m"; echo "$@"; echo -en "\e[0m"; }
-white_underline() { echo -en "\e[37;1;4m"; echo "$@"; echo -en "\e[0m"; }
-yellow()          { echo -en "\e[33;1m"; echo "$@"; echo -en "\e[0m"; }
+WHITE_UNDERLINE="\e[37;1;4m"
+RESET="\e[0m"
 
 exe="$(basename "$0")"
 
@@ -25,20 +19,20 @@ fi
 
 # Subdirectory?
 scripts="$root/scripts"
-prefix=
+prefix=''
 
-while [ $# -gt 0 -a -d "$scripts/${1:-}" ]; do
+while [[ $# -gt 0 ]] && [[ -d "$scripts/${1:-}" ]]; do
     scripts="$scripts/$1"
     prefix="$prefix$1 "
     shift
 done
 
 # Run script?
-if [ $# -gt 0 ]; then
+if [[ $# -gt 0 ]]; then
     cmd="$1"
 
     for script in "$scripts/$cmd"{,.*}; do
-        if [ -f "$script" ]; then
+        if [[ -f "$script" ]]; then
             shift
             exec "$script" "$@"
         fi
@@ -54,103 +48,30 @@ list_scripts() {
     local dir="$2"
 
     for file in "$dir/"*; do
-        [ -e "$file" ] || continue
+        [[ -e $file ]] || continue
 
         name="$(basename "$file")" # Remove path
         name="${name%%.*}"         # Remove extension
-        if [ "${name:0:1}" = "_" ]; then
+
+        if [[ ${name:0:1} = '_' ]]; then
             : # Skip includes (files starting with "_")
-        elif [ -d "$file" ]; then
+        elif [[ -d $file ]]; then
             list_scripts "$cmd$name " "$file"
         elif [[ "$name" == *" "* ]]; then
             # Spaces in the name
-            display_help "$file" "$cmd'$name'"
+            echo "$cmd'$name'"
         else
-            display_help "$file" "$cmd$name"
+            echo "$cmd$name"
         fi
     done
 }
 
-# Display help text for a file
-display_help() {
-    gawk '
-        function output_title() {
-            if (title) {
-                print "\n\033[33;1m" title "\033[0m\n"
-                if (target)
-                    print "    \033[35m" target ":\033[0m"
-                title = ""
-            }
-        }
-
-        BEGIN {
-            title  = "'"$2"'"
-            target = ""
-            line   = 0
-            output = 0
-        }
-
-        # Convert Windows new lines to Unix
-        {
-            sub(/\r$/, "")
-        }
-
-        # Start/stop marker
-        /#{78}/ {
-            if (output) {
-                # Stop
-                exit
-            } else {
-                # Start
-                output = 1
-                next
-            }
-        }
-
-        # Text line
-        output {
-            output_title()
-
-            # Basic Markdown support
-            text = $0
-
-            # Remove comment markers
-            text = gensub("^#\\s?", "", 1)
-
-            # Target: - Purple
-            text = gensub("^.*:$", "\033[35m\\0\033[0m", 1, text)
-
-            # **Bold** - Red
-            text = gensub("\\*\\*([^*]+)\\*\\*", "\033[31;1m\\1\033[0m", "g", text)
-
-            # *Italic* - Green
-            text = gensub("\\*([^*]+)\\*", "\033[32;1m\\1\033[0m", "g", text)
-
-            # `Code` - Aqua
-            text = gensub("`([^`]+)`", "\033[36m\\1\033[0m", "g", text)
-
-            # URLs - underline
-            text = gensub("https?://[^ )]+", "\033[4m\\0\033[0m", "g", text)
-
-            print "   " text
-        }
-
-        # End of file
-        END {
-            if (!output) {
-                output_title()
-                print "    \033[30;1mNo help text available\033[0m"
-            }
-        }
-    ' "$1"
-}
-
 (
-    if [ -n "$prefix" ]; then
-        white_underline "Matching Scripts"
+    if [[ -n $prefix ]]; then
+        echo -e "${WHITE_UNDERLINE}Matching Scripts${RESET}"
     else
-        white_underline "Available Scripts"
+        echo -e "${WHITE_UNDERLINE}Available Scripts${RESET}"
     fi
 
-    list_scripts "$prefix" "$scripts"
+    list_scripts "$exe $prefix" "$scripts"
 ) | less
