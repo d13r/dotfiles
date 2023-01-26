@@ -51,6 +51,24 @@ snippet she
 	set -o errexit -o nounset -o pipefail
 	cd "\$(dirname "\$0")/.."
 
+	display_help() {
+		echo "usage: \$(basename "\$0") [options]"
+		echo
+		echo "options:"
+		echo "  -h, --help      display this help"
+	}
+
+	args=\$(getopt -n "\$(basename "\$0")" -o 'h' -l 'help' -- "\$@")
+	eval set -- "\$args"
+
+	while true; do
+		case "\$1" in
+			-h | --help) display_help; exit ;;
+			--) shift; break ;;
+			*) break ;;
+		esac
+	done
+
 	${0}
 
 snippet then
