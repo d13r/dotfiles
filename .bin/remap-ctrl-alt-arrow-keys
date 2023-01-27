@@ -1,9 +1,9 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-exe=$(basename "$0")
-
 source "$HOME/.bash/color.bash"
+
+exe=$(basename "$0")
 
 help() {
     echo "Remap Ctrl-Alt-Arrow keys (for switching workspace) to Win-Alt-Arrow keys in"
