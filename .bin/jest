@@ -1,13 +1,14 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 exe=scripts/jest.sh
-if dir="$(findup -f $exe)"; then
+if dir=$(findup -f $exe); then
     cd "$dir"
     exec $exe "$@"
 fi
 
 exe=node_modules/.bin/jest
-if dir="$(findup -f $exe)"; then
+if dir=$(findup -f $exe); then
     cd "$dir"
     exec $exe "$@"
 fi

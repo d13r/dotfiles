@@ -1,5 +1,6 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
-mkdir ~/.ssh        2>/dev/null
-chmod 700 ~/.ssh    2>/dev/null
-chmod 600 ~/.ssh/*  2>/dev/null
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+chmod 600 ~/.ssh/* 2>/dev/null

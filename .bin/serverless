@@ -1,10 +1,11 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
-exe=node_modules/serverless/bin/serverless
+exe='node_modules/serverless/bin/serverless'
 
-if ! dir="$(findup -f $exe)"; then
+if ! dir=$(findup -f $exe); then
     echo "You do not appear to be within a project with Serverless Framework installed ($exe)" >&2
     exit 1
 fi
 
-exec $dir/$exe "$@"
+exec "$dir/$exe" "$@"

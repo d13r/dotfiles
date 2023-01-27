@@ -1,2 +1,4 @@
 #!/bin/bash
-sudo pip install git+git://github.com/joeyespo/grip@master --upgrade
+set -o errexit -o nounset -o pipefail
+
+exec sudo pip install git+git://github.com/joeyespo/grip@master --upgrade

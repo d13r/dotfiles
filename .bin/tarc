@@ -1,37 +1,36 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 # $source_dir = The directory to be tar'd
-source_dir="${1%/}"
+source_dir=${1%/}
 
 # $source_name = The name of the directory to be tar'd
-source_name="`basename "$source_dir"`"
+source_name=$(basename "$source_dir")
 
 # Compress if possible
 if command -v 7z &>/dev/null; then
-    cmd="7z a"
-    ext=".7z"
+    cmd='7z a'
+    ext='.7z'
 elif command -v bzip2 &>/dev/null; then
-    cmd="tar jcvf"
-    ext=".tar.bz2"
+    cmd='tar jcvf'
+    ext='.tar.bz2'
 elif command -v gzip &>/dev/null; then
-    cmd="tar zcvf"
-    ext=".tar.gz"
+    cmd='tar zcvf'
+    ext='.tar.gz'
 else
-    cmd="tar cvf"
-    ext=".tar"
+    cmd='tar cvf'
+    ext='.tar'
 fi
 
-# $target_file = Name of the target file
-target="$2"
-if [ -z "$target" ]
-then
+# $target = Name of the target file
+target=$2
+if [[ -z "$target" ]]; then
     target="$source_name$ext"
 fi
 
-# Make $target_file absolute not relative (unless it is already)
-if [ "${target_file:0:1}" != "/" ]
-then
-    target="$(pwd)/$target"
+# Make $target absolute not relative (unless it is already)
+if [[ ${target:0:1} != '/' ]]; then
+    target="$PWD/$target"
 fi
 
 # Go to the parent of the source directory, so all file names in the archive are relative to there

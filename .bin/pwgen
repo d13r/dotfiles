@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o nounset -o pipefail -o errexit
+set -o errexit -o nounset -o pipefail
 cd "$(dirname "$0")/.."
 
 ################################################################################
@@ -8,7 +8,7 @@ cd "$(dirname "$0")/.."
 # **Usage:** `pwgen [len=20] [chars=a-zA-Z0-9]`
 ################################################################################
 
-len="${1:-20}"
-chars="${2:-a-zA-Z0-9}"
+len=${1:-20}
+chars=${2:-a-zA-Z0-9}
 </dev/urandom tr -dc "$chars" | head -c "$len" || true
 echo

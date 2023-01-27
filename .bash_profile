@@ -78,7 +78,7 @@ fi
 #===============================================================================
 
 export EDITOR='vim'
-export GEDITOR="$EDITOR"
+export GEDITOR=$EDITOR
 export LESS='FRX'
 
 if is-mac; then
@@ -89,7 +89,7 @@ fi
 
 export PAGER='less'
 export PGDATABASE='postgres'
-export VISUAL="$EDITOR"
+export VISUAL=$EDITOR
 
 if [[ -z $DISPLAY ]]; then
     if is-wsl 1; then

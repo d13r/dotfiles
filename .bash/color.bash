@@ -21,7 +21,7 @@ color() {
 
     # Output ANSI codes and text
     while [ $# -gt 0 ]; do
-        local color="$1"
+        local color=$1
 
         # Automatically calculate the inverse colour, if required
         # Warning: This is relative slow (10ms) so don't use it unless necessary
@@ -105,16 +105,16 @@ color() {
 }
 
 _color-hex-to-ansi() {
-    local r="${1:0:2}"
-    local g="${1:2:2}"
-    local b="${1:4:2}"
+    local r=${1:0:2}
+    local g=${1:2:2}
+    local b=${1:4:2}
 
     echo "$((16#$r));$((16#$g));$((16#$b))"
 }
 
 _color-inverse() {
-    local type="$1"
-    local inverse="$2"
+    local type=$1
+    local inverse=$2
     shift 2
 
     for color in $@; do
@@ -123,47 +123,47 @@ _color-inverse() {
             bg-auto|fg-auto) ;;
             bold|dim|italic|underline|blink|rapidblink|reverse|hide|strike) ;;
 
-            fg-black|black)         [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 0)" ;;
-            fg-red|red)             [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 1)" ;;
-            fg-green|green)         [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 2)" ;;
-            fg-yellow|yellow)       [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 3)" ;;
-            fg-blue|blue)           [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 4)" ;;
-            fg-magenta|magenta)     [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 5)" ;;
-            fg-cyan|cyan)           [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 6)" ;;
-            fg-white|white)         [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 7)" ;;
+            fg-black|black)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 0) ;;
+            fg-red|red)             [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 1) ;;
+            fg-green|green)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 2) ;;
+            fg-yellow|yellow)       [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 3) ;;
+            fg-blue|blue)           [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 4) ;;
+            fg-magenta|magenta)     [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 5) ;;
+            fg-cyan|cyan)           [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 6) ;;
+            fg-white|white)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 7) ;;
 
-            fg-lblack|lblack)       [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 8)";;
-            fg-lred|lred)           [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 9)";;
-            fg-lgreen|lgreen)       [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 10)";;
-            fg-lyellow|lyellow)     [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 11)";;
-            fg-lblue|lblue)         [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 12)";;
-            fg-lmagenta|lmagenta)   [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 13)";;
-            fg-lcyan|lcyan)         [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 14)";;
-            fg-lwhite|lwhite)       [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg 15)";;
+            fg-lblack|lblack)       [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 8);;
+            fg-lred|lred)           [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 9);;
+            fg-lgreen|lgreen)       [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 10);;
+            fg-lyellow|lyellow)     [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 11);;
+            fg-lblue|lblue)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 12);;
+            fg-lmagenta|lmagenta)   [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 13);;
+            fg-lcyan|lcyan)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 14);;
+            fg-lwhite|lwhite)       [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 15);;
 
-            fg-?|fg-??|fg-???)      [[ $type = bg ]] && inverse="$(_color-contrast-ansi bg ${color:3})" ;;
-            fg-??????)              [[ $type = bg ]] && inverse="$(_color-contrast-hex bg "${color:3}")" ;;
+            fg-?|fg-??|fg-???)      [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg ${color:3}) ;;
+            fg-??????)              [[ $type = bg ]] && inverse=$(_color-contrast-hex bg "${color:3}") ;;
 
-            bg-black)               [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 0)" ;;
-            bg-red)                 [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 1)" ;;
-            bg-green)               [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 2)" ;;
-            bg-yellow)              [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 3)" ;;
-            bg-blue)                [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 4)" ;;
-            bg-magenta)             [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 5)" ;;
-            bg-cyan)                [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 6)" ;;
-            bg-white)               [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 7)" ;;
+            bg-black)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 0) ;;
+            bg-red)                 [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 1) ;;
+            bg-green)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 2) ;;
+            bg-yellow)              [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 3) ;;
+            bg-blue)                [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 4) ;;
+            bg-magenta)             [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 5) ;;
+            bg-cyan)                [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 6) ;;
+            bg-white)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 7) ;;
 
-            bg-lblack)              [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 8)" ;;
-            bg-lred)                [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 9)" ;;
-            bg-lgreen)              [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 10)" ;;
-            bg-lyellow)             [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 11)" ;;
-            bg-lblue)               [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 12)" ;;
-            bg-lmagenta)            [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 13)" ;;
-            bg-lcyan)               [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 14)" ;;
-            bg-lwhite)              [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg 15)" ;;
+            bg-lblack)              [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 8) ;;
+            bg-lred)                [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 9) ;;
+            bg-lgreen)              [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 10) ;;
+            bg-lyellow)             [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 11) ;;
+            bg-lblue)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 12) ;;
+            bg-lmagenta)            [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 13) ;;
+            bg-lcyan)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 14) ;;
+            bg-lwhite)              [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 15) ;;
 
-            bg-?|bg-??|bg-???)      [[ $type = fg ]] && inverse="$(_color-contrast-ansi fg ${color:3})" ;;
-            bg-??????)              [[ $type = fg ]] && inverse="$(_color-contrast-hex fg "${color:3}")" ;;
+            bg-?|bg-??|bg-???)      [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg ${color:3}) ;;
+            bg-??????)              [[ $type = fg ]] && inverse=$(_color-contrast-hex fg "${color:3}") ;;
 
             *)                      break ;;
 

@@ -1,9 +1,10 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
-if [ $# -gt 1 ]; then
+if [[ $# -gt 1 ]]; then
     dir=$1
 else
-    dir=.
+    dir='.'
 fi
 
-find "$dir" -type d -exec chmod g+s '{}' \;
+exec find "$dir" -type d -exec chmod g+s '{}' \;

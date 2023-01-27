@@ -25,12 +25,12 @@ _t_completion()
     # List matching executables
     COMPREPLY=()
 
-    local input="${COMP_WORDS[$COMP_CWORD]}"
+    local input=${COMP_WORDS[$COMP_CWORD]}
     for file in "$bin/$input"*; do
         [[ -x $file ]] || continue
 
-        name="$(basename "$file")" # Remove path
-        name="${name%%.*}"         # Remove extension
+        name=$(basename "$file") # Remove path
+        name=${name%%.*}         # Remove extension
         if [[ $name == _* && $input != _* ]]; then
             : # Skip includes (files starting with "_")
         elif [[ "$name" == *" "* ]]; then

@@ -1,9 +1,11 @@
 #!/bin/bash
-count=`ls -A1 | wc -l`
+set -o errexit -o nounset -o pipefail
 
-if [ $count != 0 ]; then
+count=$(ls -A1 | wc -l)
+
+if [[ $count != 0 ]]; then
     echo "Current directory is not empty ($count files found)" >&2
     exit 1
 fi
 
-wgetx -s https://wordpress.org/latest.tar.gz
+wgetx --strip https://wordpress.org/latest.tar.gz

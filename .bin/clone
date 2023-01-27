@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-repo="${1:-}"
+repo=${1:-}
 shift
 
 if [[ -z $repo ]]; then
@@ -17,7 +17,7 @@ else
     repo="git@github.com:d13r/$repo.git"
 fi
 
-source $HOME/.bash/color.bash
+source "$HOME/.bash/color.bash"
 
 color lblue "$repo"
 exec git clone "$repo" "$@"

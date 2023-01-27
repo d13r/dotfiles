@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o nounset -o pipefail -o errexit
+set -o errexit -o nounset -o pipefail
 
 # Docker Shell
 
@@ -11,8 +11,8 @@ else
 fi
 
 # Build the command to run a shell on the specified image
-image="${1:-ubuntu}"
-entrypoint="${2:-/bin/sh}"
+image=${1:-ubuntu}
+entrypoint=${2:-/bin/sh}
 shift $(($# > 2 ? 2 : $#))
 
 exec docker run --rm -it "${opt[@]}" "$@" --entrypoint "$entrypoint" "$image"

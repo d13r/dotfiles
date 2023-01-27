@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 if [[ $EUID -gt 0 ]] && command -v sudo &>/dev/null; then
     exec sudo "$@"

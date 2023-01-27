@@ -1,3 +1,4 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
-sudo systemctl restart chrony.service
+exec sudo systemctl restart chrony.service

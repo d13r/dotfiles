@@ -1,8 +1,9 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 root=$(pwd 2>/dev/null)
 while [[ ! -e "$root/script/rails" && ! -e "$root/bin/rails" ]]; do
-    if [ "$root" = "" ]; then
+    if [[ $root = '' ]]; then
         echo "Not inside a Rails application" >&2
         exit 1
     fi

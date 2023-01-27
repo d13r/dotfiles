@@ -1,6 +1,5 @@
 #!/bin/bash
-
-set -u
+set -o errexit -o nounset -o pipefail
 
 # Usage
 usage() {
@@ -23,11 +22,10 @@ usage() {
 }
 
 # Use `getopt` to parse the parameters
-args=`getopt -l "strip::,tar,gzip,bzip2,zip" ":s::nzj" "$@"`
+args=$(getopt -l "strip::,tar,gzip,bzip2,zip" ":s::nzj" "$@")
 
 # If there were errors found (e.g. invalid options) then exit now
-if [ $? -ne 0 ]
-then
+if [[ $? -ne 0 ]]; then
     echo "ERROR: Invalid arguments found." >&2
     usage >&2
     exit 1
@@ -43,50 +41,49 @@ compressionAuto=1
 compressionCmd=tar
 
 # Loop through all the named arguments until we reach "--"
-while [ -n "$1" ]
-do
+while [[ -n $1 ]]; do
     case "$1" in
-        
+
         --strip|-s)
             stripArg="--strip ${2:-1}"
             shift
             ;;
-        
+
         --tar|-n)
             compressionAuto=0
             ;;
-        
+
         --gzip|-z)
             compressionAuto=0
             compressionArg=--gzip
             ;;
-        
+
         --bzip2|-j)
             compressionAuto=0
             compressionArg=--bzip2
             ;;
-        
+
         --zip)
             compressionAuto=0
             compressionCmd=unzip
             ;;
-        
+
         --help|-h)
             usage
             exit
             ;;
-        
+
         --)
             shift
             break
             ;;
-        
+
     esac
     shift
 done
 
 # Positional arguments
-if [ -z "${1:-}" ]; then
+if [[ -z ${1:-} ]]; then
     echo "ERROR: Missing URL" >&2
     usage >&2
     exit 1
@@ -95,44 +92,42 @@ fi
 url=$1
 
 # Automatically work out the compression scheme
-if [ "$compressionAuto" -eq 1 ]; then
-    if [ "${url:(-4)}" = ".tar" ]; then
+if [[ $compressionAuto -eq 1 ]]; then
+    if [[ ${url:(-4)} = '.tar' ]]; then
         compressionArg=
-    elif [ "${url:(-3)}" = ".gz" ]; then
+    elif [[ ${url:(-3)} = '.gz' ]]; then
         compressionArg=--gzip
-    elif [ "${url:(-4)}" = ".bz2" ]; then
+    elif [[ ${url:(-4)} = '.bz2' ]]; then
         compressionArg=--bzip2
-    elif [ "${url:(-4)}" = ".zip" ]; then
+    elif [[ ${url:(-4)} = '.zip' ]]; then
         compressionCmd=unzip
     else
-        echo "ERROR: Cannot detect compression scheme - please specify -n, -z or -j" >&2
+        echo 'ERROR: Cannot detect compression scheme - please specify -n, -z or -j' >&2
         exit 1
     fi
 fi
 
 # Download and extract the file
-if [ "$compressionCmd" = "unzip" ]; then
-    
+if [[ $compressionCmd = 'unzip' ]]; then
+
     # Note: unzip doesn't support pipes
     # Generate temporary file
-    tmpFile=`tempfile` || exit
+    tmpFile=$(tempfile) || exit
     trap "rm -f -- '$tmpFile'" EXIT
-    
+
     # Download the file
-    wget "$url" -O $tmpFile
-    
-    if [ $? -ne 0 ]; then
+    if ! wget "$url" -O $tmpFile; then
         echo "ERROR: Download failed" >&2
         exit 2
     fi
-    
+
     # Extract files
     # Note: unzip doesn't seem to support --strip either
     unzip $tmpFile
-    
+
 else
-    
+
     # tar can just read direct from pipe
     wget "$url" -O - | tar -xv $compressionArg $stripArg
-    
+
 fi

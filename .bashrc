@@ -108,7 +108,7 @@ alias dr='docker run'
 alias dri='docker run -it --rm'
 
 alias gcm='g co master'
-alias grep="$(command -v grep-less)" # command -v makes it work with sudo
+alias grep=$(command -v grep-less) # command -v makes it work with sudo
 alias groupadd="$sudo groupadd"
 alias groupdel="$sudo groupdel"
 alias groupmod="$sudo groupmod"
@@ -215,7 +215,7 @@ c() {
 }
 
 cd() {
-    local dir="$PWD"
+    local dir=$PWD
 
     builtin cd "$@" &&
         _dirhistory-push-past "$dir" &&
@@ -226,17 +226,17 @@ cg() {
     # cd to git root
 
     # Look in parent directories
-    path="$(cd .. && git rev-parse --show-toplevel 2>/dev/null)"
+    path=$(cd .. && git rev-parse --show-toplevel 2>/dev/null)
 
     # Look in child directories
     if [[ -z $path ]]; then
-        path="$(find . -mindepth 2 -maxdepth 2 -type d -name .git 2>/dev/null)"
+        path=$(find . -mindepth 2 -maxdepth 2 -type d -name .git 2>/dev/null)
         if [[ $(echo "$path" | wc -l) -gt 1 ]]; then
             echo 'Multiple repositories found:' >&2
             echo "$path" | sed 's/^.\//  /g; s/.git$//g' >&2
             return 2
         else
-            path="${path%/.git}"
+            path=${path%/.git}
         fi
     fi
 
@@ -254,7 +254,7 @@ com() {
 }
 
 cv() {
-    if ! local dir="$(findup -d vendor/d13r)"; then
+    if ! local dir=$(findup -d vendor/d13r); then
         echo 'No vendor/d13r/ directory found' >&2
         return 1
     fi
@@ -281,7 +281,7 @@ cv() {
 }
 
 composer() {
-    if dir="$(findup -x scripts/composer.sh)"; then
+    if dir=$(findup -x scripts/composer.sh); then
         "$dir/scripts/composer.sh" "$@"
     else
         command composer "$@"
@@ -343,7 +343,7 @@ cwt() {
 }
 
 docker-compose() {
-    if dir="$(findup -x scripts/docker-compose.sh)"; then
+    if dir=$(findup -x scripts/docker-compose.sh); then
         "$dir/scripts/docker-compose.sh" "$@"
     else
         command docker-compose "$@"
@@ -401,9 +401,9 @@ hacked() {
 
     ask "Delete this directory and reinstall in production mode?" Y || return
 
-    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
-    local oldpwd="${OLDPWD:-}"
-    local pwd="$PWD"
+    local package=$(basename "$(dirname "$PWD")")/$(basename "$PWD")
+    local oldpwd=${OLDPWD:-}
+    local pwd=$PWD
 
     # Delete the dev version
     cd ../../..
@@ -414,7 +414,7 @@ hacked() {
 
     # Go back to that directory + restore "cd -" path
     cd "$pwd"
-    OLDPWD="$oldpwd"
+    OLDPWD=$oldpwd
 }
 
 hackit() {
@@ -432,9 +432,9 @@ hackit() {
 
     ask "Delete this directory and reinstall in development mode?" Y || return
 
-    local package="$(basename "$(dirname "$PWD")")/$(basename "$PWD")"
-    local oldpwd="${OLDPWD:-}"
-    local pwd="$PWD"
+    local package=$(basename "$(dirname "$PWD")")/$(basename "$PWD")
+    local oldpwd=${OLDPWD:-}
+    local pwd=$PWD
 
     # Delete the dist version
     cd ../../..
@@ -445,7 +445,7 @@ hackit() {
 
     # Go back to that directory + restore "cd -" path
     cd "$pwd"
-    OLDPWD="$oldpwd"
+    OLDPWD=$oldpwd
 
     # Switch to the latest development version
     echo
@@ -453,7 +453,7 @@ hackit() {
 }
 
 m() {
-    session="${1:-$USER}"
+    session=${1:-$USER}
 
     # Launch tmux, replacing the current shell (so when we quit, we don't have to exit again)
     if [ -z "$TMUX" ]; then
@@ -484,8 +484,8 @@ man() {
 
 mark() {
     mkdir -p $HOME/.marks
-    local mark="${1:-$(basename "$PWD")}"
-    local target="${2:-$PWD}"
+    local mark=${1:-$(basename "$PWD")}
+    local target=${2:-$PWD}
 
     if ! [[ $mark =~ ^[a-zA-Z0-9_-]+$ ]]; then
         echo "Invalid mark name"
@@ -531,7 +531,7 @@ mv() {
 }
 
 nextd() {
-    local dir="$PWD"
+    local dir=$PWD
 
     while [[ ${dirhistory_future[0]} == $dir ]]; do
         dirhistory_future=("${dirhistory_future[@]:1}")
@@ -548,7 +548,7 @@ nextd() {
 
 
 php() {
-    if dir="$(findup -x scripts/php.sh)"; then
+    if dir=$(findup -x scripts/php.sh); then
         "$dir/scripts/php.sh" "$@"
     else
         command php "$@"
@@ -582,7 +582,7 @@ phpstorm() {
 }
 
 prevd() {
-    local dir="$PWD"
+    local dir=$PWD
 
     while [[ ${dirhistory_past[0]} == $dir ]]; do
         dirhistory_past=("${dirhistory_past[@]:1}")
@@ -661,7 +661,7 @@ status() {
 sudo() {
     # Add additional safety checks for cp, mv, rm
     if [ "$1" = "cp" -o "$1" = "mv" -o "$1" = "rm" ]; then
-        exe="$1"
+        exe=$1
         shift
         command sudo "$exe" -i "$@"
     else
@@ -691,7 +691,7 @@ systemctl() {
 }
 
 unmark() {
-    local marks="${@:-$(basename "$PWD")}"
+    local marks=${@:-$(basename "$PWD")}
 
     for mark in $marks; do
         if [[ -L $HOME/.marks/$mark ]]; then
@@ -728,7 +728,7 @@ yarn() {
         *) args=() ;;
     esac
 
-    if dir="$(findup -x scripts/yarn.sh)"; then
+    if dir=$(findup -x scripts/yarn.sh); then
         "$dir/scripts/yarn.sh" "${args[@]}" "$@"
     else
         command yarn "${args[@]}" "$@"
@@ -758,7 +758,7 @@ _dirhistory-push-past() {
 }
 
 _domain-command() {
-    command="$1"
+    command=$1
     shift
 
     # Accept URLs and convert to domain name only
@@ -809,7 +809,7 @@ _prompt-before() {
 
 _prompt() {
     # Message
-    local message="${prompt_message:-$prompt_default}"
+    local message=${prompt_message:-$prompt_default}
     if [[ -n $message ]]; then
         local spaces=$(printf '%*s\n' $(( $COLUMNS - ${#message} - 1 )) '')
         color lwhite bg-magenta $prompt_color -- " $message$spaces"
@@ -983,7 +983,7 @@ bind 'Space: magic-space'
 dirhistory_past=()
 dirhistory_future=()
 
-export DOCKER_USER="$(id -u):$(id -g)" # https://stackoverflow.com/a/68711840/167815
+export DOCKER_USER=$(id -u):$(id -g) # https://stackoverflow.com/a/68711840/167815
 export GPG_TTY=$(tty)
 export HISTCONTROL='ignoreboth'
 export HISTIGNORE='&'
@@ -1130,8 +1130,8 @@ fi
 
 # The WSLtty config file is stored outside the Git repo
 if is-wsl; then
-    WIN_APPDATA="$(command cd /mnt/c && cmd.exe /C 'echo %APPDATA%' | tr -d '\r')"
-    WIN_APPDATA_UNIX="$(wslpath "$WIN_APPDATA")"
+    WIN_APPDATA=$(command cd /mnt/c && cmd.exe /C 'echo %APPDATA%' | tr -d '\r')
+    WIN_APPDATA_UNIX=$(wslpath "$WIN_APPDATA")
 
     if [[ -f $WIN_APPDATA_UNIX/wsltty/config ]] && ! cmp -s $WIN_APPDATA_UNIX/wsltty/config $HOME/.minttyrc; then
         rm -f $WIN_APPDATA_UNIX/wsltty/config

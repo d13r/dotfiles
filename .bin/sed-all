@@ -1,11 +1,12 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
-if [ -n "$2" ]; then
-    dir="$1"
-    cmd="$2"
+if [[ -n ${2:-} ]]; then
+    dir=$1
+    cmd=$2
 else
-    dir="."
-    cmd="$1"
+    dir='.'
+    cmd=$1
 fi
 
-find "$dir" -type f | xargs sed -i "$cmd"
+find "$dir" -type f -exec sed -i "$cmd" '{}' +

@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 # This script fixes the symlink to the SSH agent in case I connect and then
 # disconnect a second SSH session
@@ -7,6 +8,7 @@ link="$HOME/.ssh/ssh_auth_sock"
 
 # Check if $SSH_AUTH_SOCK is set correctly
 if [ "$SSH_AUTH_SOCK" != "$link" ]; then
+    # shellcheck disable=SC2016
     echo 'WARNING: Your $SSH_AUTH_SOCK is currently set to:' >&2
     echo >&2
     echo "    $SSH_AUTH_SOCK" >&2
@@ -26,13 +28,13 @@ if [ -S "$link" ]; then
     echo
     echo "Current SSH keys:"
     echo
-    SSH_AUTH_SOCK="$link" ssh-add -l | sed 's/^/    /'
+    SSH_AUTH_SOCK=$link ssh-add -l | sed 's/^/    /'
     exit
 fi
 
 # If it's not valid, see if we can find an agent socket from another terminal
 for filename in $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-z0-9]+/agent.[0-9]+ -type s 2>/dev/null); do
-    if SSH_AUTH_SOCK="$filename" ssh-add -l >/dev/null 2>&1; then
+    if SSH_AUTH_SOCK=$filename ssh-add -l >/dev/null 2>&1; then
 
         # Found a valid socket - update the symlink
         ln -nsf "$filename" "$HOME/.ssh/ssh_auth_sock"
@@ -42,7 +44,7 @@ for filename in $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-z0-9]+/agent.[0-9
         echo
         echo "Current SSH keys:"
         echo
-        SSH_AUTH_SOCK="$link" ssh-add -l | sed 's/^/    /'
+        SSH_AUTH_SOCK=$link ssh-add -l | sed 's/^/    /'
         exit
 
     fi

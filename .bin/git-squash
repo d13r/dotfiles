@@ -13,14 +13,14 @@ if [ -n "$(git status --porcelain)" ]; then
     exit 2
 fi
 
-# Determine the first commit to be kept (usually a branch, e.g. master)
-commit="${1:-master}"
+# Determine the first commit to be kept (usually a branch, e.g. main)
+commit=${1:-main}
 
 # Determine log message
-log="${2:-}"
+log=${2:-}
 
 if [ -z "$log" ]; then
-    log="$(git log --format="%s" -1)"
+    log=$(git log --format="%s" -1)
 fi
 
 # Check the list of commits to be squashed
@@ -32,7 +32,7 @@ if [ -z "$commits" ]; then
 fi
 
 # Confirmation
-source $HOME/.bash/ask.sh
+source "$HOME/.bash/ask.sh"
 
 echo
 echo "The following commits will be squashed:"

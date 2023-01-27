@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o nounset -o pipefail -o errexit
+set -o errexit -o nounset -o pipefail
 cd "$(dirname "$0")/.."
 
 ################################################################################

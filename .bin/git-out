@@ -1,10 +1,11 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 # Outgoing commits
-if [ $# -eq 0 ]; then
+if [[ $# -eq 0 ]]; then
     remote=$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")
 else
-    remote="$1"
+    remote=$1
     shift
 fi
 

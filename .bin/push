@@ -1,10 +1,10 @@
 #!/bin/bash
 set -o errexit -o nounset -o pipefail
 
-source $HOME/.bash/ask.sh
-source $HOME/.bash/color.bash
+source "$HOME/.bash/ask.sh"
+source "$HOME/.bash/color.bash"
 
-repo="${1:-}"
+repo=${1:-}
 
 if [[ $# -gt 0 ]]; then
     shift

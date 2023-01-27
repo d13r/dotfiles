@@ -1,9 +1,9 @@
 #!/bin/bash
-set -o nounset -o pipefail -o errexit
+set -o errexit -o nounset -o pipefail
 
 # ssh + tmux ('h' for 'ssH', because 's' is in use)
-host="${1:-}"
-name="${2:-\$USER}"
+host=${1:-}
+name=${2:-\$USER}
 
 if [[ -z $host ]]; then
     echo "Usage: h <host> [session]" >&2

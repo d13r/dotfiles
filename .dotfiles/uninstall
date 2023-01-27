@@ -1,14 +1,19 @@
 #!/bin/bash
-
+#================================================================================
+#
 # Usage:
 #   source ~/.dotfiles/uninstall
 #
 # Or to uninstall without confirming:
 #   FORCE_DOTFILES_UNINSTALL=1 source ~/.dotfiles/uninstall
+#
+#================================================================================
+
+# Run this in a sub-process
 (
     # Confirm
     if [[ ${FORCE_DOTFILES_UNINSTALL:-} != 1 ]]; then
-        source ~/.bash/ask.sh
+        source "$HOME/.bash/ask.sh"
         ask 'Are you sure you want to UNINSTALL DOTFILES?' n || exit
     fi
 

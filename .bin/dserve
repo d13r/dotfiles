@@ -1,5 +1,5 @@
 #!/bin/bash
-set -o nounset -o pipefail -o errexit
+set -o errexit -o nounset -o pipefail
 
 # Serve a directory of files over HTTP for quick local sharing
 # https://github.com/halverneus/static-file-server

@@ -8,8 +8,8 @@ if [ $# -ne 1 ]; then
 fi
 
 # Determine source and destination branches
-src="$(git rev-parse --abbrev-ref HEAD)"
-dst="$1"
+src=$(git rev-parse --abbrev-ref HEAD)
+dst=$1
 
 # Check a branch is checked out, not a specific commit
 if [ -z "$src" -o "$src" = "HEAD" ]; then

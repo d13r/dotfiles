@@ -1,11 +1,12 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 opts=()
 if [[ -S $HOME/redis/redis.sock ]]; then
-    opts+=(-s $HOME/redis/redis.sock)
+    opts+=(-s "$HOME/redis/redis.sock")
 fi
 
-if [[ $# -ge 1 ]] && [[ $1 =~ ^[0-9]+$ ]]; then
+if [[ ${1:-} =~ ^[0-9]+$ ]]; then
     # e.g. redis 1 keys '*'
     opts+=(-n)
 fi

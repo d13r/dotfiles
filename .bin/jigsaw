@@ -1,8 +1,9 @@
 #!/bin/bash
+set -o errexit -o nounset -o pipefail
 
 exe=vendor/bin/jigsaw
 
-if ! dir="$(findup -f $exe)"; then
+if ! dir=$(findup -f $exe); then
     echo "You do not appear to be within a project with Jigsaw installed ($exe)" >&2
     exit 1
 fi
