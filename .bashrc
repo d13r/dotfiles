@@ -129,8 +129,6 @@ alias groupmod="$sudo groupmod"
 
 alias host='_domain-command host'
 
-alias ide='t ide-helper'
-
 alias k='kubectl'
 alias ka='kubectl apply -f'
 alias kcx='kubectl config use-context'

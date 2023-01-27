@@ -44,8 +44,6 @@ g           git
 
 h           ssh $1 tmux ...
 
-ide         scripts/ide-helper.sh
-
 l           ls -l
 la          ls -lA
 lsa         ls -A
