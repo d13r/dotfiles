@@ -15,7 +15,7 @@ c           cd && ls
 cfg         cd && git ...
 cg          cd $(git root)
 com         composer
-cv          cd vendor/alberon/ (or vendor/alberon/$1)
+cv          cd vendor/d13r/ (or vendor/d13r/$1)
 cw          cd <web root> (e.g. /var/www)
 cwc         cd wp-content/
 cwp         cd wp-content/plugins/

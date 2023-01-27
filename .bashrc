@@ -262,25 +262,25 @@ com() {
 }
 
 cv() {
-    if ! local dir="$(findup -d vendor/alberon)"; then
-        echo 'No vendor/alberon/ directory found' >&2
+    if ! local dir="$(findup -d vendor/d13r)"; then
+        echo 'No vendor/d13r/ directory found' >&2
         return 1
     fi
 
     if [[ -z $1 ]]; then
-        c "$dir/vendor/alberon"
-    elif [[ -d "$dir/vendor/alberon/$1" ]]; then
-        c "$dir/vendor/alberon/$1"
+        c "$dir/vendor/d13r"
+    elif [[ -d "$dir/vendor/d13r/$1" ]]; then
+        c "$dir/vendor/d13r/$1"
     else
-        local matches=("$dir/vendor/alberon/"*"$1"*)
+        local matches=("$dir/vendor/d13r/"*"$1"*)
         if [[ ${#matches[@]} -eq 0 || ! -d "${matches[0]}" ]]; then
-            c "$dir/vendor/alberon"
+            c "$dir/vendor/d13r"
             echo >&2
             c "$1" # Will fail
         elif [[ ${#matches[@]} -eq 1 ]]; then
             c "${matches[0]}"
         else
-            c "$dir/vendor/alberon"
+            c "$dir/vendor/d13r"
             echo >&2
             echo 'Multiple matches found:' >&2
             printf '%s\n' "${matches[@]}" >&2
