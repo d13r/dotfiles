@@ -51,14 +51,18 @@ snippet she
 	set -o errexit -o nounset -o pipefail
 	cd "\$(dirname "\$0")/.."
 
+	exe=\$(basename "\$0")
+
 	display_help() {
-		echo "usage: \$(basename "\$0") [options]"
+		echo "Usage: \$exe [options]"
 		echo
-		echo "options:"
+		echo "TODO: Description to go here..."
+		echo
+		echo "Options:"
 		echo "  -h, --help      display this help"
 	}
 
-	args=\$(getopt -n "\$(basename "\$0")" -o 'h' -l 'help' -- "\$@")
+	args=\$(getopt -n "\$exe" -o 'h' -l 'help' -- "\$@")
 	eval set -- "\$args"
 
 	while true; do

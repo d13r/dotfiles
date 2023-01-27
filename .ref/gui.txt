@@ -1,0 +1,3 @@
+Useful commands for a Linux GUI desktop:
+
+remap-ctrl-alt-arrow-keys   Remap Ctrl-Alt-Arrow keys to Win-Alt-Arrow keys

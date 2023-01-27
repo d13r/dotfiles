@@ -1,0 +1,83 @@
+#!/bin/bash
+set -o errexit -o nounset -o pipefail
+
+exe=$(basename "$0")
+
+source "$HOME/.bash/color.bash"
+
+display_help() {
+    echo "Remap Ctrl-Alt-Arrow keys (for switching workspace) to Win-Alt-Arrow keys in"
+    echo "GNOME Desktop, so I can use Ctrl-Alt-Arrow keys for PhpStorm, Bash, etc."
+    echo
+    echo "Usage: $exe [options]"
+    echo
+    echo "Options:"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    revert to the default bindings"
+    echo "  -s, --show      show the current settings"
+}
+
+args=$(getopt -n "$exe" -o 'hrs' -l 'help,revert,show' -- "$@")
+eval set -- "$args"
+
+revert=false
+show=false
+
+while true; do
+    case "$1" in
+        -h | --help) display_help; exit ;;
+        -r | --revert) shift; revert=true ;;
+        -s | --show) shift; show=true ;;
+        --) shift; break ;;
+        *) break ;;
+    esac
+done
+
+show_settings() {
+    echo "switch-to-workspace-left  = $(gsettings get org.gnome.desktop.wm.keybindings switch-to-workspace-left)"
+    echo "switch-to-workspace-right = $(gsettings get org.gnome.desktop.wm.keybindings switch-to-workspace-right)"
+    echo "switch-to-workspace-up    = $(gsettings get org.gnome.desktop.wm.keybindings switch-to-workspace-up)"
+    echo "switch-to-workspace-down  = $(gsettings get org.gnome.desktop.wm.keybindings switch-to-workspace-down)"
+    echo "move-to-workspace-left    = $(gsettings get org.gnome.desktop.wm.keybindings move-to-workspace-left)"
+    echo "move-to-workspace-right   = $(gsettings get org.gnome.desktop.wm.keybindings move-to-workspace-right)"
+    echo "move-to-workspace-up      = $(gsettings get org.gnome.desktop.wm.keybindings move-to-workspace-up)"
+    echo "move-to-workspace-down    = $(gsettings get org.gnome.desktop.wm.keybindings move-to-workspace-down)"
+}
+
+if $show && $revert; then
+    echo "$exe: '--show' and '--reset' are incompatible" >&2
+    exit 1
+fi
+
+if $show; then
+    color lwhite bold underline 'Current Settings'
+    show_settings
+    exit
+fi
+
+color lwhite bold underline 'Previous Settings'
+show_settings
+echo
+
+if $revert; then
+    gsettings reset org.gnome.desktop.wm.keybindings switch-to-workspace-left
+    gsettings reset org.gnome.desktop.wm.keybindings switch-to-workspace-right
+    gsettings reset org.gnome.desktop.wm.keybindings switch-to-workspace-up
+    gsettings reset org.gnome.desktop.wm.keybindings switch-to-workspace-down
+    gsettings reset org.gnome.desktop.wm.keybindings move-to-workspace-left
+    gsettings reset org.gnome.desktop.wm.keybindings move-to-workspace-right
+    gsettings reset org.gnome.desktop.wm.keybindings move-to-workspace-up
+    gsettings reset org.gnome.desktop.wm.keybindings move-to-workspace-down
+else
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-left     "['<Super>Page_Up', '<Super><Alt>Left']"
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-right    "['<Super>Page_Down', '<Super><Alt>Right']"
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-up       "['<Super><Alt>Up']"
+    gsettings set org.gnome.desktop.wm.keybindings switch-to-workspace-down     "['<Super><Alt>Down']"
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-left       "['<Super><Shift>Page_Up', '<Super><Shift><Alt>Left']"
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-right      "['<Super><Shift>Page_Down', '<Super><Shift><Alt>Right']"
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-up         "['<Super><Shift><Alt>Up']"
+    gsettings set org.gnome.desktop.wm.keybindings move-to-workspace-down       "['<Super><Shift><Alt>Down']"
+fi
+
+color lwhite bold underline 'New Settings'
+show_settings
