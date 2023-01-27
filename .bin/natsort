@@ -3,4 +3,4 @@
 $file = (!empty($argv[1]) ? $argv[1] : 'php://stdin');
 $lines = file($file);
 natsort($lines);
-echo join('', $lines);
+echo implode('', $lines);
