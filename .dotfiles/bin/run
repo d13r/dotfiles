@@ -2,12 +2,8 @@
 set -o errexit -o nounset -o pipefail
 cd "$(dirname "$0")/.."
 
-################################################################################
-# Run the setup script as a regular user.
-################################################################################
-
 # Rebuild the image if the 'cfg' script changes (if not it's cached so this is quick)
-scripts/_build.sh
+bin/_build
 
 opt=()
 if [[ -n $SSH_AUTH_SOCK ]]; then

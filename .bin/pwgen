@@ -1,13 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
-cd "$(dirname "$0")/.."
 
-################################################################################
-# Generate a random password.
-#
-# **Usage:** `pwgen [len=20] [chars=a-zA-Z0-9]`
-################################################################################
-
+# Usage: pwgen [len=20] [chars=a-zA-Z0-9]
 len=${1:-20}
 chars=${2:-a-zA-Z0-9}
 </dev/urandom tr -dc "$chars" | head -c "$len" || true
