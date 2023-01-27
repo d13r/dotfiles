@@ -31,7 +31,6 @@
         .gitignore \
         .local/bash-last-directory \
         .local/dotfiles-last-auto-update \
-        .ssh/config_dynamic \
         .vim
 
     # Delete these only if they haven't been changed

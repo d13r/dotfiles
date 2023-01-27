@@ -23,7 +23,7 @@ if declare -f _completion_loader >/dev/null 2>&1; then
 
 else
 
-    # Lazy-load not available, e.g. in Cygwin
+    # Lazy-load not available
     for compfile in $HOME/.local/share/bash-completion/completions/*; do
         [[ -f "$compfile" ]] && . "$compfile"
     done

@@ -92,7 +92,7 @@ export PGDATABASE='postgres'
 export VISUAL="$EDITOR"
 
 if [[ -z $DISPLAY ]]; then
-    if is-wsl 1 || is-cygwin; then
+    if is-wsl 1; then
         export DISPLAY='localhost:0'
     elif is-wsl 2; then
         # https://blog.nimamoh.net/wsl2-and-vcxsrv/
@@ -170,18 +170,6 @@ elif is-wsl 2; then
         fi
     fi
 
-elif is-cygwin; then
-
-    # ssh-pageant - https://github.com/cuviper/ssh-pageant
-    if [[ ! -f ~/.ssh/ssh-pageant.exe ]]; then
-        echo
-        color lblue 'Downloading ssh-pageant...'
-        wget -O - https://github.com/cuviper/ssh-pageant/archive/refs/tags/v1.4-prebuilt-cygwin64.tar.gz | tar -zxO ssh-pageant-1.4-prebuilt-cygwin64/ssh-pageant.exe > ~/.ssh/ssh-pageant.exe
-        chmod +x ~/.ssh/ssh-pageant.exe
-    fi
-
-    eval $(~/.ssh/ssh-pageant.exe -r -a "$HOME/.ssh/ssh_auth_sock")
-
 else
 
     # Any other platform
@@ -199,24 +187,8 @@ fi
 # SSH config
 #---------------------------------------
 
-# Dynamically generate some of the SSH config
-(
-    if is-cygwin || is-gitforwindows; then
-        echo '# ControlMaster is not supported in Cygwin / Git for Windows'
-        echo '# https://stackoverflow.com/a/21439862/167815'
-    else
-        echo 'Host *'
-        echo '    # Reuse connections'
-        echo '    ControlMaster auto'
-        echo '    ControlPath ~/.ssh/control-master-%r@%h:%p'
-        echo '    ControlPersist 10s'
-    fi
-
-    echo
-    echo '# vim:ft=sshconfig'
-) > ~/.ssh/config_dynamic
-
-chmod 600 ~/.ssh/config_dynamic
+# No longer used (27 Jan 2023)
+rm -f ~/.ssh/config_dynamic
 
 
 #---------------------------------------
