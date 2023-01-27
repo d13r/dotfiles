@@ -59,12 +59,6 @@ if [[ -s ~/.rvm/scripts/rvm ]]; then
     source ~/.rvm/scripts/rvm
 fi
 
-# The F**k
-if command -v thefuck &>/dev/null; then
-    eval $(thefuck --alias 2>/dev/null)
-    eval $(thefuck --alias doh 2>/dev/null)
-fi
-
 
 #===============================================================================
 # Aliases
