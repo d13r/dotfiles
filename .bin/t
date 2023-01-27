@@ -2,48 +2,44 @@
 set -o nounset -o pipefail -o errexit
 shopt -s nullglob
 
-#================================================================================
-# Script runner - (c) Dave James Miller 2015-2023 - MIT License
-#================================================================================
-
-WHITE_UNDERLINE="\e[37;1;4m"
+TITLE="\e[97;1;4m" # White, bold, underline
 RESET="\e[0m"
 
 exe="$(basename "$0")"
 
-# Locate the scripts directory
-if ! root="$(findup -d scripts)"; then
-    echo "'scripts' directory not found" >&2
+# Locate the bin/ directory
+if ! root="$(findup -d bin)" || [[ $root = '/' ]]; then
+    echo "'bin' directory not found" >&2
     exit 1
 fi
 
 # Subdirectory?
-scripts="$root/scripts"
+bin="$root/bin"
 prefix=''
 
-while [[ $# -gt 0 ]] && [[ -d "$scripts/${1:-}" ]]; do
-    scripts="$scripts/$1"
+while [[ $# -gt 0 ]] && [[ -d "$bin/${1:-}" ]]; do
+    bin="$bin/$1"
     prefix="$prefix$1 "
     shift
 done
 
-# Run script?
+# Run executable?
 if [[ $# -gt 0 ]]; then
     cmd="$1"
 
-    for script in "$scripts/$cmd"{,.*}; do
-        if [[ -f "$script" ]]; then
+    for executable in "$bin/$cmd"{,.*}; do
+        if [[ -f "$executable" ]]; then
             shift
-            exec "$script" "$@"
+            exec "$executable" "$@"
         fi
     done
 
-    echo "Script '$prefix$cmd' not found" >&2
+    echo "Executable '$prefix$cmd' not found" >&2
     exit 1
 fi
 
-# Display list of scripts
-list_scripts() {
+# Display list of executables
+list_executables() {
     local cmd="$1"
     local dir="$2"
 
@@ -56,7 +52,9 @@ list_scripts() {
         if [[ ${name:0:1} = '_' ]]; then
             : # Skip includes (files starting with "_")
         elif [[ -d $file ]]; then
-            list_scripts "$cmd$name " "$file"
+            list_executables "$cmd$name " "$file"
+        elif [[ ! -x $file ]]; then
+            : # Skip non-executable files
         elif [[ "$name" == *" "* ]]; then
             # Spaces in the name
             echo "$cmd'$name'"
@@ -68,10 +66,10 @@ list_scripts() {
 
 (
     if [[ -n $prefix ]]; then
-        echo -e "${WHITE_UNDERLINE}Matching Scripts${RESET}"
+        echo -e "${TITLE}Matching Executables${RESET}"
     else
-        echo -e "${WHITE_UNDERLINE}Available Scripts${RESET}"
+        echo -e "${TITLE}Available Executables${RESET}"
     fi
 
-    list_scripts "$exe $prefix" "$scripts"
+    list_executables "$exe $prefix" "$bin"
 ) | less

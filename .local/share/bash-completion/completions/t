@@ -5,29 +5,29 @@ _t_completion()
 
     compopt +o default
 
-    # Locate the scripts directory
-    local root=$(findup -d scripts) || return
-    local scripts="$root/scripts"
+    # Locate the bin/ directory
+    local root=$(findup -d bin) && [[ $root != '/' ]] || return
+    local bin="$root/bin"
 
     # Subdirectory?
     for ((i = 1; i < $COMP_CWORD; i++)); do
-        scripts="$scripts/${COMP_WORDS[$i]}"
+        bin="$bin/${COMP_WORDS[$i]}"
     done
 
     # Not a directory? Fall back to regular filename completion
     # https://stackoverflow.com/a/19062943/167815
-    if [[ ! -d $scripts ]]; then
+    if [[ ! -d $bin ]]; then
         compopt -o default
         COMPREPLY=()
         return
     fi
 
-    # List matching scripts
+    # List matching executables
     COMPREPLY=()
 
     local input="${COMP_WORDS[$COMP_CWORD]}"
-    for file in "$scripts/$input"*; do
-        [[ -e $file ]] || continue
+    for file in "$bin/$input"*; do
+        [[ -x $file ]] || continue
 
         name="$(basename "$file")" # Remove path
         name="${name%%.*}"         # Remove extension
