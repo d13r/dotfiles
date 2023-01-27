@@ -38,7 +38,7 @@ dstopall    docker stop <all running containers>
 dev         'a h' and 'phpstorm' in Tmux split panes
 dus         du -sh ... | sort -h
 
-e           vim
+e           $EDITOR
 
 g           git
 
@@ -65,7 +65,7 @@ reload      exec bash -l
 
 s           sudo
 sc          systemctl
-se          sudo vim
+se          sudo $EDITOR
 sf          symfony
 sl          sudo ls
 sls         serverless
@@ -83,5 +83,5 @@ v           vagrant
 
 xdebug on   export XDEBUG_SESSION=1
 xdebug off  unset XDEBUG_SESSION
-xe          vim && chmod +x
+xe          $EDITOR ... && chmod +x
 xp          explorer.exe (in WSL)
