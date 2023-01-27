@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
 # This script fixes the symlink to the SSH agent in case I connect and then
