@@ -53,7 +53,7 @@ snippet she
 
 	exe=\$(basename "\$0")
 
-	display_help() {
+	help() {
 		echo "Usage: \$exe [options]"
 		echo
 		echo "TODO: Description to go here..."
@@ -67,7 +67,7 @@ snippet she
 
 	while true; do
 		case "\$1" in
-			-h | --help) display_help; exit ;;
+			-h | --help) help; exit ;;
 			--) shift; break ;;
 			*) break ;;
 		esac
