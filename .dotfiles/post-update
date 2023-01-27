@@ -96,8 +96,6 @@ if [[ $(git config remote.origin.url) != 'https://github.com/d13r/dotfiles.git' 
     git remote set-url origin --push git@github.com:d13r/dotfiles.git
 fi
 
-git remote rm alberon 2>/dev/null
-
 # Clean up files that were previously ignored
 if [[ -d .vim/bundle ]]; then
     rm -rf .vim/bundle
