@@ -18,7 +18,7 @@ help() {
     echo "                          https://docs.docker.com/engine/install/linux-postinstall/"
 }
 
-args=$(getopt -n "$exe" -o 'hr' -l 'insecure-group,help,revert' -- "$@")
+args=$(getopt -n "$exe" -o 'hr' -l 'help,insecure-group,revert' -- "$@")
 eval set -- "$args"
 
 insecure_group=false
