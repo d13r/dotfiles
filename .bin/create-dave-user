@@ -2,7 +2,9 @@
 set -o errexit -o nounset -o pipefail
 
 # To test this repeatedly:
-# sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
+# Or (in Docker):
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && sudo -su dave
 
 # Must be run as root
 if [[ $UID -ne 0 ]]; then
