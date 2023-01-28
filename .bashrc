@@ -90,8 +90,6 @@ alias apt-add-repository="$sudo apt-add-repository"
 alias apt-mark="$sudo apt-mark"
 alias apt="$sudo apt"
 
-alias b='c -'
-
 if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
     alias bat='batcat'
 fi

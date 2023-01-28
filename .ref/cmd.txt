@@ -9,7 +9,7 @@ agi         apt install             }
 agr         apt remove              }
 agu         apt update && upgrade   }
 
-b           cd - (back)
+b           ./bin/...
 
 c           cd && ls
 cfg         cd && git ...
@@ -71,7 +71,6 @@ sl          sudo ls
 sls         serverless
 storm       phpstorm
 
-t           ./bin/...
 tarc        tar jcvf ... or 7z a ...
 tf          terraform
 

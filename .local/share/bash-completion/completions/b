@@ -1,4 +1,4 @@
-_t_completion()
+_b_completion()
 {
     trap "$(shopt -p failglob)" RETURN
     shopt -u failglob
@@ -42,4 +42,4 @@ _t_completion()
     done
 }
 
-complete -F _t_completion t
+complete -F _b_completion b
