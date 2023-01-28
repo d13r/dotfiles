@@ -3,10 +3,10 @@ set -o errexit -o nounset -o pipefail
 
 # Resume the last stopped Docker image
 # https://stackoverflow.com/a/37886136/167815
-container=$(docker ps -qlf status=exited)
+container=$(maybe-sudo-for-docker docker ps -qlf status=exited)
 
 if [[ -n $container ]]; then
-    exec docker start -ai "$container"
+    exec maybe-sudo-for-docker docker start -ai "$container"
 else
     echo "No stopped images found." >&2
     return 1

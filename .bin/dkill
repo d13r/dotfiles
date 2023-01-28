@@ -4,9 +4,9 @@ set -o errexit -o nounset -o pipefail
 # Kill most recent Docker container
 container=${1:-}
 if [[ -z $container ]]; then
-    container=$(docker ps -qlf status=running)
+    container=$(maybe-sudo-for-docker docker ps -qlf status=running)
 fi
 
 if [[ -n $container ]]; then
-    exec docker kill $container
+    exec maybe-sudo-for-docker docker kill $container
 fi

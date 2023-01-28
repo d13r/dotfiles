@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# If the first argument is an option rather than a command, we can't do this
+if [[ "${1-}" = -* ]]; then
+    exec sudo "$@"
+fi
+
+# This makes it possible to use 'sudo' with programs in ~/.bin/, installed via
+# Homebrew, or otherwise not in the default path used by sudo
+# https://stackoverflow.com/a/29400598/167815
+exec sudo -E env "PATH=$PATH" "$@"

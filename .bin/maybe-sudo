@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
+# Not already 'root' and 'sudo' is available
 if [[ $EUID -gt 0 ]] && is-executable sudo; then
-    exec sudo "$@"
+    exec sudo-preserve-env "$@"
 fi
 
 exec "$@"

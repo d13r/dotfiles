@@ -2,5 +2,5 @@
 set -o errexit -o nounset -o pipefail
 
 # Clean up stopped Docker containers and dangling (untagged) images
-docker container prune
-docker image prune
+maybe-sudo-for-docker docker container prune
+maybe-sudo-for-docker docker image prune

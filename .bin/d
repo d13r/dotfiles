@@ -2,7 +2,7 @@
 set -o errexit -o nounset -o pipefail
 
 if [[ $# -eq 0 ]] && is-executable lazydocker; then
-    exec lazydocker
+    exec maybe-sudo-for-docker lazydocker
 fi
 
-exec docker "$@"
+exec maybe-sudo-for-docker docker "$@"

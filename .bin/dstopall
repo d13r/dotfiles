@@ -2,8 +2,8 @@
 set -o errexit -o nounset -o pipefail
 
 # Stop all containers
-containers=$(docker ps -qf status=running)
+containers=$(maybe-sudo-for-docker docker ps -qf status=running)
 
 if [[ -n $containers ]]; then
-    exec docker stop $containers
+    exec maybe-sudo-for-docker docker stop $containers
 fi

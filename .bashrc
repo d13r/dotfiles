@@ -66,6 +66,7 @@ fi
 
 # The full path is needed for 'sudo <alias>' to work correctly
 sudo="$HOME/.bin/maybe-sudo"
+sudo_for_docker="$HOME/.bin/maybe-sudo-for-docker"
 
 alias a2disconf="$sudo a2disconf"
 alias a2dismod="$sudo a2dismod"
@@ -74,8 +75,8 @@ alias a2enconf="$sudo a2enconf"
 alias a2enmod="$sudo a2enmod"
 alias a2ensite="$sudo a2ensite"
 alias aar="$sudo add-apt-repository"
-alias acs='command apt search'
-alias acsh='command apt show'
+alias acs='command apt search' # } Sudo not needed
+alias acsh='command apt show'  # }
 alias addgroup="$sudo addgroup"
 alias adduser="$sudo adduser"
 alias agac="$sudo apt autoclean"
@@ -100,14 +101,17 @@ alias chmox='chmod' # Common typo
 alias cp='cp -i'
 alias cy='cypress'
 
-alias db='docker build'
-alias dc='docker-compose'
 alias dpkg-reconfigure="$sudo dpkg-reconfigure"
-alias dr='docker run'
-alias dri='docker run -it --rm'
+
+alias db="$sudo_for_docker docker build"
+alias dc='docker-compose' # See function below
+alias dive="$sudo_for_docker dive"
+alias docker="$sudo_for_docker docker"
+alias dr="$sudo_for_docker docker run"
+alias dri="$sudo_for_docker docker run -it --rm"
 
 alias gcm='g co master'
-alias grep=$(command -v grep-less) # command -v makes it work with sudo
+alias grep='grep-less'
 alias groupadd="$sudo groupadd"
 alias groupdel="$sudo groupdel"
 alias groupmod="$sudo groupmod"
@@ -345,7 +349,7 @@ docker-compose() {
     if dir=$(findup -x bin/docker-compose); then
         "$dir/bin/docker-compose" "$@"
     else
-        command docker-compose "$@"
+        command maybe-sudo-for-docker docker-compose "$@"
     fi
 }
 
@@ -651,13 +655,14 @@ status() {
 }
 
 sudo() {
-    # Add additional safety checks for cp, mv, rm
-    if [ "$1" = "cp" -o "$1" = "mv" -o "$1" = "rm" ]; then
+    # Preserve the path - https://stackoverflow.com/a/29400598/167815
+    if [[ $1 = 'cp' || $1 = 'mv' || $1 = 'rm' ]]; then
+        # Add additional safety checks for cp, mv, rm
         exe=$1
         shift
-        command sudo "$exe" -i "$@"
+        sudo-preserve-env "$exe" -i "$@"
     else
-        command sudo "$@"
+        sudo-preserve-env "$@"
     fi
 }
 
