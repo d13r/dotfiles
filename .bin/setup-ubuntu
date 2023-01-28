@@ -30,7 +30,3 @@ color lblue 'Installing lazygit'
 curl -fsSL https://github.com/jesseduffield/lazygit/releases/download/v0.34/lazygit_0.34_Linux_x86_64.tar.gz \
   | sudo tar zx -C /usr/local/bin/ lazygit
 echo
-
-color lblue 'Installing lazydocker'
-curl -fsSL https://github.com/jesseduffield/lazydocker/releases/download/v0.12/lazydocker_0.12_Linux_x86_64.tar.gz \
-  | sudo tar zx -C /usr/local/bin/ lazydocker
