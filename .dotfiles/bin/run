@@ -11,6 +11,6 @@ if [[ -n $SSH_AUTH_SOCK ]]; then
 fi
 
 # For debugging (to see errors without tmux exiting immediately):
-#exec docker run "${opt[@]}" -it --rm dotfiles
+#exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm dotfiles
 
-exec docker run "${opt[@]}" -it --rm --entrypoint /usr/bin/tmux dotfiles -2 new -A -s test
+exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm --entrypoint /usr/bin/tmux dotfiles -2 new -A -s test
