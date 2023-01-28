@@ -5,16 +5,17 @@ set -o errexit -o nounset -o pipefail
 # sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
 
 # Must be run as root
-if [ $UID -ne 0 ]; then
+if [[ $UID -ne 0 ]]; then
     exec sudo --preserve-env=SSH_AUTH_SOCK "$0" "$@"
 fi
 
-source "$(dirname "$0")/../../.bash/color"
+# Can't use $HOME here
+source "$(dirname "$0")/../.bash/color"
 
 # Create user
 color lgreen 'Creating user...'
 useradd \
-    --comment "$(git config --get user.name)" \
+    --comment "Dave James Miller" \
     --create-home \
     --groups adm,sudo,www-data \
     --shell /bin/bash \
@@ -29,11 +30,12 @@ ssh-add -L >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
 # Prepare dotfiles
-color lgreen 'Preparing dotfiles...'
-echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
+color lgreen 'Preparing dotfiles installer...'
+echo '[[ ! -d .git ]] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
 chown dave:dave ~dave/.bashrc
 
 # Prompt for a password
+color lgreen 'Setting password...'
 passwd dave
 
 # Done
