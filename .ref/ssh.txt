@@ -1,0 +1,8 @@
+To proxy connections from one machine to another automatically, add this to ~/.ssh/config_local:
+
+    Host target target.example.com
+        ProxyJump proxy.example.com
+
+To proxy connections temporarily:
+
+    ssh -J proxy.example.com target.example.com
