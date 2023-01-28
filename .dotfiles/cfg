@@ -47,7 +47,7 @@
     [[ -d .git ]] && fail '~/.git already exists'
 
     # Check git is available
-    if ! command -v git >/dev/null; then
+    if ! is-executable git; then
         # Attempt to install it if not
         say 'Installing Git...'
         if ! (sudo apt-get update && sudo apt-get install -y git); then

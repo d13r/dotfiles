@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if command -v jq &>/dev/null; then
+if is-executable jq; then
     curl -fsS https://ipinfo.io/ | jq
 else
     curl https://ipinfo.io/

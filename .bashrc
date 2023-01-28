@@ -91,7 +91,7 @@ alias apt-add-repository="$sudo apt-add-repository"
 alias apt-mark="$sudo apt-mark"
 alias apt="$sudo apt"
 
-if command -v batcat &>/dev/null && ! command -v bat &>/dev/null; then
+if is-executable batcat && ! is-executable bat; then
     alias bat='batcat'
 fi
 
@@ -364,7 +364,7 @@ g() {
 git() {
     if [[ $# -gt 0 ]]; then
         command git "$@"
-    elif command -v lazygit &>/dev/null; then
+    elif is-executable lazygit; then
         lazygit
     else
         command git status
@@ -502,7 +502,7 @@ marks() {
         CLICOLOR_FORCE=1 command ls -lF "$HOME/.marks" | sed '1d;s/  / /g' | cut -d' ' -f9-
     else
         command ls -l --color=always "$HOME/.marks" | sed '1d;s/  / /g' | cut -d' ' -f9- | {
-            if command -v column &>/dev/null; then
+            if is-executable column; then
                 column -t
             else
                 cat
@@ -934,8 +934,7 @@ _record-last-directory() {
 }
 
 _update-dpi() {
-    # Note: Can't use `command -v php` here because of the function
-    if [[ -x /usr/bin/php ]]; then
+    if is-executable php; then
         if [[ -f $HOME/.config/bash/hidpi ]]; then
             export GDK_SCALE=2
             _set-phpstorm-font-size 10 11

@@ -159,7 +159,7 @@ elif is-wsl 2; then
     if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
         chmod +x ~/.ssh/wsl2-ssh-pageant.exe
         export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
-        if ! command -v socat >/dev/null; then
+        if ! is-executable socat; then
             echo
             color lblue 'Installing socat for wsl2-ssh-pageant...'
             sudo apt-get install socat

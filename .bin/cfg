@@ -4,7 +4,7 @@ cd
 
 if [[ $# -gt 0 ]]; then
     command git "$@"
-elif command -v lazygit &>/dev/null; then
+elif is-executable lazygit; then
     lazygit
 else
     command git status

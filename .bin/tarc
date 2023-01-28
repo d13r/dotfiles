@@ -47,13 +47,13 @@ directory=${directory%/}
 directory_name=$(basename "$directory")
 
 # Compress if possible
-if command -v 7z &>/dev/null; then
+if is-executable 7z; then
     cmd='7z a'
     ext='.7z'
-elif command -v bzip2 &>/dev/null; then
+elif is-executable bzip2; then
     cmd='tar jcvf'
     ext='.tar.bz2'
-elif command -v gzip &>/dev/null; then
+elif is-executable gzip; then
     cmd='tar zcvf'
     ext='.tar.gz'
 else

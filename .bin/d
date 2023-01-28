@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if [[ $# -eq 0 ]] && command -v lazydocker &>/dev/null; then
+if [[ $# -eq 0 ]] && is-executable lazydocker; then
     exec lazydocker
 fi
 

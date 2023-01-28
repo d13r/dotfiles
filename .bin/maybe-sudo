@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if [[ $EUID -gt 0 ]] && command -v sudo &>/dev/null; then
+if [[ $EUID -gt 0 ]] && is-executable sudo; then
     exec sudo "$@"
 fi
 

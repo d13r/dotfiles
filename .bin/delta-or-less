@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if command -v delta &>/dev/null; then
+if is-executable delta; then
     exec delta "$@"
 fi
 
