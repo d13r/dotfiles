@@ -5,7 +5,7 @@ user='test'
 
 # Delete existing account
 if grep -q "^$user:" /etc/passwd; then
-    source ~/.bash/ask.sh
+    source "$HOME/.bash/ask"
     if ask 'Delete and recreate the account?' N; then
         echo "Deleting $user user..."
         echo

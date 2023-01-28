@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-source "$HOME/.bash/color.bash"
+source "$HOME/.bash/color"
 
 topic=${1:-}
 

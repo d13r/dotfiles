@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-source ~/.bash/color.bash
+source "$HOME/.bash/color"
 
 branch=$(git branch --show-current)
 

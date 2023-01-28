@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # This is implemented as a function not a command because it runs many times per
 # prompt, and we don't want any extra overhead (timed at 0m0.016s per call)
 color() {

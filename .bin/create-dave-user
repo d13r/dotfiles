@@ -9,7 +9,7 @@ if [ $UID -ne 0 ]; then
     exec sudo --preserve-env=SSH_AUTH_SOCK "$0" "$@"
 fi
 
-source $(dirname "$0")/../../.bash/color.bash
+source "$(dirname "$0")/../../.bash/color"
 
 # Create user
 color lgreen 'Creating user...'

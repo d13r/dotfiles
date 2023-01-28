@@ -122,7 +122,7 @@ fi
 # SSH agent
 #---------------------------------------
 
-source ~/.bash/color.bash
+source "$HOME/.bash/color"
 
 if is-wsl 1; then
 

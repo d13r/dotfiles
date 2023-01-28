@@ -611,7 +611,7 @@ prompt() {
             -d|--dev)      prompt_color='bg-green black' ;;
             -x|--special)  prompt_color='bg-blue' ;;
 
-            # Other colours/styles (see ~/.bash/color.bash)
+            # Other colours/styles (see ~/.bash/color)
             --*)        prompt_color="$prompt_color ${1:2}" ;;
 
             # Finished parsing parameters
@@ -741,9 +741,9 @@ yarn() {
 #---------------------------------------
 
 # These are in separate files because they are used by other scripts too
-source ~/.bash/ask.sh
-source ~/.bash/color.bash
-source ~/.bash/in_array.bash
+source "$HOME/.bash/ask"
+source "$HOME/.bash/color"
+source "$HOME/.bash/in_array"
 
 _dirhistory-push-future() {
     if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then

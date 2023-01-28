@@ -14,7 +14,7 @@ fi
 
 PATH="$HOME/.bin:$PATH"
 
-source ~/.bash/color.bash
+source "$HOME/.bash/color"
 
 # Reload tmux config
 if $interactive && [[ -n ${TMUX:-} ]]; then

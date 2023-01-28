@@ -2,7 +2,7 @@
 set -o errexit -o pipefail -o nounset
 
 source /etc/lsb-release
-source ~/.bash/color.bash
+source "$HOME/.bash/color"
 
 color lblue 'Downloading APT package information'
 sudo apt update
