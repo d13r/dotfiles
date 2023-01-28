@@ -6,3 +6,8 @@ To proxy connections from one machine to another automatically, add this to ~/.s
 To proxy connections temporarily:
 
     ssh -J proxy.example.com target.example.com
+
+To forward a local port to a remote one:
+
+    ssh -L <localPort>:127.0.0.1:<remotePort> <remoteHost>
+    ssh -L <localPort>:<remoteHost>:<remotePort> <proxyHost>
