@@ -146,7 +146,7 @@ alias phpenmod="$sudo phpenmod"
 alias poweroff="$sudo poweroff"
 alias pow="$sudo poweroff"
 alias pu='phpunit'
-alias puw='when-changed -r -s -1 app database tests -c "clear; scripts/phpunit.sh"'
+alias puw='when-changed -r -s -1 app database tests -c "clear; bin/phpunit"'
 
 alias reboot="$sudo reboot"
 alias reload='exec bash -l'
@@ -279,8 +279,8 @@ cv() {
 }
 
 composer() {
-    if dir=$(findup -x scripts/composer.sh); then
-        "$dir/scripts/composer.sh" "$@"
+    if dir=$(findup -x bin/composer); then
+        "$dir/bin/composer" "$@"
     else
         command composer "$@"
     fi
@@ -341,8 +341,8 @@ cwt() {
 }
 
 docker-compose() {
-    if dir=$(findup -x scripts/docker-compose.sh); then
-        "$dir/scripts/docker-compose.sh" "$@"
+    if dir=$(findup -x bin/docker-compose); then
+        "$dir/bin/docker-compose" "$@"
     else
         command docker-compose "$@"
     fi
@@ -546,8 +546,8 @@ nextd() {
 
 
 php() {
-    if dir=$(findup -x scripts/php.sh); then
-        "$dir/scripts/php.sh" "$@"
+    if dir=$(findup -x bin/php); then
+        "$dir/bin/php" "$@"
     else
         command php "$@"
     fi
@@ -726,8 +726,8 @@ yarn() {
         *) args=() ;;
     esac
 
-    if dir=$(findup -x scripts/yarn.sh); then
-        "$dir/scripts/yarn.sh" "${args[@]}" "$@"
+    if dir=$(findup -x bin/yarn); then
+        "$dir/bin/yarn" "${args[@]}" "$@"
     else
         command yarn "${args[@]}" "$@"
     fi

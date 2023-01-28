@@ -6,7 +6,7 @@ if [[ -f "$dir/www/includes/bootstrap.inc" ]]; then
     args="--root=$dir/www"
 fi
 
-exe1=scripts/drush.sh
+exe1=bin/drush
 if dir=$(findup -f $exe1); then
     exec "$dir/$exe1" $args "$@"
 fi

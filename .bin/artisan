@@ -1,15 +1,16 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if ! dir=$(findup -f artisan -o -f scripts/artisan.sh); then
+if ! dir=$(findup -f artisan -o -f bin/artisan); then
     echo "You do not appear to be within a Laravel directory" >&2
     exit 1
 fi
 
 cd "$dir"
 
-if [[ -x scripts/artisan.sh ]]; then
-    exec scripts/artisan.sh "$@"
+# Shim to support multiple PHP versions or Docker
+if [[ -x bin/artisan ]]; then
+    exec bin/artisan "$@"
 fi
 
 exec php artisan "$@"
