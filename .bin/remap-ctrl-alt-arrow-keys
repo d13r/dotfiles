@@ -26,11 +26,11 @@ show=false
 
 while true; do
     case "$1" in
-        -h | --help) help; exit ;;
-        -r | --revert) shift; revert=true ;;
-        -s | --show) shift; show=true ;;
-        --) shift; break ;;
-        *) break ;;
+        -h | --help)    help; exit ;;
+        -r | --revert)  shift; revert=true ;;
+        -s | --show)    shift; show=true ;;
+        --)             shift; break ;;
+        *)              break ;;
     esac
 done
 

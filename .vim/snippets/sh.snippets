@@ -67,9 +67,9 @@ snippet she
 
 	while true; do
 		case "\$1" in
-			-h | --help) help; exit ;;
-			--) shift; break ;;
-			*) break ;;
+			-h | --help)    help; exit ;;
+			--)             shift; break ;;
+			*)              break ;;
 		esac
 	done
 

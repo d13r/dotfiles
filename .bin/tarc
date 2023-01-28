@@ -22,10 +22,10 @@ delete=false
 
 while true; do
     case "$1" in
-        -h | --help) help; exit ;;
-        --delete | --rm) shift; delete=true ;;
-        --) shift; break ;;
-        *) break ;;
+        -h | --help)        help; exit ;;
+        --delete | --rm)    shift; delete=true ;;
+        --)                 shift; break ;;
+        *)                  break ;;
     esac
 done
 
