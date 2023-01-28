@@ -23,19 +23,6 @@ cwp         cd wp-content/plugins/
 cwt         cd wp-content/themes/<theme>/
 cy          cypress
 
-d           docker
-db          docker build
-dc          docker-compose
-dclean      docker container prune; docker image prune
-dkill       docker kill <most recent container>
-dkillall    docker kill <all running containers>
-dr          docker run
-dresume     docker start -ai <most recently stopped container>
-dri         docker run -it
-dsh         docker run ... /bin/bash (with SSH agent forwarding)
-dstop       docker stop <most recent container>
-dstopall    docker stop <all running containers>
-
 dev         'a h' and 'phpstorm' in Tmux split panes
 dus         du -sh ... | sort -h
 
