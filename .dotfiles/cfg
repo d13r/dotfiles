@@ -89,7 +89,7 @@
     # cf277664b1771217d7006acdea006db1 = Ubuntu 18.04 (DigitalOcean)
     # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 18.04 (Multipass)
     # 62514b3a2327c6b090c546e0cc9d89d4 = Ubuntu 20.04 (Multipass)
-    # 9e2144b837610c8c42f54be9d5fc7321 = Ubuntu 22.04 (Docker)
+    # 9e2144b837610c8c42f54be9d5fc7321 = Ubuntu 22.04 (Docker) + 'create-dave-user' script
     delete_skeleton_file .bashrc \
         cf277664b1771217d7006acdea006db1 \
         1f98b8f3f3c8f8927eca945d59dcc1c6 \
