@@ -637,13 +637,6 @@ sc() {
     esac
 }
 
-setup-docker() {
-    maybe-sudo add-apt-repository universe &&
-    maybe-sudo apt install docker.io &&
-    maybe-sudo usermod -aG docker "$USER" &&
-    exec maybe-sudo su -l "$USER"
-}
-
 status() {
     # Show the result of the last command
     local status=$?

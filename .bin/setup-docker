@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+cd "$(dirname "$0")/.."
+
+source "$HOME/.bash/color"
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Usage: $exe [options]"
+    echo
+    echo "Install Docker, Lazy Docker and Dive."
+    echo
+    echo "Options:"
+    echo "  -h, --help              display this help"
+    echo "  -r, --revert            uninstall everything"
+    echo "      --insecure-group    add the current user to the 'docker' group"
+    echo "                          https://docs.docker.com/engine/install/linux-postinstall/"
+}
+
+args=$(getopt -n "$exe" -o 'hr' -l 'insecure-group,help,revert' -- "$@")
+eval set -- "$args"
+
+insecure_group=false
+revert=false
+
+while true; do
+    case "$1" in
+        -h | --help) help; exit ;;
+        -r | --revert) shift; revert=true ;;
+        --insecure-group) shift; insecure_group=true ;;
+        --) shift; break ;;
+        *) break ;;
+    esac
+done
+
+# Make sure the 'universe' repository is enabled
+# We don't need to revert this when uninstalled
+# TODO: If I need this for any other scripts, move it into its own script
+if ! grep -q '^deb .* universe' /etc/apt/sources.list && ! $revert; then
+    color lcyan "Enabling 'universe' repository..."
+    maybe-sudo add-apt-repository --yes universe
+    echo
+fi
+
+# Docker
+if $revert; then
+    color lcyan 'Uninstalling Docker...'
+    maybe-sudo apt purge -y --auto-remove docker.io docker-compose
+else
+    color lcyan 'Installing Docker...'
+    maybe-sudo apt install -y docker.io docker-compose
+fi
+
+echo
+
+# Docker group
+if $revert; then
+    color lcyan "Deleting the 'docker' group..."
+    maybe-sudo groupdel docker || true
+    echo
+elif $insecure_group && [[ $UID -ne 0 ]]; then
+    color lcyan "Adding '$USER' to the 'docker' group..."
+    sudo usermod -aG docker "$USER"
+    echo
+fi
+
+# Lazy Docker - https://github.com/jesseduffield/lazydocker
+if ! is-executable brew; then
+    color lred "Skipped Lazy Docker because it requires Homebrew (run 'setup-brew' to install it)"
+elif $revert; then
+    color lcyan 'Uninstalling Lazy Docker...'
+    brew uninstall jesseduffield/lazydocker/lazydocker || true
+else
+    color lcyan 'Installing Lazy Docker...'
+    brew install jesseduffield/lazydocker/lazydocker
+fi
+
+echo
+
+# Dive
+if ! is-executable brew; then
+    color lred "Skipped Dive because it requires Homebrew"
+elif $revert; then
+    color lcyan 'Uninstalling Dive...'
+    brew uninstall dive || true
+else
+    color lcyan 'Installing Dive...'
+    brew install dive
+fi
+
+echo
+
+# Done
+color lcyan 'Done.'
+
+if $insecure_group && ! $revert && ! id -nG | grep -wq docker; then
+    echo
+    echo 'You may need to log out and back in to refresh your groups, or run:'
+    # shellcheck disable=SC2016
+    echo '  exec sudo su -l "$USER"'
+fi
