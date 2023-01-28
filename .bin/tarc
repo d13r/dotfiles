@@ -1,11 +1,50 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-# $source_dir = The directory to be tar'd
-source_dir=${1%/}
+# Parse arguments
+exe=$(basename "$0")
 
-# $source_name = The name of the directory to be tar'd
-source_name=$(basename "$source_dir")
+help() {
+    echo "Usage: $exe [options] [--] <directory> [target]"
+    echo
+    echo "Zip up, and optionally delete, a directory using the most efficient"
+    echo "method available (7zip, bzip, gzip, or just tar)."
+    echo
+    echo "Options:"
+    echo "      --delete, --rm  delete the directory after zipping"
+    echo "  -h, --help          display this help"
+}
+
+args=$(getopt -n "$exe" -o 'h' -l 'delete,help,rm' -- "$@")
+eval set -- "$args"
+
+delete=false
+
+while true; do
+    case "$1" in
+        -h | --help) help; exit ;;
+        --delete | --rm) shift; delete=true ;;
+        --) shift; break ;;
+        *) break ;;
+    esac
+done
+
+directory=${1:-}
+target=${2:-}
+
+if [[ -z $directory ]]; then
+    help >&2
+    exit 1
+fi
+
+if [[ ! -d $directory ]]; then
+    echo "$exe: '$directory' is not a directory"
+    exit 1
+fi
+
+# Directory name
+directory=${directory%/}
+directory_name=$(basename "$directory")
 
 # Compress if possible
 if command -v 7z &>/dev/null; then
@@ -22,20 +61,32 @@ else
     ext='.tar'
 fi
 
-# $target = Name of the target file
-target=$2
-if [[ -z "$target" ]]; then
-    target="$source_name$ext"
+# Compute target filename
+if [[ -z $target ]]; then
+    target="$directory_name$ext"
 fi
 
-# Make $target absolute not relative (unless it is already)
+# Make target absolute not relative (unless it is already)
 if [[ ${target:0:1} != '/' ]]; then
     target="$PWD/$target"
 fi
 
 # Go to the parent of the source directory, so all file names in the archive are relative to there
-cd "$source_dir/.."
+cd "$directory/.."
 
 # Create the archive
 echo "Writing to $target..."
-$cmd "$target" "$source_name"
+$cmd "$target" "$directory_name"
+
+# Sanity check
+if [[ ! -f $target ]]; then
+    echo "Failed - $target was not created" >&2
+    exit 1
+fi
+
+# Delete the directory
+if $delete; then
+    echo
+    rm -rf "$directory_name"
+    echo "Deleted $directory_name."
+fi
