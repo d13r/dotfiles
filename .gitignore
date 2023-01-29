@@ -52,7 +52,7 @@
 
 !/.minttyrc
 !/.multipass
-
+!/.pam_environment
 !/.ref
 
 !/.ssh

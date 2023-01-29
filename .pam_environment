@@ -1,0 +1,3 @@
+# Fix Firefox scaling issues
+# https://www.omgubuntu.co.uk/2022/10/fix-firefox-blurry-wayland-fonts-ubuntu
+MOZ_ENABLE_WAYLAND=1
