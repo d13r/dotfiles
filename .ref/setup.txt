@@ -1,0 +1,40 @@
+Setting up a new account:
+
+    Install Dotfiles
+    setup-identity <name> <email>
+
+Setting up a new machine:
+
+    sudo timedatectl set-timezone Europe/London
+    setup-hostname <fqdn>
+    Create a swap file
+
+On Ubuntu desktop:
+
+    Move the laucher bar
+    remap-ctrl-alt-arrow-keys
+    Configure other keys
+    Install Tweaks - remap Caps Lock, disable suspend when lid closed
+    Install Grub Customizer and tweak settings (if dual booting)
+
+    Configure Firefox
+    Install Dropbox (enable selective sync if needed)
+    Set a background image and colour scheme
+    Install KeePassXC
+    Install Authy
+    Install PhpStorm
+    Install dbeaver-ce ?
+    Install VLC ?
+
+On a non-desktop with some GUI applications installed:
+
+    disable-xdg-user-dirs
+
+For AWS CloudShell:
+
+    setup-aws-cloudshell
+
+Additional software/settings:
+
+    setup-brew
+    setup-docker
