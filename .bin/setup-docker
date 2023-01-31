@@ -27,10 +27,9 @@ revert=false
 while true; do
     case "$1" in
         -h | --help)        help; exit ;;
-        -r | --revert)      shift; revert=true ;;
-        --insecure-group)   shift; insecure_group=true ;;
+        -r | --revert)      revert=true; shift ;;
+        --insecure-group)   insecure_group=true; shift ;;
         --)                 shift; break ;;
-        *)                  break ;;
     esac
 done
 

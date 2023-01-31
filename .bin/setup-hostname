@@ -23,9 +23,8 @@ revert=false
 while true; do
     case "$1" in
         -h | --help)    help; exit ;;
-        -r | --revert)  shift; revert=true ;;
+        -r | --revert)  revert=true; shift ;;
         --)             shift; break ;;
-        *)              break ;;
     esac
 done
 
