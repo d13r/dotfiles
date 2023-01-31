@@ -13,4 +13,8 @@ if [[ -x bin/artisan ]]; then
     exec bin/artisan "$@"
 fi
 
+if [[ -x bin/php ]]; then
+    exec bin/php artisan "$@"
+fi
+
 exec php artisan "$@"
