@@ -1,0 +1,12 @@
+acs     apt search
+acsh    apt show
+agac    apt autoclean
+agar    apt autoremove
+agi     apt install
+agp     apt purge
+agr     apt remove
+agu     apt update && upgrade
+
+Note: The 'ac' prefix was originally for 'apt-cache', and 'ag' for 'apt-get',
+but now they all use the newer 'apt' command instead.
+

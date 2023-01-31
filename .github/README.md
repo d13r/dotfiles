@@ -43,13 +43,7 @@ wget djm.me/cfg
 
 ## Reference
 
-Run `ref cmd` for a list of [commands and Bash aliases](../.ref/cmd.txt).
-
-Run `ref git` for a list of [Git aliases & custom subcommands](../.ref/git.txt).
-
-Run `ref keys` for a list of [keyboard shortcuts](../.ref/keys.txt).
-
-Run `ref` for a list of [other topics](../.ref).
+Run `ref` for a list of [reference topics](../.ref), and `ref <topic>` to view one.
 
 ## Uninstalling
 

@@ -1,14 +1,4 @@
-a           webpack / gulp / npm run
 art         artisan
-
-acs         apt search              }
-acsh        apt show                } originally 'apt-cache' and 'apt-get'
-agac        apt autoclean           }
-agar        apt autoremove          }
-agi         apt install             }
-agp         apt purge               }
-agr         apt remove              }
-agu         apt update && upgrade   }
 
 b           ./bin/...
 
