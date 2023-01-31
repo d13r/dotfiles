@@ -23,7 +23,6 @@ cwp         cd wp-content/plugins/
 cwt         cd wp-content/themes/<theme>/
 cy          cypress
 
-dev         'a h' and 'phpstorm' in Tmux split panes
 dus         du -sh ... | sort -h
 
 e           $EDITOR
