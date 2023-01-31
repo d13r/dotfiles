@@ -1,0 +1,66 @@
+Basic usage:
+
+    exe=$(basename "$0")
+    args=$(getopt -n "$exe" -o 'hr' -l 'help,revert' -- "$@")
+    eval set -- "$args"
+
+    while true; do
+        case "$1" in
+            -h | --help)    help; exit ;;
+            -r | --revert)  shift; revert=true ;;
+            --)             shift; break ;;
+            *)              break ;;
+        esac
+    done
+
+Options for 'getopt':
+
+    -n  Executable name (used in error messages)
+    -o  Short options (single letters, no separator)
+    -l  Long options (comma-separated)
+
+Options with no arguments:
+
+    args=$(getopt -n "$exe" -o 'x' -l 'example' -- "$@")
+
+    example=false
+
+    while true; do
+        case "$1" in
+            -x | --example) example=true; shift ;;
+        esac
+    done
+
+    if $example; then
+        # ...
+    fi
+
+Options with required arguments:
+
+    args=$(getopt -n "$exe" -o 'x:' -l 'example:' -- "$@")
+
+    while true; do
+        case "$1" in
+            -x | --example) example="$2"; shift 2 ;;
+        esac
+    done
+
+    if [[ -v example ]]; then
+        # ...
+    fi
+
+Options with optional arguments:
+
+    args=$(getopt -n "$exe" -o 'x::' -l 'example::' -- "$@")
+
+    while true; do
+        case "$1" in
+            -x | --example) example="$2"; shift 2 ;;
+        esac
+    done
+
+    if [[ -v example ]]; then
+        # ...
+    fi
+
+Note: '-v' checks if a variable with the given name is set. It doesn't include a '$' sign.
