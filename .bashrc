@@ -1113,7 +1113,7 @@ __fzf_cd__() {
 # Load marks
 #---------------------------------------
 
-if [ -d "$HOME/.marks" ]; then
+if [[ -d "$HOME/.marks" ]]; then
     for target in $HOME/.marks/*; do
         mark=$(basename "$target")
         alias $mark="c -P $target"
