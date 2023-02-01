@@ -97,6 +97,7 @@ if is-executable batcat && ! is-executable bat; then
 fi
 
 alias cat="$HOME/.bin/bat-or-cat"
+alias certbot="$sudo certbot"
 alias chmox='chmod' # Common typo
 alias cp='cp -i'
 alias cy='cypress'
