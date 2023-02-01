@@ -12,6 +12,8 @@ Setting up a new Ubuntu machine (requires root access):
     setup-utilities
     setup-brew
     setup-git
+
+    setup-mariadb
     setup-docker
 
 On Ubuntu desktop:
