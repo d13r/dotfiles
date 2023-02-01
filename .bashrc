@@ -674,6 +674,10 @@ systemctl() {
     elif in_array '--user' "$@"; then
         # User mode (no sudo)
         command systemctl "$@"
+    elif [[ ${1:-} = 'dr' ]]; then
+        # Alias: dr=daemon-reload
+        shift
+        maybe-sudo systemctl daemon-reload "$@"
     elif [[ ${1:-} = 'log' ]]; then
         # Custom command: sc log [unit] [grep]
         if [[ -n ${3:-} ]]; then
