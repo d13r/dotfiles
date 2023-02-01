@@ -1,7 +1,7 @@
 Setting up a new account:
 
     Install Dotfiles
-    setup-identity <name> <email>
+    setup-identity <email> <name>   - if not using my defaults (e.g. at work)
 
 Setting up a new machine:
 

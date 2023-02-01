@@ -1,19 +1,27 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if [[ $# -ne 2 ]]; then
-    echo 'Usage: setup-identity <name> <email>' >&2
+if [[ -f ~/.gitconfig_local ]]; then
+    # shellcheck disable=SC2088
+    echo '~/.gitconfig_local already exists' >&2
     exit 1
 fi
 
-name=$1
-email=$2
-vim='vim:'
+if [[ $# -lt 1 ]]; then
+    echo 'Usage: setup-identity <email> [name]' >&2
+    exit 1
+fi
 
-cat >~/.gitconfig_local <<END
-[user]
-    email = $email
-    name = $name
+email=$1
+name=${2:-}
 
-# $vim ft=gitconfig
-END
+(
+    echo "[user]"
+    echo "    email = $email"
+    if [[ -n $name ]]; then
+        echo "    name = $name"
+    fi
+    echo ""
+    vim='vim:' # Stop Vim actually parsing this when editing the script
+    echo "# $vim ft=gitconfig"
+) >~/.gitconfig_local
