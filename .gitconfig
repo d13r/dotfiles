@@ -131,7 +131,7 @@
     threads = 0
 
 [pager]
-    grep = less # 16 Apr 2022: 'delta' is a little buggy and replaced "-" with ":" in some filenames
+    grep = less # 1 Feb 2023: 'delta' can't handle this format - it replaces "-" with ":" in filenames
     ls-files = true
     status = true
     tag = false
