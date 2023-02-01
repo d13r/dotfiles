@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
+source "$HOME/.bash/ask"
 source "$HOME/.bash/color"
 
 # Parse arguments
@@ -12,24 +13,20 @@ help() {
     echo "Install Docker, Lazy Docker and Dive."
     echo
     echo "Options:"
-    echo "  -h, --help              display this help"
-    echo "  -r, --revert            uninstall everything"
-    echo "      --insecure-group    add the current user to the 'docker' group"
-    echo "                          https://docs.docker.com/engine/install/linux-postinstall/"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    uninstall everything"
 }
 
 args=$(getopt -n "$exe" -o 'hr' -l 'help,insecure-group,revert' -- "$@")
 eval set -- "$args"
 
-insecure_group=false
 revert=false
 
 while true; do
     case "$1" in
-        -h | --help)        help; exit ;;
-        -r | --revert)      revert=true; shift ;;
-        --insecure-group)   insecure_group=true; shift ;;
-        --)                 shift; break ;;
+        -h | --help)    help; exit ;;
+        -r | --revert)  revert=true; shift ;;
+        --)             shift; break ;;
     esac
 done
 
@@ -54,13 +51,22 @@ fi
 echo
 
 # Docker group
+user_is_in_docker_group() {
+    id -nG | grep -wq docker
+}
+
+added_to_group=false
+
 if $revert; then
     color lcyan "Deleting the 'docker' group..."
     maybe-sudo groupdel docker || true
     echo
-elif $insecure_group && [[ $UID -ne 0 ]]; then
-    color lcyan "Adding '$USER' to the 'docker' group..."
-    sudo usermod -aG docker "$USER"
+elif ! is-root-user && ! user_is_in_docker_group; then
+    # Security info: https://docs.docker.com/engine/install/linux-postinstall/
+    color lcyan "Configuring group membership..."
+    if ask "Add '$USER' to the 'docker' group? (WARNING: This is less secure!)" N; then
+        sudo usermod -aG docker "$USER"
+    fi
     echo
 fi
 
@@ -93,7 +99,7 @@ echo
 # Done
 color lcyan 'Done.'
 
-if $insecure_group && ! $revert && ! id -nG | grep -wq docker; then
+if $added_to_group && ! user_is_in_docker_group; then
     echo
     echo 'You may need to log out and back in to refresh your groups, or run:'
     # shellcheck disable=SC2016
