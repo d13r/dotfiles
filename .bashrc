@@ -294,20 +294,12 @@ composer() {
 
 cw() {
     # cd to web root
-    if [[ -d /vagrant ]]; then
-        c /vagrant
-    elif [[ -d ~/repo ]]; then
-        c ~/repo
-    elif [[ -d /home/www ]]; then
-        c /home/www
-    elif is-root-user && [[ -d /home ]]; then
-        c /home
-    elif [[ -d /var/www ]]; then
+    if [[ -d /var/www ]]; then
         c /var/www
     elif is-wsl; then
         c "$(wsl-mydocs-path)"
     else
-        c ~
+        echo 'web root not found' >&2
     fi
 }
 
