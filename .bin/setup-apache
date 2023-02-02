@@ -32,9 +32,9 @@ done
 
 # Revert
 if $revert; then
-    # TODO
-    #sudo rm -f /etc/apache2/conf-enabled/z_dave-common.conf
-    sudo apt purge -y apache2 apache2-utils
+    sudo rm -f /etc/apache2/conf-enabled/z_dave-common.conf
+    sudo apt purge --auto-remove -y apache2 apache2-utils
+    sudo gpasswd -d "$USER" www-data
     exit
 fi
 
@@ -66,9 +66,9 @@ sudo chmod -R ug+rwX,o-rwx /var/www/
 sudo find /var/www/ /etc/apache2/sites-enabled/ -type d -exec chmod g+s '{}' +
 echo
 
-# Reload Apache
-color lcyan 'Reloading Apache...'
-sudo systemctl reload apache2
+# Restart Apache
+color lcyan 'Restarting Apache...'
+sudo systemctl restart apache2
 sudo systemctl status apache2
 echo
 
@@ -78,7 +78,7 @@ added_to_group=false
 if ! is-root-user && ! is-in-group www-data; then
     color lcyan "Configuring group membership..."
     if ask "Add '$USER' to the 'www-data' group? (WARNING: This is less secure!)" N; then
-        sudo usermod -aG www-data "$USER"
+        sudo gpasswd -a "$USER" www-data
         added_to_group=true
     fi
     echo
