@@ -51,17 +51,13 @@ fi
 echo
 
 # Docker group
-user_is_in_docker_group() {
-    id -nG | grep -wq docker
-}
-
 added_to_group=false
 
 if $revert; then
     color lcyan "Deleting the 'docker' group..."
     maybe-sudo groupdel docker || true
     echo
-elif ! is-root-user && ! user_is_in_docker_group; then
+elif ! is-root-user && ! is-in-group docker; then
     # Security info: https://docs.docker.com/engine/install/linux-postinstall/
     color lcyan "Configuring group membership..."
     if ask "Add '$USER' to the 'docker' group? (WARNING: This is less secure!)" N; then
@@ -99,7 +95,7 @@ echo
 # Done
 color lcyan 'Done.'
 
-if $added_to_group && ! user_is_in_docker_group; then
+if $added_to_group && ! is-in-group docker; then
     echo
     echo 'You may need to log out and back in to refresh your groups, or run:'
     # shellcheck disable=SC2016

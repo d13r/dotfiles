@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Usage: $exe <group>"
+    echo
+    echo "Check if the current user is in the given named group."
+}
+
+group="${1:-}"
+
+if [[ -z $group ]]; then
+    help >&2
+    exit 1
+fi
+
+id -nG | grep -wq "$group"
