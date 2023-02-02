@@ -28,7 +28,7 @@ if ! grep -q "^$user:" /etc/passwd; then
     # Setup SSH key, so I can use SSH to connect without a password, and so SSH
     # agent forwarding still works (unlike when using sudo)
     sudo mkdir "/home/$user/.ssh"
-    ssh-add -L | sudo tee "/home/$user/.ssh/authorized_keys" >/dev/null
+    ssh-add -L | sudo-write "/home/$user/.ssh/authorized_keys"
     sudo chown "$user:$user" -R "/home/$user/.ssh"
     sudo chmod go-rwx -R "/home/$user/.ssh"
 

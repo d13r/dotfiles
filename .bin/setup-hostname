@@ -55,7 +55,7 @@ hostname=${fqdn%%.*}
 if ! $revert; then
     echo 'Configuring cloud-init...'
     sudo mkdir -p /etc/cloud/cloud.cfg.d
-    echo -e 'preserve_hostname: true\nmanage_etc_hosts: false' | sudo tee /etc/cloud/cloud.cfg.d/99-static-hostname.cfg >/dev/null
+    echo -e 'preserve_hostname: true\nmanage_etc_hosts: false' | sudo-write /etc/cloud/cloud.cfg.d/99-static-hostname.cfg
 fi
 
 # Helper
@@ -65,7 +65,7 @@ update_etc_hosts() {
     if sudo grep -q '^127\.0\.1\.1 ' /etc/hosts; then
         sudo sed -i "s/^127\.0\.1\.1 .*$/$line/" /etc/hosts
     else
-        echo "$line" | sudo tee -a /etc/hosts >/dev/null
+        echo "$line" | sudo-write -a /etc/hosts
     fi
 }
 
@@ -85,7 +85,7 @@ update_etc_hosts "$fqdn $hostname"
 # /etc/mailname
 if [[ -f /etc/mailname ]]; then
     echo 'Updating /etc/mailname...'
-    echo "$fqdn" | sudo tee /etc/mailname >/dev/null
+    echo "$fqdn" | sudo-write /etc/mailname
 else
     echo "Skipping /etc/mailname as it doesn't exist."
 fi

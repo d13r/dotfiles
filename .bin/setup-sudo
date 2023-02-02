@@ -38,4 +38,4 @@ fi
     # shellcheck disable=SC2016
     echo '# Always set $HOME so Vim writes temp files to /root/.vim/ instead of (e.g.) /home/dave/.vim/'
     echo 'Defaults always_set_home'
-) | sudo tee /etc/sudoers.d/dave >/dev/null
+) | sudo-write /etc/sudoers.d/dave
