@@ -777,8 +777,8 @@ _domain-command() {
 _find-wp-content() {
     if dir=$(findup -d wp-content); then
         echo "$dir/wp-content"
-    elif dir=$(findup -d www/wp-content); then
-        echo "$dir/www/wp-content"
+    elif dir=$(findup -d public/wp-content); then
+        echo "$dir/public/wp-content"
     else
         echo "Cannot find wp-content/ directory" >&2
         return 1
