@@ -32,8 +32,8 @@ done
 
 # Revert
 if $revert; then
+    sudo apt purge --auto-remove apache2 apache2-utils
     sudo rm -f /etc/apache2/conf-enabled/z_dave-common.conf
-    sudo apt purge --auto-remove -y apache2 apache2-utils
     sudo gpasswd -d "$USER" www-data
     exit
 fi

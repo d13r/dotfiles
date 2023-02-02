@@ -1,0 +1,202 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+shopt -s nullglob
+
+source "$HOME/.bash/ask"
+source "$HOME/.bash/color"
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Usage: $exe [-d] <version>"
+    echo "       $exe -r [version]"
+    echo
+    echo "Install and configure a given version of PHP."
+    echo
+    echo "Options:"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    uninstall everything"
+}
+
+args=$(getopt -n "$exe" -o 'dhr' -l 'help,revert' -- "$@")
+eval set -- "$args"
+
+revert=false
+
+while true; do
+    case "$1" in
+        -h | --help)    help; exit ;;
+        -r | --revert)  revert=true; shift ;;
+        --)             shift; break ;;
+    esac
+done
+
+version="${1:-}"
+
+# Uninstall all versions
+if $revert && [[ -z $version ]]; then
+    color lcyan 'Removing all versions of PHP...'
+    sudo apt purge --auto-remove composer 'php-*' 'php*.*-*'
+    echo
+
+    # This isn't removed automatically (bug? - 2 Feb 2023)
+    sudo update-alternatives --remove-all php-fpm.sock || true
+    echo
+
+    color lcyan "Removing PHP PPA repository..."
+    sudo add-apt-repository -ry ppa:ondrej/php
+    echo
+
+    color lcyan 'Done.'
+    exit
+fi
+
+# Parse version
+if [[ ! $version =~ ^[0-9]+\.[0-9]+$ ]]; then
+    help >&2
+    exit 1
+fi
+
+# Uninstall given version
+if $revert; then
+    color lcyan "Removing PHP ${version}..."
+    sudo apt purge --auto-remove "php${version}-*"
+    echo
+
+    # This isn't removed automatically (bug? - 2 Feb 2023)
+    sudo update-alternatives --remove php-fpm.sock "/run/php/php${version}-fpm.sock" || true
+    echo
+
+    color lcyan 'Done.'
+    exit
+fi
+
+# Check if Apache is installed
+if is-executable a2enconf; then
+    install_fpm=true
+else
+    install_fpm=false
+    color yellow "WARNING: Apache is not installed, so PHP-FPM will be skipped. Run 'setup-apache' first if needed."
+    echo
+fi
+
+# Check if this is / should be made the default version
+set_as_default=false
+if [[ ! -f /etc/alternatives/php ]] ||
+    [[ $(readlink /etc/alternatives/php) = "/usr/bin/php${version}" ]] ||
+    ask "Set PHP ${version} as the default version?" N
+then
+    set_as_default=true
+fi
+
+# Check if Xdebug has been enabled for any PHP version
+debug_default=N
+if stat /etc/php/*/*/conf.d/*-xdebug.ini &>/dev/null; then
+    debug_default=Y
+fi
+
+# Ask if Xdebug should be enabled for this version
+enable_debugging=false
+if ask "Enable debugging?" "$debug_default"; then
+    enable_debugging=true
+fi
+echo
+
+# Add repository
+color lcyan "Configuring PHP PPA repository..."
+source /etc/lsb-release
+if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-${DISTRIB_CODENAME}.list" ]]; then
+    echo 'Already configured.'
+else
+    sudo add-apt-repository -y ppa:ondrej/php
+fi
+echo
+
+# Install PHP
+packages=(
+    composer
+    "php${version}-cli"
+    "php${version}-curl"
+    "php${version}-dev"
+    "php${version}-gd"
+    "php${version}-intl"
+    "php${version}-mbstring"
+    "php${version}-mysql"
+    "php${version}-opcache"
+    "php${version}-readline"
+    "php${version}-xml"
+)
+
+if $install_fpm; then
+    packages+=("php${version}-fpm")
+fi
+
+if $enable_debugging; then
+    packages+=("php${version}-xdebug")
+fi
+
+color lcyan "Installing PHP ${version}..."
+sudo apt install -y "${packages[@]}"
+echo
+
+# Configure PHP
+color lcyan "Configuring PHP ${version}..."
+
+if $enable_debugging; then
+    sudo-write "/etc/php/$version/mods-available/dave.ini" <~/.templates/php/php-debug.ini
+else
+    sudo apt purge --auto-remove -y "php${version}-xdebug"
+    sudo-write "/etc/php/$version/mods-available/dave.ini" <~/.templates/php/php-prod.ini
+fi
+
+sudo phpenmod -v "$version" dave
+echo
+
+if $install_fpm; then
+    sudo systemctl reload "php${version}-fpm"
+    sudo systemctl status "php${version}-fpm"
+    echo
+fi
+
+# Set as the default version
+if $set_as_default; then
+    color lcyan 'Setting the default PHP version...'
+
+    # Set the default for CLI tools
+    # https://github.com/oerdnj/deb.sury.org/wiki/Managing-Multiple-Versions
+    for target in \
+        "/usr/bin/phpX.Y" \
+        "/usr/bin/php-configX.Y" \
+        "/usr/bin/phpdbgX.Y" \
+        "/usr/bin/phpizeX.Y" \
+        "/run/php/phpX.Y-fpm.sock"
+    do
+        basename=$(basename "$target")
+        if [[ -e "${target/X.Y/$version}" ]]; then
+            sudo update-alternatives --set "${basename/X.Y}" "${target/X.Y/$version}"
+        fi
+        # Man pages
+        if [[ -e "${target/X.Y/$version}.1.gz" ]]; then
+            sudo update-alternatives --set "${basename/X.Y}.1.gz" "${target/X.Y/$version}.1.gz"
+        fi
+    done
+
+    # Set the default for Apache
+    if $install_fpm; then
+        for file in /etc/apache2/conf-enabled/php*.*-fpm.conf; do
+            file=$(basename "$file")
+            sudo a2disconf "${file/.conf}"
+        done
+
+        sudo a2enconf "php${version}-fpm"
+        echo
+        sudo systemctl reload apache2
+        sudo systemctl status apache2
+    fi
+
+    echo
+fi
+
+# Done
+color lcyan 'Done.'
