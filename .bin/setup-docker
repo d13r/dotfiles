@@ -62,6 +62,7 @@ elif ! is-root-user && ! is-in-group docker; then
     color lcyan "Configuring group membership..."
     if ask "Add '$USER' to the 'docker' group? (WARNING: This is less secure!)" N; then
         sudo usermod -aG docker "$USER"
+        added_to_group=true
     fi
     echo
 fi
