@@ -53,8 +53,21 @@ sudo a2enmod \
 echo
 
 # Global configuration
-color lcyan 'Updating /etc/apache2/conf-enabled/z_dave-common.conf...'
+color lcyan 'Updating Apache configuration...'
+
 sudo-write /etc/apache2/conf-enabled/z_dave-common.conf <~/.templates/apache/common.conf
+
+if [[ ! -f /etc/apache2/conf-enabled/z_dave-ssl.conf ]]; then
+    # This will be overwritten by 'setup-certbot'
+    sudo-write /etc/apache2/conf-enabled/z_dave-ssl.conf <~/.templates/apache/ssl-snakeoil.conf
+fi
+
+if [[ -f /etc/apache2/sites-enabled/000-default.conf && -f /etc/apache2/sites-available/default-ssl.conf ]]; then
+    # Enable the default SSL site, but use the SSL certificate defined above
+    sudo sed -Ei 's/^(\s+)(SSLCertificate)/\1#\2/' /etc/apache2/sites-available/default-ssl.conf
+    sudo a2ensite default-ssl
+fi
+
 echo
 
 # Set permissions

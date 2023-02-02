@@ -16,6 +16,7 @@ Setting up a new Ubuntu machine (requires root access):
     setup-mariadb
     setup-apache
     setup-php <version>
+    setup-certbot
     setup-docker
 
 On Ubuntu desktop:
