@@ -37,7 +37,7 @@ version="${1:-}"
 # Uninstall all versions
 if $revert && [[ -z $version ]]; then
     color lcyan 'Removing all versions of PHP...'
-    sudo apt purge --auto-remove composer 'php-*' 'php*.*-*'
+    sudo apt purge --auto-remove 'php-*' 'php*.*-*'
     echo
 
     # This isn't removed automatically (bug? - 2 Feb 2023)
@@ -46,6 +46,10 @@ if $revert && [[ -z $version ]]; then
 
     color lcyan "Removing PHP PPA repository..."
     sudo add-apt-repository -ry ppa:ondrej/php
+    echo
+
+    color lcyan "Removing Composer..."
+    sudo rm /usr/local/bin/composer /etc/cron.daily/upgrade-composer
     echo
 
     color lcyan 'Done.'
@@ -115,7 +119,6 @@ echo
 
 # Install PHP
 packages=(
-    composer
     "php${version}-cli"
     "php${version}-curl"
     "php${version}-dev"
@@ -158,6 +161,21 @@ if $install_fpm; then
     sudo systemctl status "php${version}-fpm"
     echo
 fi
+
+# Install Composer
+# The version in Ubuntu APT only works with PHP 8+
+color lcyan "Installing Composer..."
+
+if [[ -f /usr/local/bin/composer ]]; then
+    echo 'Already installed.'
+else
+    curl -sS https://getcomposer.org/installer | sudo php -- --install-dir=/usr/local/bin --filename=composer
+fi
+
+sudo-write /etc/cron.daily/upgrade-composer <~/.templates/php/upgrade-composer.sh
+sudo chmod +x /etc/cron.daily/upgrade-composer
+
+echo
 
 # Set as the default version
 if $set_as_default; then
