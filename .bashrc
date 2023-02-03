@@ -302,7 +302,9 @@ composer() {
 
 cw() {
     # cd to web root
-    if [[ -d /var/www ]]; then
+    if [[ -d ~/repo ]]; then
+        c ~/repo
+    elif [[ -d /var/www ]]; then
         c /var/www
     elif is-wsl; then
         c "$(wsl-mydocs-path)"
