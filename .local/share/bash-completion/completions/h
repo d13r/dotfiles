@@ -1,4 +1,6 @@
-__load_completion ssh
+if declare -f __load_completion &>/dev/null; then
+    __load_completion ssh
+fi
 
 if declare -f _ssh &>/dev/null; then
     shopt -u hostcomplete && complete -F _ssh h

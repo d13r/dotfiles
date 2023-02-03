@@ -31,6 +31,13 @@ BASHRC_SOURCED=true
 shopt -s extglob
 [[ -f /etc/bash_completion ]] && source /etc/bash_completion
 
+if ! declare -f _completion_loader &>/dev/null; then
+    # Lazy-load not available
+    for file in $HOME/.local/share/bash-completion/completions/*; do
+        source "$file"
+    done
+fi
+
 # fzf - fuzzy finder
 if [[ -f ~/.fzf.bash ]]; then
     # Manual install

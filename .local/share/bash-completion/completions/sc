@@ -1,8 +1,6 @@
-if ! declare -f _complete_alias &>/dev/null; then
-    source "$HOME/.bash/_complete_alias"
+if declare -f __load_completion &>/dev/null; then
+    __load_completion systemctl
 fi
-
-__load_completion systemctl
 
 if declare -f _systemctl &>/dev/null; then
     complete -F _systemctl sc
