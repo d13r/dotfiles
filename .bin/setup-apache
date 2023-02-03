@@ -46,6 +46,7 @@ echo
 # Enable modules
 color lcyan 'Enabling modules...'
 sudo a2enmod \
+    headers \
     http2 \
     proxy_fcgi \
     rewrite \
