@@ -33,6 +33,7 @@ packages='
     curl
     fzf
     httpie
+    pv
     tree
     tmux
     vim-gtk
