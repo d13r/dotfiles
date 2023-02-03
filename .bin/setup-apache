@@ -76,6 +76,7 @@ color lcyan 'Setting permissions on /var/www/ and /etc/apache2/sites-enabled/...
 # rare that I want to be able to disable a site, so the extra step isn't really necessary
 sudo chgrp -R www-data /var/www/ /etc/apache2/sites-enabled/
 sudo chmod -R ug+rwX,o-rwx /var/www/
+sudo chmod -R ug+rwX /etc/apache2/sites-enabled/
 sudo find /var/www/ /etc/apache2/sites-enabled/ -type d -exec chmod g+s '{}' +
 echo
 
