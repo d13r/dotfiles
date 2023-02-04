@@ -33,7 +33,7 @@ version="${1:-}"
 
 # Uninstall all versions
 if $revert && [[ -z $version ]]; then
-    color lcyan 'Removing all versions of PHP...'
+    style lcyan 'Removing all versions of PHP...'
     sudo apt purge --auto-remove 'php-*' 'php*.*-*'
     echo
 
@@ -41,15 +41,15 @@ if $revert && [[ -z $version ]]; then
     sudo update-alternatives --remove-all php-fpm.sock || true
     echo
 
-    color lcyan "Removing PHP PPA repository..."
+    style lcyan "Removing PHP PPA repository..."
     sudo add-apt-repository -ry ppa:ondrej/php
     echo
 
-    color lcyan "Removing Composer..."
+    style lcyan "Removing Composer..."
     sudo rm /usr/local/bin/composer /etc/cron.daily/upgrade-composer
     echo
 
-    color lcyan 'Done.'
+    style lcyan 'Done.'
     exit
 fi
 
@@ -61,7 +61,7 @@ fi
 
 # Uninstall given version
 if $revert; then
-    color lcyan "Removing PHP ${version}..."
+    style lcyan "Removing PHP ${version}..."
     sudo apt purge --auto-remove "php${version}-*"
     echo
 
@@ -69,7 +69,7 @@ if $revert; then
     sudo update-alternatives --remove php-fpm.sock "/run/php/php${version}-fpm.sock" || true
     echo
 
-    color lcyan 'Done.'
+    style lcyan 'Done.'
     exit
 fi
 
@@ -78,7 +78,7 @@ if is-executable a2enconf; then
     install_fpm=true
 else
     install_fpm=false
-    color yellow "WARNING: Apache is not installed, so PHP-FPM will be skipped. Run 'setup-apache' first if needed."
+    style yellow "WARNING: Apache is not installed, so PHP-FPM will be skipped. Run 'setup-apache' first if needed."
     echo
 fi
 
@@ -105,7 +105,7 @@ fi
 echo
 
 # Add repository
-color lcyan "Configuring PHP PPA repository..."
+style lcyan "Configuring PHP PPA repository..."
 source /etc/lsb-release
 if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-${DISTRIB_CODENAME}.list" ]]; then
     echo 'Already configured.'
@@ -136,12 +136,12 @@ if $enable_debugging; then
     packages+=("php${version}-xdebug")
 fi
 
-color lcyan "Installing PHP ${version}..."
+style lcyan "Installing PHP ${version}..."
 sudo apt install -y "${packages[@]}"
 echo
 
 # Configure PHP
-color lcyan "Configuring PHP ${version}..."
+style lcyan "Configuring PHP ${version}..."
 
 if $enable_debugging; then
     sudo-write "/etc/php/$version/mods-available/dave.ini" <~/.templates/php/php-debug.ini
@@ -161,7 +161,7 @@ fi
 
 # Install Composer
 # The version in Ubuntu APT only works with PHP 8+
-color lcyan "Installing Composer..."
+style lcyan "Installing Composer..."
 
 if [[ -f /usr/local/bin/composer ]]; then
     echo 'Already installed.'
@@ -176,7 +176,7 @@ echo
 
 # Set as the default version
 if $set_as_default; then
-    color lcyan 'Setting the default PHP version...'
+    style lcyan 'Setting the default PHP version...'
 
     # Set the default for CLI tools
     # https://github.com/oerdnj/deb.sury.org/wiki/Managing-Multiple-Versions
@@ -214,4 +214,4 @@ if $set_as_default; then
 fi
 
 # Done
-color lcyan 'Done.'
+style lcyan 'Done.'

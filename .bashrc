@@ -604,7 +604,7 @@ prevd() {
 }
 
 prompt() {
-    prompt_color=''
+    prompt_style=''
 
     while [[ -n $1 ]]; do
         case "$1" in
@@ -612,13 +612,13 @@ prompt() {
             --)         shift; break ;;
 
             # Presets
-            -l|--live)      prompt_color='bg-red' ;;
-            -s|--staging)   prompt_color='bg-yellow black' ;;
-            -d|--dev)       prompt_color='bg-green black' ;;
-            -x|--special)   prompt_color='bg-blue' ;;
+            -l|--live)      prompt_style='bg-red' ;;
+            -s|--staging)   prompt_style='bg-yellow black' ;;
+            -d|--dev)       prompt_style='bg-green black' ;;
+            -x|--special)   prompt_style='bg-blue' ;;
 
-            # Other colours/styles (see ~/.bash/color)
-            --*)            prompt_color="$prompt_color ${1:2}" ;;
+            # Other colours/styles (see ~/.bash/style)
+            --*)            prompt_style="$prompt_style ${1:2}" ;;
 
             # Finished parsing parameters
             *)              break ;;
@@ -649,9 +649,9 @@ status() {
     local status=$?
 
     if [[ $status -eq 0 ]]; then
-        color bg-lgreen black 'Success'
+        style bg-lgreen black 'Success'
     else
-        color bg-red lwhite "Failed with code $status"
+        style bg-red lwhite "Failed with code $status"
     fi
 
     return $status
@@ -784,7 +784,7 @@ _find-wp-content() {
 
 _ls-current-directory() {
     echo
-    color lwhite underline -- "$PWD"
+    style lwhite underline -- "$PWD"
     ls
 }
 
@@ -799,7 +799,7 @@ _prompt-before() {
 
     # Show the exit status for the previous command if it failed
     if [[ $status -gt 0 ]]; then
-        color bg-lred black "Exited with code $status"
+        style bg-lred black "Exited with code $status"
     fi
 
     # Leave a blank line between the previous command's output and this one
@@ -811,19 +811,19 @@ _prompt() {
     local message=${prompt_message:-$prompt_default}
     if [[ -n $message ]]; then
         local spaces=$(printf '%*s\n' $(( $COLUMNS - ${#message} - 1 )) '')
-        color lwhite bg-magenta $prompt_color -- " $message$spaces"
+        style lwhite bg-magenta $prompt_style -- " $message$spaces"
     fi
 
     # Information
-    color -n lblack '['
-    color -n lred "$USER"
-    color -n lblack '@'
-    color -n lgreen "$prompt_hostname"
-    color -n lblack ':'
+    style -n lblack '['
+    style -n lred "$USER"
+    style -n lblack '@'
+    style -n lgreen "$prompt_hostname"
+    style -n lblack ':'
     _prompt-pwd-git
-    color -n lblack ' at '
-    color -n white "$(date +%H:%M:%S)"
-    color -n lblack ']'
+    style -n lblack ' at '
+    style -n white "$(date +%H:%M:%S)"
+    style -n lblack ']'
 }
 
 _prompt-pwd-git() {
@@ -832,17 +832,17 @@ _prompt-pwd-git() {
     # Look for .git directory
     if ! root=$(findup -d .git); then
         # No .git found - just show the working directory
-        color -n lyellow "$PWD"
+        style -n lyellow "$PWD"
         return
     fi
 
     # Display working directory & highlight the git root in a different colour
     local relative=${PWD#$root}
     if [[ $relative = $PWD ]]; then
-        color -n lyellow "$PWD"
+        style -n lyellow "$PWD"
     else
-        color -n lyellow "$root"
-        color -n lcyan "$relative"
+        style -n lyellow "$root"
+        style -n lcyan "$relative"
     fi
 
     # Branch/tag/commit
@@ -852,7 +852,7 @@ _prompt-pwd-git() {
     branch_output=$(command git branch --no-color 2>&1)
     if [[ $? -eq 128 && $branch_output = *"is owned by someone else"* ]]; then
         # https://github.blog/2022-04-12-git-security-vulnerability-announced/
-        color -n lred ' (repo owned by another user)'
+        style -n lred ' (repo owned by another user)'
         return
     fi
 
@@ -861,22 +861,22 @@ _prompt-pwd-git() {
         # e.g. Before any commits are made
         branch=$(command git symbolic-ref --short HEAD 2>/dev/null)
     fi
-    color -n lblack ' on '
-    color -n lmagenta "${branch:-(unknown)}"
+    style -n lblack ' on '
+    style -n lmagenta "${branch:-(unknown)}"
 
     # Status (only the most important one, to make it easy to understand)
     if [[ -f "$root/.git/MERGE_HEAD" ]]; then
-        color -n fg-111 ' (merging)'
+        style -n fg-111 ' (merging)'
     elif [[ -f "$root/.git/rebase-apply/applying" ]]; then
-        color -n fg-111 ' (applying)'
+        style -n fg-111 ' (applying)'
     elif [[ -d "$root/.git/rebase-merge" || -d "$root/.git/rebase-apply/rebase-apply" ]]; then
-        color -n fg-111 ' (rebasing)'
+        style -n fg-111 ' (rebasing)'
     elif [[ -f "$root/.git/CHERRY_PICK_HEAD" ]]; then
-        color -n fg-111 ' (cherry picking)'
+        style -n fg-111 ' (cherry picking)'
     elif [[ -f "$root/.git/REVERT_HEAD" ]]; then
-        color -n fg-111 ' (reverting)'
+        style -n fg-111 ' (reverting)'
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
-        color -n fg-111 ' (bisecting)'
+        style -n fg-111 ' (bisecting)'
     else
         local gstatus
         gstatus=$(timeout 1 git status --porcelain=2 --branch 2>/dev/null)
@@ -891,26 +891,26 @@ _prompt-pwd-git() {
         fi
 
         if [[ $exitcode -eq 124 ]]; then
-            color -n fg-245 ' (git timeout)'
+            style -n fg-245 ' (git timeout)'
         elif [[ -n $(echo "$gstatus" | grep -v '^#' | head -1) ]]; then
-            color -n fg-111 ' (modified)'
+            style -n fg-111 ' (modified)'
         elif [[ -f "$root/.git/logs/refs/stash" ]]; then
-            color -n fg-111 ' (stashed)'
+            style -n fg-111 ' (stashed)'
         else
             local ahead behind
             read -r ahead behind <<< $(echo "$gstatus" | sed -nE 's/^# branch\.ab \+([0-9]+) \-([0-9]+)$/\1\t\2/p')
 
             if [[ $ahead -gt 0 ]]; then
                 if [[ $behind -gt 0 ]]; then
-                    color -n fg-111 ' (diverged)'
+                    style -n fg-111 ' (diverged)'
                 else
-                    color -n fg-111 " ($ahead ahead)"
+                    style -n fg-111 " ($ahead ahead)"
                 fi
             else
                 if [[ $behind -gt 0 ]]; then
-                    color -n fg-111 " ($behind behind)"
+                    style -n fg-111 " ($behind behind)"
                 elif $using_status_v2 && ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
-                    color -n fg-245 ' (no upstream)'
+                    style -n fg-245 ' (no upstream)'
                 fi
             fi
         fi
@@ -1014,20 +1014,20 @@ _update-dpi
 # Prompt
 #---------------------------------------
 
-# Load 'color' as a function to avoid the overhead of calling a script every time we draw the prompt
-source "$HOME/.bash/color"
+# Load 'style' as a function to avoid the overhead of calling a script every time we draw the prompt
+source "$HOME/.bash/style"
 
 PROMPT_COMMAND='_prompt-before'
 # Note: $() doesn't work here in Git Bash
 PS1='`_prompt`\n\[\e[91m\]$\[\e[0m\] '
 
-prompt_color=''
+prompt_style=''
 prompt_command=''
 prompt_default=''
 prompt_message=''
 
 if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
-    prompt_color='bg-red'
+    prompt_style='bg-red'
     prompt_default='Logged in as ROOT!'
 fi
 
@@ -1138,7 +1138,7 @@ if is-wsl; then
         rm -f $WIN_APPDATA_UNIX/wsltty/config
         cp $HOME/.minttyrc $WIN_APPDATA_UNIX/wsltty/config
         echo
-        color bg-yellow black 'WSLtty config updated - please reload it'
+        style bg-yellow black 'WSLtty config updated - please reload it'
     fi
 fi
 

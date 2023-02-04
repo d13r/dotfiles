@@ -127,7 +127,7 @@ if is-wsl 1; then
     # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
     if [[ ! -f ~/.ssh/wsl-ssh-pageant.exe ]]; then
         echo
-        color lblue 'Downloading wsl-ssh-pageant...'
+        style lblue 'Downloading wsl-ssh-pageant...'
         curl -L 'https://github.com/benpye/wsl-ssh-pageant/releases/download/20201121.2/wsl-ssh-pageant-amd64.exe' > ~/.ssh/wsl-ssh-pageant.exe
     fi
 
@@ -150,7 +150,7 @@ elif is-wsl 2; then
     # wsl2-ssh-pageant - https://github.com/BlackReloaded/wsl2-ssh-pageant
     if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
         echo
-        color lblue 'Downloading wsl2-ssh-pageant...'
+        style lblue 'Downloading wsl2-ssh-pageant...'
         curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.3.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
     fi
 
@@ -159,7 +159,7 @@ elif is-wsl 2; then
         export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
         if ! is-executable socat; then
             echo
-            color lblue 'Installing socat for wsl2-ssh-pageant...'
+            style lblue 'Installing socat for wsl2-ssh-pageant...'
             sudo apt-get install socat
         fi
         if ! ss -a | grep -q $SSH_AUTH_SOCK; then

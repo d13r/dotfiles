@@ -36,12 +36,12 @@ if $revert; then
 fi
 
 # Install
-color lcyan 'Installing Apache...'
+style lcyan 'Installing Apache...'
 sudo apt install -y apache2 apache2-utils
 echo
 
 # Enable modules
-color lcyan 'Enabling modules...'
+style lcyan 'Enabling modules...'
 sudo a2enmod \
     headers \
     http2 \
@@ -51,7 +51,7 @@ sudo a2enmod \
 echo
 
 # Global configuration
-color lcyan 'Updating Apache configuration...'
+style lcyan 'Updating Apache configuration...'
 
 sudo-write /etc/apache2/conf-enabled/z_dave-common.conf <~/.templates/apache/common.conf
 
@@ -69,7 +69,7 @@ fi
 echo
 
 # Set permissions
-color lcyan 'Setting permissions on /var/www/ and /etc/apache2/sites-enabled/...'
+style lcyan 'Setting permissions on /var/www/ and /etc/apache2/sites-enabled/...'
 # Note: I put config files directly into sites-enabled, not sites-available, because it's so
 # rare that I want to be able to disable a site, so the extra step isn't really necessary
 sudo chgrp -R www-data /var/www/ /etc/apache2/sites-enabled/
@@ -79,7 +79,7 @@ sudo find /var/www/ /etc/apache2/sites-enabled/ -type d -exec chmod g+s '{}' +
 echo
 
 # Restart Apache
-color lcyan 'Restarting Apache...'
+style lcyan 'Restarting Apache...'
 sudo systemctl restart apache2
 sudo systemctl status apache2
 echo
@@ -88,7 +88,7 @@ echo
 added_to_group=false
 
 if ! is-root-user && ! is-in-group www-data; then
-    color lcyan "Configuring group membership..."
+    style lcyan "Configuring group membership..."
     if ask "Add '$USER' to the 'www-data' group? (WARNING: This is less secure!)" N; then
         sudo gpasswd -a "$USER" www-data
         added_to_group=true
@@ -97,7 +97,7 @@ if ! is-root-user && ! is-in-group www-data; then
 fi
 
 # Done
-color lcyan 'Done.'
+style lcyan 'Done.'
 
 if $added_to_group && ! is-in-group www-data; then
     echo

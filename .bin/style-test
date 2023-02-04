@@ -3,13 +3,13 @@ set -o errexit -o nounset -o pipefail
 
 # Load the function version to avoid the overhead of calling a script
 # This reduces runtime from ~7s to ~3s
-source "$HOME/.bash/color"
+source "$HOME/.bash/style"
 
 colors='black red green yellow blue magenta cyan white'
 
 heading() {
     echo
-    color lyellow underline -- "$(printf ' %-142s ' "$1")"
+    style lyellow underline -- "$(printf ' %-142s ' "$1")"
     echo
 }
 
@@ -20,19 +20,19 @@ color-range() {
     for color in $colors; do
         echo -n ' '
         color=$prefix$color
-        color -n "$@" "$color" -- "$(printf '%-11s' "$color")"
+        style -n "$@" "$color" -- "$(printf '%-11s' "$color")"
     done
 }
 
 heading 'Foreground'
 color-range '' bg-auto
-echo " - $(color lyellow -- bg-auto)"
+echo " - $(style lyellow -- bg-auto)"
 color-range 'l' bg-auto
 echo
 
 heading 'Background'
 color-range 'bg-' fg-auto
-echo " - $(color lyellow -- fg-auto)"
+echo " - $(style lyellow -- fg-auto)"
 color-range 'bg-l' fg-auto
 echo
 
@@ -40,15 +40,15 @@ heading 'Styles'
 for style in bold dim italic underline blink rapidblink reverse hide strike; do
     color-range '' bg-auto $style
     echo -n ' - '
-    color lyellow -- "$(printf '%-10s' $style)"
+    style lyellow -- "$(printf '%-10s' $style)"
 done
 
 color-cube() {
     local type=$1
     shift
 
-    for color in $@; do
-        color -n fg-auto bg-auto $type-$color -- "$(printf ' %-6s ' "$type-$color")"
+    for color in "$@"; do
+        style -n fg-auto bg-auto $type-$color -- "$(printf ' %-6s ' "$type-$color")"
     done
     echo
 }

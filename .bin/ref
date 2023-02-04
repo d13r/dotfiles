@@ -4,9 +4,9 @@ set -o errexit -o nounset -o pipefail
 topic=${1:-}
 
 if [[ -z $topic ]]; then
-    echo "$(color lwhite Usage:) ref <topic> [edit|delete]"
+    echo "$(style lwhite Usage:) ref <topic> [edit|delete]"
     echo
-    color lyellow 'Topics:'
+    style lyellow 'Topics:'
     cd $HOME/.ref
     for file in *.txt; do
         echo "${file//.txt}"
@@ -15,17 +15,17 @@ if [[ -z $topic ]]; then
 fi
 
 if [[ ! $topic =~ ^[a-z0-9-]+$ ]]; then
-    color lred "Invalid topic name '$topic'"
+    style lred "Invalid topic name '$topic'"
     exit 1
 fi
 
 if [[ ${2:-} = 'edit' ]]; then
     e "$HOME/.ref/$topic.txt"
 elif [[ ! -f "$HOME/.ref/$topic.txt" ]]; then
-    color lred 'Not Found'
+    style lred 'Not Found'
 elif [[ ${2:-} = 'delete' ]]; then
     rm -f "$HOME/.ref/$topic.txt"
-    color lgreen 'Deleted'
+    style lgreen 'Deleted'
 else
     bat-or-cat "$HOME/.ref/$topic.txt"
 fi

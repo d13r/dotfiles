@@ -2,8 +2,8 @@
 
 # This is implemented as a function not a script because it runs many times per
 # prompt, and we don't want any extra overhead (timed at 0m0.016s per call).
-# For easy use, there is also a script in .bin/color that uses this function.
-color() {
+# For easy use, there is also a script in .bin/style that uses this function.
+style() {
 
     # Disable trailing new line?
     local newline=true
@@ -13,7 +13,7 @@ color() {
     fi
 
     # Save the original parameters
-    local args=( "$@" )
+    local args=("$@")
 
     # Help Bash calculate the correct prompt size (Note: "\[" doesn't work here)
     # This doesn't work in Windows Terminal
@@ -24,18 +24,18 @@ color() {
 
     # Output ANSI codes and text
     while [ $# -gt 0 ]; do
-        local color=$1
+        local style=$1
 
         # Automatically calculate the inverse colour, if required
         # Warning: This is relative slow (10ms) so don't use it unless necessary
-        # It is mainly here for use in the 'color-test' script
-        if [[ $color = 'fg-auto' ]]; then
-            color="fg-$(_color-inverse fg lwhite "${args[@]}")"
-        elif [[ $color = 'bg-auto' ]]; then
-            color="bg-$(_color-inverse bg black "${args[@]}")"
+        # It is mainly here for use in the 'style-test' script
+        if [[ $style = 'fg-auto' ]]; then
+            style="fg-$(_color-inverse fg lwhite "${args[@]}")"
+        elif [[ $style = 'bg-auto' ]]; then
+            style="bg-$(_color-inverse bg black "${args[@]}")"
         fi
 
-        case "$color" in
+        case "$style" in
 
             bold)                   echo -en "\e[1m" ;; # May do the same as the "l" colours, or may actually be bold
             dim)                    echo -en "\e[2m" ;;
@@ -120,8 +120,8 @@ _color-inverse() {
     local inverse=$2
     shift 2
 
-    for color in $@; do
-        case "$color" in
+    for style in "$@"; do
+        case "$style" in
 
             bg-auto|fg-auto) ;;
             bold|dim|italic|underline|blink|rapidblink|reverse|hide|strike) ;;
@@ -144,8 +144,8 @@ _color-inverse() {
             fg-lcyan|lcyan)         [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 14);;
             fg-lwhite|lwhite)       [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg 15);;
 
-            fg-?|fg-??|fg-???)      [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg ${color:3}) ;;
-            fg-??????)              [[ $type = bg ]] && inverse=$(_color-contrast-hex bg "${color:3}") ;;
+            fg-?|fg-??|fg-???)      [[ $type = bg ]] && inverse=$(_color-contrast-ansi bg ${style:3}) ;;
+            fg-??????)              [[ $type = bg ]] && inverse=$(_color-contrast-hex bg "${style:3}") ;;
 
             bg-black)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 0) ;;
             bg-red)                 [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 1) ;;
@@ -165,8 +165,8 @@ _color-inverse() {
             bg-lcyan)               [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 14) ;;
             bg-lwhite)              [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg 15) ;;
 
-            bg-?|bg-??|bg-???)      [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg ${color:3}) ;;
-            bg-??????)              [[ $type = fg ]] && inverse=$(_color-contrast-hex fg "${color:3}") ;;
+            bg-?|bg-??|bg-???)      [[ $type = fg ]] && inverse=$(_color-contrast-ansi fg ${style:3}) ;;
+            bg-??????)              [[ $type = fg ]] && inverse=$(_color-contrast-hex fg "${style:3}") ;;
 
             *)                      break ;;
 
@@ -180,11 +180,11 @@ _color-inverse() {
 # (c) Tom Hale, 2016. MIT Licence
 _color-contrast-ansi() {
     local type=$1
-    local color=$2
+    local style=$2
 
     # Initial 16 ANSI colours
-    if (( color < 16 )); then
-        case "$color" in
+    if (( style < 16 )); then
+        case "$style" in
             0)  _color-contrast-rgb $type    0    0    0  ;; # black
             1)  _color-contrast-rgb $type  191    0    0  ;; # red
             2)  _color-contrast-rgb $type    0  191    0  ;; # green
@@ -208,8 +208,8 @@ _color-contrast-ansi() {
 
     # Greyscale
     local r g b
-    if (( color > 231 )); then
-        r=$(( ((color-232) * 11) + 1 ))
+    if (( style > 231 )); then
+        r=$(( ((style-232) * 11) + 1 ))
         g=$r
         b=$r
     else
@@ -217,9 +217,9 @@ _color-contrast-ansi() {
         # 6x6x6 colour cube = 16 + 36*R + 6*G + B  # Where RGB are [0..5]
         # See http://stackoverflow.com/a/27165165/5353461
         # That makes each be in the range 0..5, and we need to convert to 0..255
-        r=$(( 51 * (color-16) / 36 ))
-        g=$(( 51 * ((color-16) % 36) / 6 ))
-        b=$(( 51 * (color-16) % 6 ))
+        r=$(( 51 * (style-16) / 36 ))
+        g=$(( 51 * ((style-16) % 36) / 6 ))
+        b=$(( 51 * (style-16) % 6 ))
     fi
 
     _color-contrast-rgb $type $r $g $b
@@ -245,7 +245,7 @@ _color-contrast-rgb() {
     local luminance=$(( ($r * 299) + ($g * 587) + ($b * 114) ))
 
     # Calculate percieved brightness
-    # See https://www.w3.org/TR/AERT#color-contrast and http://www.itu.int/rec/R-REC-BT.601
+    # See https://www.w3.org/TR/AERT#style-contrast and http://www.itu.int/rec/R-REC-BT.601
     # Luminance range is 0..255000
     local cutoff=127500
     if [[ $type = bg ]]; then

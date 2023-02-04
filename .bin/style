@@ -2,5 +2,5 @@
 set -o errexit -o nounset -o pipefail
 
 # Call the function version
-source "$HOME/.bash/color"
-color "$@"
+source "$HOME/.bash/style"
+style "$@"

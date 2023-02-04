@@ -27,12 +27,12 @@ fi
 date +%Y%m%d > ~/.local/dotfiles-last-auto-update
 
 # Run the post-update script too
-color lblue 'Running post-update script...'
+style lblue 'Running post-update script...'
 ~/.dotfiles/post-update "$@"
 
 # Fix WSL permissions (defaults to umask 000)
 if is-wsl; then
-    color lblue 'Fixing WSL permissions'
+    style lblue 'Fixing WSL permissions'
     umask 002
     chmod o-w -R "$HOME"
 
@@ -44,6 +44,6 @@ fi
 
 # Reload Bash
 if $interactive; then
-    color lblue 'Reloading Bash...'
+    style lblue 'Reloading Bash...'
     # See EXIT trap above
 fi

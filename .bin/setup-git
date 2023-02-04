@@ -29,12 +29,12 @@ done
 
 # Lazy Git - https://github.com/jesseduffield/lazygit
 if ! is-executable brew; then
-    color lred "Skipped Lazy Git because it requires Homebrew (run 'setup-brew' to install it)"
+    style lred "Skipped Lazy Git because it requires Homebrew (run 'setup-brew' to install it)"
 elif $revert; then
-    color lcyan 'Uninstalling Lazy Git...'
+    style lcyan 'Uninstalling Lazy Git...'
     brew uninstall jesseduffield/lazygit/lazygit || true
 else
-    color lcyan 'Installing Lazy Git...'
+    style lcyan 'Installing Lazy Git...'
     brew install jesseduffield/lazygit/lazygit
 fi
 
@@ -42,16 +42,16 @@ echo
 
 # Delta - https://github.com/dandavison/delta
 if ! is-executable brew; then
-    color lred "Skipped Delta because it requires Homebrew (run 'setup-brew' to install it)"
+    style lred "Skipped Delta because it requires Homebrew (run 'setup-brew' to install it)"
 elif $revert; then
-    color lcyan 'Uninstalling Delta...'
+    style lcyan 'Uninstalling Delta...'
     brew uninstall git-delta || true
 else
-    color lcyan 'Installing Delta...'
+    style lcyan 'Installing Delta...'
     brew install git-delta
 fi
 
 echo
 
 # Done
-color lcyan 'Done.'
+style lcyan 'Done.'

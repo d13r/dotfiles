@@ -54,7 +54,7 @@ show_binding() {
 }
 
 show_bindings() {
-    color lwhite bold underline "$1"
+    style lwhite bold underline "$1"
     for_each_binding show_binding | column -ts $'\t'
 }
 

@@ -4,18 +4,18 @@ set -o errexit -o nounset -o pipefail
 branch=$(git branch --show-current)
 
 if [[ $branch != 'main' && $branch != 'master' ]]; then
-    color lred 'The master branch is not checked out' >&2
+    style lred 'The master branch is not checked out' >&2
     exit 1
 fi
 
 if [[ $branch != 'main' ]]; then
-    color lblue 'Renaming to main...'
+    style lblue 'Renaming to main...'
     git branch -m master main
     echo
 fi
 
-color lblue 'Fetching origin (if configured)...'
+style lblue 'Fetching origin (if configured)...'
 git fetch origin
 echo
-color lblue 'Setting upstream branch (if configured)...'
+style lblue 'Setting upstream branch (if configured)...'
 git branch -u origin/main

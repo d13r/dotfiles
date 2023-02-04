@@ -3,7 +3,7 @@ set -o errexit -o nounset -o pipefail
 
 list-instances() {
     instances=$(multipass list)
-    color lwhite -- "$(echo "$instances" | head -n1)"
+    style lwhite -- "$(echo "$instances" | head -n1)"
     echo "$instances" | tail -n+2
 }
 
@@ -29,18 +29,18 @@ read-name() {
 case "${1:-}" in
 
     '') # Help
-        color lcyan 'Multipass Shortcuts'
-        echo "$(color lwhite 'mp l  [name]')  Launch a new instance with sensible defaults"
-        echo "$(color lwhite 'mp h  [name]')  SSH to the given instance"
-        echo "$(color lwhite 'mp d  [name]')  Suspend a running instance (down)"
-        echo "$(color lwhite 'mp u  [name]')  Resume a stopped instance (up)"
-        echo "$(color lwhite 'mp rm [name]')  Delete & purge instance (or --all)"
+        style lcyan 'Multipass Shortcuts'
+        echo "$(style lwhite 'mp l  [name]')  Launch a new instance with sensible defaults"
+        echo "$(style lwhite 'mp h  [name]')  SSH to the given instance"
+        echo "$(style lwhite 'mp d  [name]')  Suspend a running instance (down)"
+        echo "$(style lwhite 'mp u  [name]')  Resume a stopped instance (up)"
+        echo "$(style lwhite 'mp rm [name]')  Delete & purge instance (or --all)"
         echo
-        echo "The default name is '$(color lwhite 'primary')'."
+        echo "The default name is '$(style lwhite 'primary')'."
         echo
-        echo "To list other commands run '$(color lwhite 'mp help')'."
+        echo "To list other commands run '$(style lwhite 'mp help')'."
         echo
-        color lcyan 'Current instances'
+        style lcyan 'Current instances'
         list-instances
         ;;
 

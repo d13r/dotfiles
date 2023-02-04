@@ -11,11 +11,11 @@ if ! is-root-user; then
     exec sudo --preserve-env=SSH_AUTH_SOCK "$0" "$@"
 fi
 
-# Can't use $HOME here
-source "$(dirname "$0")/../.bash/color"
+# Can't use $HOME here or assume it is in the path
+source "$(dirname "$0")/../.bash/style"
 
 # Create user
-color lgreen 'Creating user...'
+style lgreen 'Creating user...'
 useradd \
     --comment "Dave James Miller" \
     --create-home \
@@ -25,20 +25,20 @@ useradd \
     dave
 
 # Copy SSH key
-color lgreen 'Installing SSH key...'
+style lgreen 'Installing SSH key...'
 umask 077
 mkdir ~dave/.ssh
 ssh-add -L >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
 # Prepare dotfiles
-color lgreen 'Preparing dotfiles installer...'
+style lgreen 'Preparing dotfiles installer...'
 echo '[[ ! -d .git ]] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
 chown dave:dave ~dave/.bashrc
 
 # Prompt for a password
-color lgreen 'Setting password...'
+style lgreen 'Setting password...'
 passwd dave
 
 # Done
-color lgreen 'Done.'
+style lgreen 'Done.'
