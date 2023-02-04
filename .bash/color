@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# This is implemented as a function not a command because it runs many times per
-# prompt, and we don't want any extra overhead (timed at 0m0.016s per call)
+# This is implemented as a function not a script because it runs many times per
+# prompt, and we don't want any extra overhead (timed at 0m0.016s per call).
+# For easy use, there is also a script in .bin/color that uses this function.
 color() {
 
     # Disable trailing new line?

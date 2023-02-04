@@ -2,8 +2,6 @@
 set -o errexit -o nounset -o pipefail
 shopt -s nullglob
 
-source "$HOME/.bash/color"
-
 # Parse arguments
 exe=$(basename "$0")
 

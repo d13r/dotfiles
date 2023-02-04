@@ -122,8 +122,6 @@ fi
 # SSH agent
 #---------------------------------------
 
-source "$HOME/.bash/color"
-
 if is-wsl 1; then
 
     # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant

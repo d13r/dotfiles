@@ -2,7 +2,6 @@
 set -o errexit -o nounset -o pipefail
 
 cd
-source "$HOME/.bash/color"
 
 # Disable auto-update inside Docker containers because they are generally immutable
 if [[ -f /.dockerenv ]]; then

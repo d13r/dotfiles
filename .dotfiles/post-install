@@ -14,8 +14,6 @@ fi
 
 PATH="$HOME/.bin:$PATH"
 
-source "$HOME/.bash/color"
-
 # Reload tmux config
 if $interactive && [[ -n ${TMUX:-} ]]; then
     tmux move-window -t 1 2>/dev/null || true # Change from 0 to 1

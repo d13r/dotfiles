@@ -612,16 +612,16 @@ prompt() {
             --)         shift; break ;;
 
             # Presets
-            -l|--live)     prompt_color='bg-red' ;;
-            -s|--staging)  prompt_color='bg-yellow black' ;;
-            -d|--dev)      prompt_color='bg-green black' ;;
-            -x|--special)  prompt_color='bg-blue' ;;
+            -l|--live)      prompt_color='bg-red' ;;
+            -s|--staging)   prompt_color='bg-yellow black' ;;
+            -d|--dev)       prompt_color='bg-green black' ;;
+            -x|--special)   prompt_color='bg-blue' ;;
 
             # Other colours/styles (see ~/.bash/color)
-            --*)        prompt_color="$prompt_color ${1:2}" ;;
+            --*)            prompt_color="$prompt_color ${1:2}" ;;
 
             # Finished parsing parameters
-            *)          break ;;
+            *)              break ;;
         esac
 
         shift
@@ -743,9 +743,6 @@ yarn() {
 #---------------------------------------
 # Helper functions
 #---------------------------------------
-
-# These are in separate files because they are used by other scripts too
-source "$HOME/.bash/color"
 
 _dirhistory-push-future() {
     if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then
@@ -1016,6 +1013,9 @@ _update-dpi
 #---------------------------------------
 # Prompt
 #---------------------------------------
+
+# Load 'color' as a function to avoid the overhead of calling a script every time we draw the prompt
+source "$HOME/.bash/color"
 
 PROMPT_COMMAND='_prompt-before'
 # Note: $() doesn't work here in Git Bash

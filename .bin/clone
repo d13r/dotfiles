@@ -17,7 +17,5 @@ else
     repo="git@github.com:d13r/$repo.git"
 fi
 
-source "$HOME/.bash/color"
-
 color lblue "$repo"
 exec git clone "$repo" "$@"
