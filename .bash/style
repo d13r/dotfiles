@@ -23,7 +23,7 @@ style() {
     echo -en "\e[0m"
 
     # Output ANSI codes and text
-    while [ $# -gt 0 ]; do
+    while [[ $# -gt 0 ]]; do
         local style=$1
 
         # Automatically calculate the inverse colour, if required
