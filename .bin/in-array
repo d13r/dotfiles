@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# https://stackoverflow.com/a/8574392/167815
+match=${1:-}
+shift
+
+for element; do
+    [[ "$element" == "$match" ]] && exit 0
+done
+
+exit 1

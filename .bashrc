@@ -673,7 +673,7 @@ systemctl() {
     if [[ -n ${COMP_WORDS:-} ]]; then
         # Bash completion (no sudo because it would interrupt the prompt asking for a password)
         command systemctl "$@"
-    elif in_array '--user' "$@"; then
+    elif in-array '--user' "$@"; then
         # User mode (no sudo)
         command systemctl "$@"
     elif [[ ${1:-} = 'dr' ]]; then
@@ -746,7 +746,6 @@ yarn() {
 
 # These are in separate files because they are used by other scripts too
 source "$HOME/.bash/color"
-source "$HOME/.bash/in_array"
 
 _dirhistory-push-future() {
     if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then
