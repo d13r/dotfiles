@@ -745,7 +745,6 @@ yarn() {
 #---------------------------------------
 
 # These are in separate files because they are used by other scripts too
-source "$HOME/.bash/ask"
 source "$HOME/.bash/color"
 source "$HOME/.bash/in_array"
 

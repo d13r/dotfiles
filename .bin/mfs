@@ -8,8 +8,6 @@ fi
 
 cd "$dir"
 
-source "$HOME/.bash/ask"
-
 if ! ask 'This will drop and rebuild the database - are you sure?'; then
     exit 1
 fi

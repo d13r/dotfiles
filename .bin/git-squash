@@ -32,8 +32,6 @@ if [ -z "$commits" ]; then
 fi
 
 # Confirmation
-source "$HOME/.bash/ask"
-
 echo
 echo "The following commits will be squashed:"
 echo "$commits" | sed "s/^/    /"

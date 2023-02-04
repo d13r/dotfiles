@@ -13,7 +13,6 @@
 (
     # Confirm
     if [[ ${FORCE_DOTFILES_UNINSTALL:-} != 1 ]]; then
-        source "$HOME/.bash/ask"
         ask 'Are you sure you want to UNINSTALL DOTFILES?' n || exit
     fi
 
