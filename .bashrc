@@ -609,7 +609,7 @@ prompt() {
     while [[ -n $1 ]]; do
         case "$1" in
             # Stop parsing parameters
-            --)         shift; break ;;
+            --)             shift; break ;;
 
             # Presets
             -l|--live)      prompt_style='bg-red' ;;
@@ -633,14 +633,14 @@ prompt() {
 sc() {
     case "${1:-}" in
         d|down) shift; systemctl stop "$@" ;;
-        e) shift; systemctl edit "$@" ;;
-        l) shift; systemctl log "$@" ;;
-        r) shift; systemctl reload-or-restart "$@" ;;
-        rl) shift; systemctl reload "$@" ;;
-        rs) shift; systemctl restart "$@" ;;
-        s) shift; systemctl status "$@" ;;
-        u|up) shift; systemctl start "$@" ;;
-        *) systemctl "$@"
+        e)      shift; systemctl edit "$@" ;;
+        l)      shift; systemctl log "$@" ;;
+        r)      shift; systemctl reload-or-restart "$@" ;;
+        rl)     shift; systemctl reload "$@" ;;
+        rs)     shift; systemctl restart "$@" ;;
+        s)      shift; systemctl status "$@" ;;
+        u|up)   shift; systemctl start "$@" ;;
+        *)             systemctl "$@"
     esac
 }
 
