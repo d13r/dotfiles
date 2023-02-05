@@ -285,5 +285,15 @@ _color-inverse-rgb() {
         cutoff=50000
     fi
 
-    (( luminance > cutoff )) && echo black || echo lwhite
+    local dark='black'
+    local light='lwhite'
+    if [[ $type = 'bg' ]]; then
+        light='white'
+    fi
+
+    if (( luminance > cutoff )); then
+        echo "$dark"
+    else
+        echo "$light"
+    fi
 }

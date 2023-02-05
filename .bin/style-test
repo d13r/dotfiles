@@ -23,7 +23,7 @@ assert-style() {
     if [[ "$result" = "$expected" ]]; then
         echo -e "\e[92m[ OK ]\e[0m $result"
     else
-        echo -e "\e[91m[Fail]\e[0m Result '$result' doesn't match expectation '$expected' (\e[90m${expected//$'\e'/\\\\e}\e[0m)"
+        echo -e "\e[91m[FAIL]\e[0m Result '$result' (\e[90m${result//$'\e'/\\\\e}\e[0m) doesn't match expectation '$expected'"
         assertions_passed=false
     fi
 }
@@ -59,7 +59,7 @@ assert-style 'style lwhite "Quoted  Text"' $'\e[0m\e[97mQuoted  Text\e[0m'
 assert-style 'style fg=auto,bg=blue Auto foreground white on blue' $'\e[0m\e[97m\e[44mAuto foreground white on blue\e[0m'
 assert-style 'style fg=auto,bg=lyellow Auto foreground black on yellow' $'\e[0m\e[30m\e[103mAuto foreground black on yellow\e[0m'
 assert-style 'style lyellow,bg=auto Auto background yellow on black' $'\e[0m\e[93m\e[40mAuto background yellow on black\e[0m'
-assert-style 'style black,bg=auto Auto background black on white' $'\e[0m\e[30m\e[107mAuto background black on white\e[0m'
+assert-style 'style black,bg=auto Auto background black on white' $'\e[0m\e[30m\e[47mAuto background black on white\e[0m'
 assert-style 'style red,underline,bg=auto Auto background red underline' $'\e[0m\e[31m\e[4m\e[40mAuto background red underline\e[0m'
 
 if ! $assertions_passed; then
