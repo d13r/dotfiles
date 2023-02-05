@@ -2,8 +2,8 @@
 #================================================================================
 #
 # USAGE:
-#   wget djm.me/cfg
-#   . cfg
+#   wget djm.me/dot
+#   . dot
 #
 # MORE INFORMATION:
 #   https://github.com/d13r/dotfiles
@@ -43,7 +43,7 @@
     }
 
     # Sanity checks
-    [[ -f cfg ]] || fail 'This script must be named ~/cfg'
+    [[ -f dot ]] || fail 'This script must be named ~/dot'
     [[ -d .git ]] && fail '~/.git already exists'
 
     # Check git is available
@@ -166,8 +166,8 @@
 
     # Remove this script
     # (Note: $0 is not set because we 'source' this file)
-    say "Removing the 'cfg' bootstrap script..."
-    rm -f cfg
+    say "Removing the 'dot' bootstrap script..."
+    rm -f dot
 
     # Run any post-install commands, e.g. prepare config file
     say 'Running post-install script...'
