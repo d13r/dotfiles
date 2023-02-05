@@ -2,12 +2,14 @@
 set -o errexit -o nounset -o pipefail
 
 # git pu = Push Upstream (push current branch and set as upstream)
-url=${1:-}
+remote=${1:-origin}
+branch=${2:-HEAD}
 
-if [[ -n $url ]]; then
-    # Set origin to the specified URL
+# Set origin to the specified URL
+if [[ $remote = *:* ]]; then
     git remote rm origin 2>/dev/null || true
-    git remote add origin "$url"
+    git remote add origin "$remote"
+    remote='origin'
 fi
 
-exec git push -u origin HEAD
+exec git push -u "$remote" "$branch"
