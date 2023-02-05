@@ -612,13 +612,13 @@ prompt() {
             --)             shift; break ;;
 
             # Presets
-            -l|--live)      prompt_style='bg-red' ;;
-            -s|--staging)   prompt_style='bg-yellow black' ;;
-            -d|--dev)       prompt_style='bg-green black' ;;
-            -x|--special)   prompt_style='bg-blue' ;;
+            -l|--live)      prompt_style='bg=red' ;;
+            -s|--staging)   prompt_style='bg=yellow,fg=black' ;;
+            -d|--dev)       prompt_style='bg=green,fg=black' ;;
+            -x|--special)   prompt_style='bg=blue' ;;
 
-            # Other colours/styles (see ~/.bash/style)
-            --*)            prompt_style="$prompt_style ${1:2}" ;;
+            # Other colours/styles (e.g. '--bg=red' - see ~/.bash/style)
+            --*)            prompt_style="$prompt_style,${1:2}" ;;
 
             # Finished parsing parameters
             *)              break ;;
@@ -649,9 +649,9 @@ status() {
     local status=$?
 
     if [[ $status -eq 0 ]]; then
-        style bg-lgreen black 'Success'
+        style bg=lgreen,fg=black 'Success'
     else
-        style bg-red lwhite "Failed with code $status"
+        style bg=red,fg=lwhite "Failed with code $status"
     fi
 
     return $status
@@ -784,7 +784,7 @@ _find-wp-content() {
 
 _ls-current-directory() {
     echo
-    style lwhite underline -- "$PWD"
+    style lwhite,underline "$PWD"
     ls
 }
 
@@ -799,7 +799,7 @@ _prompt-before() {
 
     # Show the exit status for the previous command if it failed
     if [[ $status -gt 0 ]]; then
-        style bg-lred black "Exited with code $status"
+        style bg=lred,fg=black "Exited with code $status"
     fi
 
     # Leave a blank line between the previous command's output and this one
@@ -811,7 +811,7 @@ _prompt() {
     local message=${prompt_message:-$prompt_default}
     if [[ -n $message ]]; then
         local spaces=$(printf '%*s\n' $(( $COLUMNS - ${#message} - 1 )) '')
-        style lwhite bg-magenta $prompt_style -- " $message$spaces"
+        style "bg=magenta,fg=lwhite,$prompt_style" " $message$spaces"
     fi
 
     # Information
@@ -866,17 +866,17 @@ _prompt-pwd-git() {
 
     # Status (only the most important one, to make it easy to understand)
     if [[ -f "$root/.git/MERGE_HEAD" ]]; then
-        style -n fg-111 ' (merging)'
+        style -n fg=111 ' (merging)'
     elif [[ -f "$root/.git/rebase-apply/applying" ]]; then
-        style -n fg-111 ' (applying)'
+        style -n fg=111 ' (applying)'
     elif [[ -d "$root/.git/rebase-merge" || -d "$root/.git/rebase-apply/rebase-apply" ]]; then
-        style -n fg-111 ' (rebasing)'
+        style -n fg=111 ' (rebasing)'
     elif [[ -f "$root/.git/CHERRY_PICK_HEAD" ]]; then
-        style -n fg-111 ' (cherry picking)'
+        style -n fg=111 ' (cherry picking)'
     elif [[ -f "$root/.git/REVERT_HEAD" ]]; then
-        style -n fg-111 ' (reverting)'
+        style -n fg=111 ' (reverting)'
     elif [[ -f "$root/.git/BISECT_LOG" ]]; then
-        style -n fg-111 ' (bisecting)'
+        style -n fg=111 ' (bisecting)'
     else
         local gstatus
         gstatus=$(timeout 1 git status --porcelain=2 --branch 2>/dev/null)
@@ -891,26 +891,26 @@ _prompt-pwd-git() {
         fi
 
         if [[ $exitcode -eq 124 ]]; then
-            style -n fg-245 ' (git timeout)'
+            style -n fg=245 ' (git timeout)'
         elif [[ -n $(echo "$gstatus" | grep -v '^#' | head -1) ]]; then
-            style -n fg-111 ' (modified)'
+            style -n fg=111 ' (modified)'
         elif [[ -f "$root/.git/logs/refs/stash" ]]; then
-            style -n fg-111 ' (stashed)'
+            style -n fg=111 ' (stashed)'
         else
             local ahead behind
             read -r ahead behind <<< $(echo "$gstatus" | sed -nE 's/^# branch\.ab \+([0-9]+) \-([0-9]+)$/\1\t\2/p')
 
             if [[ $ahead -gt 0 ]]; then
                 if [[ $behind -gt 0 ]]; then
-                    style -n fg-111 ' (diverged)'
+                    style -n fg=111 ' (diverged)'
                 else
-                    style -n fg-111 " ($ahead ahead)"
+                    style -n fg=111 " ($ahead ahead)"
                 fi
             else
                 if [[ $behind -gt 0 ]]; then
-                    style -n fg-111 " ($behind behind)"
+                    style -n fg=111 " ($behind behind)"
                 elif $using_status_v2 && ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
-                    style -n fg-245 ' (no upstream)'
+                    style -n fg=245 ' (no upstream)'
                 fi
             fi
         fi
@@ -1027,7 +1027,7 @@ prompt_default=''
 prompt_message=''
 
 if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
-    prompt_style='bg-red'
+    prompt_style='bg=red'
     prompt_default='Logged in as ROOT!'
 fi
 
@@ -1138,7 +1138,7 @@ if is-wsl; then
         rm -f $WIN_APPDATA_UNIX/wsltty/config
         cp $HOME/.minttyrc $WIN_APPDATA_UNIX/wsltty/config
         echo
-        style bg-yellow black 'WSLtty config updated - please reload it'
+        style bg=yellow,fg=black 'WSLtty config updated - please reload it'
     fi
 fi
 

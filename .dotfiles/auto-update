@@ -26,9 +26,9 @@ echo "$today" > .local/dotfiles-last-auto-update
 # Make sure there are no local changes we might overwrite
 if [[ -n "$(git status --porcelain)" ]]; then
     echo
-    style lwhite bg-red '                                                                     '
-    style lwhite bg-red '  Not updating configuration files because there are local changes.  '
-    style lwhite bg-red '                                                                     '
+    style bg=red,fg=lwhite '                                                                     '
+    style bg=red,fg=lwhite '  Not updating configuration files because there are local changes.  '
+    style bg=red,fg=lwhite '                                                                     '
     echo
     exit
 fi

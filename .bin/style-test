@@ -9,7 +9,7 @@ colors='black red green yellow blue magenta cyan white'
 
 heading() {
     echo
-    style lyellow underline -- "$(printf ' %-142s ' "$1")"
+    style lyellow,underline "$(printf ' %-142s ' "$1")"
     echo
 }
 
@@ -17,23 +17,24 @@ assert-style() {
     local command=$1
     local expected=$2
 
-    local result=$(eval "$command")
+    local result
+    result=$(eval "$command")
 
     if [[ "$result" = "$expected" ]]; then
-        echo "[OK] $result"
+        echo -e "\e[92m[ OK ]\e[0m $result"
     else
-        echo "[Err] '$result' doesn't match '$expected'"
+        echo -e "\e[91m[Fail]\e[0m Result '$result' doesn't match expectation '$expected' (\e[90m${expected//$'\e'/\\\\e}\e[0m)"
+        assertions_passed=false
     fi
 }
 
-color-range() {
-    local prefix=${1:-}
-    shift || true
+color-line() {
+    local style=${1:-}
+    local prefix=${2:-}
 
+    local color
     for color in $colors; do
-        echo -n ' '
-        color=$prefix$color
-        style -n "$@" "$color" -- "$(printf '%-11s' "$color")"
+        style -n "$style,$prefix$color" " $(printf '%-11s' "$prefix$color") "
     done
 }
 
@@ -41,37 +42,49 @@ color-cube() {
     local type=$1
     shift
 
+    local color
     for color in "$@"; do
-        style -n fg-auto bg-auto $type-$color -- "$(printf ' %-6s ' "$type-$color")"
+        style -n "bg=auto,fg=auto,$type=$color" "$(printf ' %-6s ' "$type=$color")"
     done
     echo
 }
 
 heading 'Unit Tests'
+assertions_passed=true
 assert-style 'style green Green' $'\e[0m\e[32mGreen\e[0m'
-assert-style 'style lwhite bg-red White on Red' $'\e[0m\e[97m\e[41mWhite on Red\e[0m'
-assert-style 'style lwhite bold Bold White' $'\e[0m\e[97m\e[1mBold White\e[0m'
-assert-style 'style lwhite -- white not parsed' $'\e[0m\e[97mwhite not parsed\e[0m'
+assert-style 'style lwhite,bg=red White on red' $'\e[0m\e[97m\e[41mWhite on red\e[0m'
+assert-style 'style lwhite,bold Bold white' $'\e[0m\e[97m\e[1mBold white\e[0m'
+assert-style 'style lwhite white not parsed' $'\e[0m\e[97mwhite not parsed\e[0m'
 assert-style 'style lwhite "Quoted  Text"' $'\e[0m\e[97mQuoted  Text\e[0m'
+assert-style 'style fg=auto,bg=blue Auto foreground white on blue' $'\e[0m\e[97m\e[44mAuto foreground white on blue\e[0m'
+assert-style 'style fg=auto,bg=lyellow Auto foreground black on yellow' $'\e[0m\e[30m\e[103mAuto foreground black on yellow\e[0m'
+assert-style 'style lyellow,bg=auto Auto background yellow on black' $'\e[0m\e[93m\e[40mAuto background yellow on black\e[0m'
+assert-style 'style black,bg=auto Auto background black on white' $'\e[0m\e[30m\e[107mAuto background black on white\e[0m'
+assert-style 'style red,underline,bg=auto Auto background red underline' $'\e[0m\e[31m\e[4m\e[40mAuto background red underline\e[0m'
+
+if ! $assertions_passed; then
+    exit 1
+fi
+
 echo
 
 heading 'Foreground'
-color-range '' bg-auto
-echo " - $(style lyellow -- bg-auto)"
-color-range 'l' bg-auto
+color-line bg=auto
+echo " - $(style lyellow bg=auto)"
+color-line bg=auto l
 echo
 
 heading 'Background'
-color-range 'bg-' fg-auto
-echo " - $(style lyellow -- fg-auto)"
-color-range 'bg-l' fg-auto
+color-line fg=auto bg=
+echo " - $(style lyellow fg=auto)"
+color-line fg=auto bg=l
 echo
 
 heading 'Styles'
 for style in bold dim italic underline blink rapidblink reverse hide strike; do
-    color-range '' bg-auto $style
+    color-line "bg=auto,$style"
     echo -n ' - '
-    style lyellow -- "$(printf '%-10s' $style)"
+    style lyellow "$(printf '%-10s' $style)"
 done
 
 heading '256 colors (text)'
@@ -115,5 +128,8 @@ color-cube bg {232..243}
 color-cube bg {244..255}
 
 heading '24-bit color'
-color-cube fg 000000 203000 306010 407020 508030 609040 70a050 80b060 90c070 a0d080 ffffff
-color-cube bg 000000 203000 306010 407020 508030 609040 70a050 80b060 90c070 a0d080 ffffff
+color-cube fg '#000' '#123' '#246' '#369' '#48c' '#5af'
+color-cube bg '#000' '#123' '#246' '#369' '#48c' '#5af'
+echo
+color-cube fg '#000000' '#203000' '#306010' '#407020' '#508030' '#609040' '#70a050' '#80b060' '#90c070' '#a0d080' '#ffffff'
+color-cube bg '#000000' '#203000' '#306010' '#407020' '#508030' '#609040' '#70a050' '#80b060' '#90c070' '#a0d080' '#ffffff'
