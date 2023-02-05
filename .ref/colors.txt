@@ -16,6 +16,8 @@ MAGENTA="\e[35m"
 CYAN="\e[36m"
 WHITE="\e[37m"
 
+GREY="\e[90m"
+
 LBLACK="\e[90m"
 LRED="\e[91m"
 LGREEN="\e[92m"
@@ -33,6 +35,8 @@ BG_BLUE="\e[44m"
 BG_MAGENTA="\e[45m"
 BG_CYAN="\e[46m"
 BG_WHITE="\e[47m"
+
+BG_GREY="\e[100m"
 
 BG_LBLACK="\e[100m"
 BG_LRED="\e[101m"

@@ -58,6 +58,7 @@ style() {
             fg=white | white)       echo -en "\e[37m" ;;
 
             fg=lblack | lblack)     echo -en "\e[90m" ;;
+            fg=grey | grey)         echo -en "\e[90m" ;;
             fg=lred | lred)         echo -en "\e[91m" ;;
             fg=lgreen | lgreen)     echo -en "\e[92m" ;;
             fg=lyellow | lyellow)   echo -en "\e[93m" ;;
@@ -82,6 +83,7 @@ style() {
             bg=white)               echo -en "\e[47m" ;;
 
             bg=lblack)              echo -en "\e[100m" ;;
+            bg=grey)                echo -en "\e[100m" ;;
             bg=lred)                echo -en "\e[101m" ;;
             bg=lgreen)              echo -en "\e[102m" ;;
             bg=lyellow)             echo -en "\e[103m" ;;
@@ -145,6 +147,7 @@ _color-inverse-bg() {
             fg=cyan | cyan)         result=$(_color-inverse-ansi bg 6) ;;
             fg=white | white)       result=$(_color-inverse-ansi bg 7) ;;
             fg=lblack | lblack)     result=$(_color-inverse-ansi bg 8) ;;
+            fg=grey | grey)         result=$(_color-inverse-ansi bg 8) ;;
             fg=lred | lred)         result=$(_color-inverse-ansi bg 9) ;;
             fg=lgreen | lgreen)     result=$(_color-inverse-ansi bg 10) ;;
             fg=lyellow | lyellow)   result=$(_color-inverse-ansi bg 11) ;;
@@ -177,6 +180,7 @@ _color-inverse-fg() {
             bg=cyan)                result=$(_color-inverse-ansi fg 6) ;;
             bg=white)               result=$(_color-inverse-ansi fg 7) ;;
             bg=lblack)              result=$(_color-inverse-ansi fg 8) ;;
+            bg=grey)                result=$(_color-inverse-ansi fg 8) ;;
             bg=lred)                result=$(_color-inverse-ansi fg 9) ;;
             bg=lgreen)              result=$(_color-inverse-ansi fg 10) ;;
             bg=lyellow)             result=$(_color-inverse-ansi fg 11) ;;
@@ -209,7 +213,7 @@ _color-inverse-ansi() {
             5)  _color-inverse-rgb "$type"  191    0  191  ;; # magenta
             6)  _color-inverse-rgb "$type"    0  191  191  ;; # cyan
             7)  _color-inverse-rgb "$type"  191  191  191  ;; # white
-            8)  _color-inverse-rgb "$type"   64   64   64  ;; # lblack
+            8)  _color-inverse-rgb "$type"   64   64   64  ;; # lblack (grey)
             9)  _color-inverse-rgb "$type"  255   64   64  ;; # lred
             10) _color-inverse-rgb "$type"   64  255   64  ;; # lgreen
             11) _color-inverse-rgb "$type"  255  255   64  ;; # lyellow

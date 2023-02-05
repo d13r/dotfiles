@@ -815,15 +815,15 @@ _prompt() {
     fi
 
     # Information
-    style -n lblack '['
+    style -n grey '['
     style -n lred "$USER"
-    style -n lblack '@'
+    style -n grey '@'
     style -n lgreen "$prompt_hostname"
-    style -n lblack ':'
+    style -n grey ':'
     _prompt-pwd-git
-    style -n lblack ' at '
+    style -n grey ' at '
     style -n white "$(date +%H:%M:%S)"
-    style -n lblack ']'
+    style -n grey ']'
 }
 
 _prompt-pwd-git() {
