@@ -106,8 +106,7 @@ echo
 
 # Add repository
 style lcyan "Configuring PHP PPA repository..."
-source /etc/lsb-release
-if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-${DISTRIB_CODENAME}.list" ]]; then
+if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-$(os-codename).list" ]]; then
     echo 'Already configured.'
 else
     sudo add-apt-repository -y ppa:ondrej/php
