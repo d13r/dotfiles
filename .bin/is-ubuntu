@@ -1,5 +1,5 @@
 #!/bin/sh
 
-test -f /etc/lsb-release && \
-    . /etc/lsb-release && \
-    test "${DISTRIB_ID:-}" = "Ubuntu"
+test -f /etc/os-release && \
+    . /etc/os-release && \
+    test "${ID:-}" = "ubuntu"
