@@ -15,7 +15,7 @@ fi
 source "$(dirname "$0")/../.bash/style"
 
 # Create user
-style lgreen 'Creating user...'
+style lcyan,bold  'Creating user...'
 useradd \
     --comment "Dave James Miller" \
     --create-home \
@@ -25,20 +25,20 @@ useradd \
     dave
 
 # Copy SSH key
-style lgreen 'Installing SSH key...'
+style lcyan,bold  'Installing SSH key...'
 umask 077
 mkdir ~dave/.ssh
 ssh-add -L >> ~dave/.ssh/authorized_keys
 chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
 # Prepare dotfiles
-style lgreen 'Preparing dotfiles installer...'
+style lcyan,bold  'Preparing dotfiles installer...'
 echo '[[ ! -d .git ]] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
 chown dave:dave ~dave/.bashrc
 
 # Prompt for a password
-style lgreen 'Setting password...'
+style lcyan,bold  'Setting password...'
 passwd dave
 
 # Done
-style lgreen 'Done.'
+style lcyan,bold  'Done.'

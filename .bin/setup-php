@@ -33,7 +33,7 @@ version="${1:-}"
 
 # Uninstall all versions
 if $revert && [[ -z $version ]]; then
-    style lcyan 'Removing all versions of PHP...'
+    style lcyan,bold 'Removing all versions of PHP...'
     sudo apt purge --auto-remove 'php-*' 'php*.*-*'
     echo
 
@@ -41,15 +41,15 @@ if $revert && [[ -z $version ]]; then
     sudo update-alternatives --remove-all php-fpm.sock || true
     echo
 
-    style lcyan "Removing PHP PPA repository..."
+    style lcyan,bold "Removing PHP PPA repository..."
     sudo add-apt-repository -ry ppa:ondrej/php
     echo
 
-    style lcyan "Removing Composer..."
+    style lcyan,bold "Removing Composer..."
     sudo rm /usr/local/bin/composer /etc/cron.daily/upgrade-composer
     echo
 
-    style lcyan 'Done.'
+    style lcyan,bold 'Done.'
     exit
 fi
 
@@ -61,7 +61,7 @@ fi
 
 # Uninstall given version
 if $revert; then
-    style lcyan "Removing PHP ${version}..."
+    style lcyan,bold "Removing PHP ${version}..."
     sudo apt purge --auto-remove "php${version}-*"
     echo
 
@@ -69,7 +69,7 @@ if $revert; then
     sudo update-alternatives --remove php-fpm.sock "/run/php/php${version}-fpm.sock" || true
     echo
 
-    style lcyan 'Done.'
+    style lcyan,bold 'Done.'
     exit
 fi
 
@@ -105,7 +105,7 @@ fi
 echo
 
 # Add repository
-style lcyan "Configuring PHP PPA repository..."
+style lcyan,bold "Configuring PHP PPA repository..."
 if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-$(os-codename).list" ]]; then
     echo 'Already configured.'
 else
@@ -135,12 +135,12 @@ if $enable_debugging; then
     packages+=("php${version}-xdebug")
 fi
 
-style lcyan "Installing PHP ${version}..."
+style lcyan,bold "Installing PHP ${version}..."
 sudo apt install -y "${packages[@]}"
 echo
 
 # Configure PHP
-style lcyan "Configuring PHP ${version}..."
+style lcyan,bold "Configuring PHP ${version}..."
 
 if $enable_debugging; then
     sudo-write "/etc/php/$version/mods-available/dave.ini" <~/.templates/php/php-debug.ini
@@ -160,7 +160,7 @@ fi
 
 # Install Composer
 # The version in Ubuntu APT only works with PHP 8+
-style lcyan "Installing Composer..."
+style lcyan,bold "Installing Composer..."
 
 if [[ -f /usr/local/bin/composer ]]; then
     echo 'Already installed.'
@@ -175,7 +175,7 @@ echo
 
 # Set as the default version
 if $set_as_default; then
-    style lcyan 'Setting the default PHP version...'
+    style lcyan,bold 'Setting the default PHP version...'
 
     # Set the default for CLI tools
     # https://github.com/oerdnj/deb.sury.org/wiki/Managing-Multiple-Versions
@@ -213,4 +213,4 @@ if $set_as_default; then
 fi
 
 # Done
-style lcyan 'Done.'
+style lcyan,bold 'Done.'

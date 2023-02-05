@@ -36,18 +36,18 @@ if $revert; then
     echo
 
     if [[ -f /etc/apache2/conf-enabled/z_dave-ssl.conf ]]; then
-        style lcyan 'Reverting Apache configuration...'
+        style lcyan,bold 'Reverting Apache configuration...'
         sudo-write /etc/apache2/conf-enabled/z_dave-ssl.conf <~/.templates/apache/ssl-snakeoil.conf
         sudo systemctl reload apache2
         sudo systemctl status apache2
         echo
     fi
 
-    style lcyan 'Removing Certbot...'
+    style lcyan,bold 'Removing Certbot...'
     sudo snap remove certbot certbot-dns-cloudflare
     echo
 
-    style lcyan 'Removing configuration files...'
+    style lcyan,bold 'Removing configuration files...'
     if ask 'Delete all Certbot configuration, including account credentials and certificates?'; then
         sudo rm -rfv /etc/letsencrypt/
     elif ask 'Delete Cloudflare credentials?' Y; then
@@ -55,19 +55,19 @@ if $revert; then
     fi
     echo
 
-    style lcyan 'Done.'
+    style lcyan,bold 'Done.'
     exit
 fi
 
 # Install Certbot
-style lcyan 'Installing Certbot...'
+style lcyan,bold 'Installing Certbot...'
 sudo snap install --classic certbot
 sudo snap set certbot trust-plugin-with-root=ok
 sudo snap install certbot-dns-cloudflare
 echo
 
 # Save Cloudflare API credentials
-style lcyan 'Configuring Cloudflare API credentials...'
+style lcyan,bold 'Configuring Cloudflare API credentials...'
 
 if [[ -f /etc/letsencrypt/cloudflare-credentials.ini ]]; then
     echo "Credentials are already configured in '/etc/letsencrypt/cloudflare-credentials.ini'."
@@ -103,7 +103,7 @@ fi
 echo
 
 # Header
-style lcyan 'Generating certificate...'
+style lcyan,bold 'Generating certificate...'
 
 staging_flag=''
 if $staging; then
@@ -151,7 +151,7 @@ sudo certbot certonly \
 echo
 
 # Configure Apache
-style lcyan 'Configuring Apache...'
+style lcyan,bold 'Configuring Apache...'
 
 if [[ -d /etc/apache2/conf-enabled ]]; then
     sudo-write /etc/apache2/conf-enabled/z_dave-ssl.conf <~/.templates/apache/ssl-certbot.conf
@@ -164,10 +164,10 @@ fi
 echo
 
 # Configure renewal hook
-style lcyan 'Configuring renewal hook...'
+style lcyan,bold 'Configuring renewal hook...'
 sudo-write /etc/letsencrypt/renewal-hooks/deploy/dave.sh <~/.templates/certbot/deploy.sh
 sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/dave.sh
 echo
 
 # Done
-style lcyan 'Done.'
+style lcyan,bold 'Done.'

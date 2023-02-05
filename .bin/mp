@@ -29,7 +29,7 @@ read-name() {
 case "${1:-}" in
 
     '') # Help
-        style lcyan 'Multipass Shortcuts'
+        style lcyan,bold 'Multipass Shortcuts'
         echo "$(style lwhite 'mp l  [name]')  Launch a new instance with sensible defaults"
         echo "$(style lwhite 'mp h  [name]')  SSH to the given instance"
         echo "$(style lwhite 'mp d  [name]')  Suspend a running instance (down)"
@@ -40,7 +40,7 @@ case "${1:-}" in
         echo
         echo "To list other commands run '$(style lwhite 'mp help')'."
         echo
-        style lcyan 'Current instances'
+        style lcyan,bold 'Current instances'
         list-instances
         ;;
 

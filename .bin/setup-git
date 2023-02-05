@@ -31,10 +31,10 @@ done
 if ! is-executable brew; then
     style lred "Skipped Lazy Git because it requires Homebrew (run 'setup-brew' to install it)"
 elif $revert; then
-    style lcyan 'Uninstalling Lazy Git...'
+    style lcyan,bold 'Uninstalling Lazy Git...'
     brew uninstall jesseduffield/lazygit/lazygit || true
 else
-    style lcyan 'Installing Lazy Git...'
+    style lcyan,bold 'Installing Lazy Git...'
     brew install jesseduffield/lazygit/lazygit
 fi
 
@@ -44,14 +44,14 @@ echo
 if ! is-executable brew; then
     style lred "Skipped Delta because it requires Homebrew (run 'setup-brew' to install it)"
 elif $revert; then
-    style lcyan 'Uninstalling Delta...'
+    style lcyan,bold 'Uninstalling Delta...'
     brew uninstall git-delta || true
 else
-    style lcyan 'Installing Delta...'
+    style lcyan,bold 'Installing Delta...'
     brew install git-delta
 fi
 
 echo
 
 # Done
-style lcyan 'Done.'
+style lcyan,bold 'Done.'

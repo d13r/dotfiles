@@ -52,20 +52,20 @@ enable-universe-repository() {
     # Make sure the 'universe' repository is enabled
     # TODO: If I need this for any other scripts, move it into its own script
     if ! grep -q '^deb .* universe' /etc/apt/sources.list; then
-        style lcyan "Enabling 'universe' repository..."
+        style lcyan,bold "Enabling 'universe' repository..."
         maybe-sudo add-apt-repository --yes universe
         echo
     fi
 }
 
 install-docker() {
-    style lcyan 'Installing Docker...'
+    style lcyan,bold 'Installing Docker...'
     maybe-sudo apt install -y docker.io docker-compose
     echo
 }
 
 uninstall-docker() {
-    style lcyan 'Uninstalling Docker...'
+    style lcyan,bold 'Uninstalling Docker...'
     maybe-sudo apt purge --auto-remove docker.io docker-compose
     echo
 }
@@ -73,7 +73,7 @@ uninstall-docker() {
 add-user-to-docker-group() {
     if ! is-root-user && ! is-in-group docker; then
         # Security info: https://docs.docker.com/engine/install/linux-postinstall/
-        style lcyan "Configuring group membership..."
+        style lcyan,bold "Configuring group membership..."
         if ask "Add '$USER' to the 'docker' group? (WARNING: This is less secure!)" N; then
             sudo gpasswd -a "$USER" docker
             added_to_group=true
@@ -83,7 +83,7 @@ add-user-to-docker-group() {
 }
 
 remove-user-from-docker-group() {
-    style lcyan "Deleting the 'docker' group..."
+    style lcyan,bold "Deleting the 'docker' group..."
     maybe-sudo groupdel docker || true
     echo
 }
@@ -96,7 +96,7 @@ check-for-homebrew() {
 }
 
 install-lazy-docker() {
-    style lcyan 'Installing Lazy Docker...'
+    style lcyan,bold 'Installing Lazy Docker...'
     if check-for-homebrew; then
         # https://github.com/jesseduffield/lazydocker
         brew install jesseduffield/lazydocker/lazydocker
@@ -105,7 +105,7 @@ install-lazy-docker() {
 }
 
 uninstall-lazy-docker() {
-    style lcyan 'Uninstalling Lazy Docker...'
+    style lcyan,bold 'Uninstalling Lazy Docker...'
     if check-for-homebrew; then
         brew uninstall jesseduffield/lazydocker/lazydocker || true
     fi
@@ -113,7 +113,7 @@ uninstall-lazy-docker() {
 }
 
 install-dive() {
-    style lcyan 'Installing Dive...'
+    style lcyan,bold 'Installing Dive...'
     if check-for-homebrew; then
         brew install dive
     fi
@@ -121,7 +121,7 @@ install-dive() {
 }
 
 uninstall-dive() {
-    style lcyan 'Uninstalling Dive...'
+    style lcyan,bold 'Uninstalling Dive...'
     if check-for-homebrew; then
         brew uninstall dive || true
     fi
@@ -129,7 +129,7 @@ uninstall-dive() {
 }
 
 finished() {
-    style lcyan 'Done.'
+    style lcyan,bold 'Done.'
 
     if $added_to_group && ! is-in-group docker; then
         echo
