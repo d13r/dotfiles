@@ -50,28 +50,6 @@ snippet she
 	#!/usr/bin/env bash
 	set -o errexit -o nounset -o pipefail
 
-	# Parse arguments
-	exe=\$(basename "\$0")
-
-	help() {
-		echo "Usage: \$exe [options]"
-		echo
-		echo "TODO: Description to go here..."
-		echo
-		echo "Options:"
-		echo "  -h, --help      display this help"
-	}
-
-	args=\$(getopt -n "\$exe" -o 'h' -l 'help' -- "\$@")
-	eval set -- "\$args"
-
-	while true; do
-		case "\$1" in
-			-h | --help)    help; exit ;;
-			--)             break; shift ;;
-		esac
-	done
-
 	${0}
 
 snippet then
