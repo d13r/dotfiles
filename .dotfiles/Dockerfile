@@ -27,13 +27,13 @@ RUN useradd \
     test
 
 # The first time Bash is run, automatically run the config file
-RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/cfg ]] && cd && . cfg" >> /etc/bash.bashrc
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bash.bashrc
 
-# Copy the cfg script
-COPY cfg /root/cfg
+# Copy the dot script
+COPY dot /root/dot
 
 USER test
-COPY cfg /home/test/cfg
+COPY dot /home/test/dot
 
 ENV LANG en_GB.UTF-8
 

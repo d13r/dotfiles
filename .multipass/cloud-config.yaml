@@ -13,6 +13,6 @@ users:
       - 'ALL=(ALL) NOPASSWD:ALL'
 
 runcmd:
-  - echo '[ ! -d .git ] && cd && wget https://djm.me/cfg && source cfg' >> /home/ubuntu/.bashrc
+  - echo '[ ! -d .git ] && cd && wget https://djm.me/dot && source dot' >> /home/ubuntu/.bashrc
 
 # vim:ts=2 sts=2 sw=2

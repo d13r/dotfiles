@@ -32,8 +32,8 @@ if ! grep -q "^$user:" /etc/passwd; then
     sudo chmod go-rwx -R "/home/$user/.ssh"
 
     # Populate Bash history so pressing <Up><Enter> downloads and runs the installation script
-    # Delete 'cfg' and '.git' if they exist, to help with testing the installation script
-    sudo su "$user" -c "echo 'cd; rm -rf .git cfg; wget djm.me/cfg && source cfg' >> ~/.bashrc"
+    # Delete 'dot' and '.git' if they exist, to help with testing the installation script
+    sudo su "$user" -c "echo 'cd; rm -rf .git dot; wget djm.me/dot && . dot' >> ~/.bashrc"
 
 fi
 

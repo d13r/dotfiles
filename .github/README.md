@@ -6,8 +6,8 @@
 
 ```bash
 cd
-wget djm.me/cfg
-. cfg
+wget djm.me/dot
+. dot
 ```
 
 ### On Windows
@@ -35,8 +35,8 @@ Run:
 
 ```bash
 cd
-wget djm.me/cfg
-. cfg
+wget djm.me/dot
+. dot
 ```
 
 **Tip:** To reinstall Ubuntu without re-downloading it, open a Command Prompt tab (or PowerShell) and run `wslconfig /u Ubuntu`, then re-launch Ubuntu from the Start Menu. It will take a few minutes to reinstall.
