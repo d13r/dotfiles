@@ -13,6 +13,19 @@ heading() {
     echo
 }
 
+assert-style() {
+    local command=$1
+    local expected=$2
+
+    local result=$(eval "$command")
+
+    if [[ "$result" = "$expected" ]]; then
+        echo "[OK] $result"
+    else
+        echo "[Err] '$result' doesn't match '$expected'"
+    fi
+}
+
 color-range() {
     local prefix=${1:-}
     shift || true
@@ -23,6 +36,24 @@ color-range() {
         style -n "$@" "$color" -- "$(printf '%-11s' "$color")"
     done
 }
+
+color-cube() {
+    local type=$1
+    shift
+
+    for color in "$@"; do
+        style -n fg-auto bg-auto $type-$color -- "$(printf ' %-6s ' "$type-$color")"
+    done
+    echo
+}
+
+heading 'Unit Tests'
+assert-style 'style green Green' $'\e[0m\e[32mGreen\e[0m'
+assert-style 'style lwhite bg-red White on Red' $'\e[0m\e[97m\e[41mWhite on Red\e[0m'
+assert-style 'style lwhite bold Bold White' $'\e[0m\e[97m\e[1mBold White\e[0m'
+assert-style 'style lwhite -- white not parsed' $'\e[0m\e[97mwhite not parsed\e[0m'
+assert-style 'style lwhite "Quoted  Text"' $'\e[0m\e[97mQuoted  Text\e[0m'
+echo
 
 heading 'Foreground'
 color-range '' bg-auto
@@ -42,16 +73,6 @@ for style in bold dim italic underline blink rapidblink reverse hide strike; do
     echo -n ' - '
     style lyellow -- "$(printf '%-10s' $style)"
 done
-
-color-cube() {
-    local type=$1
-    shift
-
-    for color in "$@"; do
-        style -n fg-auto bg-auto $type-$color -- "$(printf ' %-6s ' "$type-$color")"
-    done
-    echo
-}
 
 heading '256 colors (text)'
 color-cube fg {0..7}
