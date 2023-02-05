@@ -5,6 +5,7 @@ Setting up a new account (any server/computer):
 
 Setting up a new Ubuntu machine (requires root access):
 
+    setup-dave-user
     setup-sudo
     sudo timedatectl set-timezone Europe/London
     setup-hostname <fqdn>
