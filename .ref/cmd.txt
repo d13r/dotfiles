@@ -3,7 +3,6 @@ art         artisan
 b           ./bin/...
 
 c           cd && ls
-cfg         cd && git ...
 cg          cd $(git root)
 com         composer
 cv          cd vendor/d13r/ (or vendor/d13r/$1)
