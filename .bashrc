@@ -71,9 +71,19 @@ fi
 # Aliases
 #===============================================================================
 
-# The full path is needed for 'sudo <alias>' to work correctly
-sudo="$HOME/.bin/maybe-sudo"
-sudo_for_docker="$HOME/.bin/maybe-sudo-for-docker"
+# Can't use 'maybe-sudo' because then 'sudo <something>' is expanded to
+# 'sudo maybe-sudo <something>' which fails to run
+if [[ $EUID -gt 0 ]] && is-executable sudo; then
+    sudo='sudo'
+else
+    sudo=''
+fi
+
+if [[ $EUID -gt 0 ]] && is-executable sudo && ! id -nG | grep -wq docker; then
+    sudo_for_docker='sudo'
+else
+    sudo_for_docker=''
+fi
 
 alias a2disconf="$sudo a2disconf"
 alias a2dismod="$sudo a2dismod"
