@@ -21,4 +21,4 @@ if [[ $# -eq 2 ]] && [[ "$name" = 'X' ]]; then
 fi
 
 exec ssh -o ForwardAgent=yes -o StrictHostKeyChecking=accept-new "$host" \
-    -t "command -v tmux &>/dev/null && tmux -2 new -A -s \"$name\" || bash -l"
+    -t "test -d ~/.dotfiles && command -v tmux &>/dev/null && tmux -2 new -A -s \"$name\" || bash -l"
