@@ -12,4 +12,6 @@ if [[ -z $file ]]; then
     exit 1
 fi
 
-exec "$file" "$@"
+# Added 'cmd.exe' 11 Feb 2023 because PhpStorm was crashing with error:
+# siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), data execution prevention violation at address 0x0000000000000000
+exec cmd.exe "$file" "$@"
