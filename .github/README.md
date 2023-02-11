@@ -41,10 +41,6 @@ wget djm.me/dot
 
 **Tip:** To reinstall Ubuntu without re-downloading it, open a Command Prompt tab (or PowerShell) and run `wslconfig /u Ubuntu`, then re-launch Ubuntu from the Start Menu. It will take a few minutes to reinstall.
 
-## Reference
-
-Run `ref` for a list of [reference topics](../.ref), and `ref <topic>` to view one.
-
 ## Uninstalling
 
 ```bash
