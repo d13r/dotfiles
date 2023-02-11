@@ -87,7 +87,7 @@
     }
 
     # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 22.04 (Docker)
-    # 7030b200003d19cfe014fe70522f3d1a = Ubuntu 22.04 (Docker) + 'setup-dave-user' script
+    # 7030b200003d19cfe014fe70522f3d1a = Ubuntu 22.04 (Docker) + 'create-dave-user' script
     delete_skeleton_file .bashrc \
         1f98b8f3f3c8f8927eca945d59dcc1c6 \
         7030b200003d19cfe014fe70522f3d1a
