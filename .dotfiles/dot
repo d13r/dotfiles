@@ -88,9 +88,11 @@
 
     # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 22.04 (Docker)
     # 7030b200003d19cfe014fe70522f3d1a = Ubuntu 22.04 (Docker) + 'create-dave-user' script
+    # cf277664b1771217d7006acdea006db1 = Ubuntu 22.04 (ISO - root user)
     delete_skeleton_file .bashrc \
         1f98b8f3f3c8f8927eca945d59dcc1c6 \
-        7030b200003d19cfe014fe70522f3d1a
+        7030b200003d19cfe014fe70522f3d1a \
+        cf277664b1771217d7006acdea006db1
 
     # d41d8cd98f00b204e9800998ecf8427e = Empty string
     # 9a7d426917a95b53644ce123cd0fb333 = Single line ending
