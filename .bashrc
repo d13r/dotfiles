@@ -117,6 +117,7 @@ alias cas='c /etc/apache2/sites-enabled'
 alias cat="$HOME/.bin/bat-or-cat"
 alias certbot="$sudo certbot"
 alias chmox='chmod' # Common typo
+alias com='composer'
 alias cp='cp -i'
 alias cy='cypress'
 
@@ -185,6 +186,7 @@ alias sshak='ssh -o StrictHostKeyChecking=accept-new'
 alias sshstop='ssh -O stop'
 alias storm='phpstorm'
 alias sudo='sudo ' # Expand aliases
+alias sw='sw ' # Expand aliases
 
 alias tree='tree -C'
 
@@ -270,10 +272,6 @@ cg() {
     fi
 
     c "$path"
-}
-
-com() {
-    composer "$@"
 }
 
 cv() {
@@ -679,6 +677,14 @@ sudo() {
         sudo-preserve-env "$exe" -i "$@"
     else
         sudo-preserve-env "$@"
+    fi
+}
+
+sw() {
+    if [[ $# -gt 0 ]]; then
+        sudo -u www-data "$@"
+    else
+        sudo -su www-data
     fi
 }
 
