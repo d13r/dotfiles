@@ -313,11 +313,13 @@ composer() {
 cw() {
     # cd to web root
     if [[ -d ~/repo ]]; then
-        c ~/repo
+        c ~/repo # cPanel
+    elif [[ -d /local/www ]]; then
+        c /local/www # Maths
     elif [[ -d /var/www ]]; then
-        c /var/www
+        c /var/www # Ubuntu
     elif is-wsl; then
-        c "$(wsl-mydocs-path)"
+        c "$(wsl-mydocs-path)" # WSL
     else
         echo 'web root not found' >&2
     fi
