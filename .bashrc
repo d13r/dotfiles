@@ -171,6 +171,7 @@ alias poweroff="$sudo poweroff"
 alias pow="$sudo poweroff"
 alias pu='phpunit'
 alias puw='when-changed -r -s -1 app database tests -c "clear; bin/phpunit"'
+alias pvv='pvview show'
 
 alias reboot="$sudo reboot"
 alias reload='exec bash -l'
