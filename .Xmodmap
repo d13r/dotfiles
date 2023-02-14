@@ -1,0 +1,4 @@
+! Map Caps Lock to Escape, but allow Shift+Caps Lock to toggle Caps Lock
+! https://superuser.com/a/1558226/74613
+clear lock
+keycode 66 = Escape Caps_Lock NoSymbol NoSymbol
