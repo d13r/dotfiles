@@ -33,22 +33,34 @@ if [ -S "$link" ]; then
 fi
 
 # If it's not valid, see if we can find an agent socket from another terminal
-for filename in $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-z0-9]+/agent.[0-9]+ -type s 2>/dev/null); do
-    if SSH_AUTH_SOCK=$filename ssh-add -l >/dev/null 2>&1; then
+try_socket() {
+    local filename=$1
 
-        # Found a valid socket - update the symlink
-        ln -nsf "$filename" "$HOME/.ssh/ssh_auth_sock"
-        echo "Updated $link to point to:"
-        echo
-        echo "    $filename"
-        echo
-        echo "Current SSH keys:"
-        echo
-        SSH_AUTH_SOCK=$link ssh-add -l | sed 's/^/    /'
-        exit
-
+    if ! SSH_AUTH_SOCK=$filename ssh-add -l >/dev/null 2>&1; then
+        return
     fi
+
+    # Found a valid socket - update the symlink
+    ln -nsf "$filename" "$HOME/.ssh/ssh_auth_sock"
+    echo "Updated $link to point to:"
+    echo
+    echo "    $filename"
+    echo
+    echo "Current SSH keys:"
+    echo
+    SSH_AUTH_SOCK=$link ssh-add -l | sed 's/^/    /'
+    exit
+}
+
+for filename in $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-z0-9]+/agent.[0-9]+ -type s 2>/dev/null); do
+    try_socket "$filename"
 done
+
+for filename in $(find /run/user -user $(id -u) -iregex /run/user/[0-9]+/keyring/ssh -type s 2>/dev/null); do
+    try_socket "$filename"
+done
+
+/run/user/24681/keyring/ssh
 
 # Not found
 echo "Couldn't find any SSH agent sockets" >&2
