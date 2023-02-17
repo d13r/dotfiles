@@ -367,6 +367,16 @@ docker-compose() {
     fi
 }
 
+drush() {
+    if dir=$(findup -f bin/drush); then
+        "$dir/bin/drush" "$@"
+    elif dir=$(findup -f vendor/bin/drush); then
+        "$dir/vendor/bin/drush" "$@"
+    else
+        command drush "$@"
+    fi
+}
+
 dump-path() {
     echo -e "${PATH//:/\\n}"
 }
