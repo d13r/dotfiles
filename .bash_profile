@@ -159,10 +159,9 @@ elif is-wsl 2; then
             style lblue 'Installing socat for wsl2-ssh-pageant...'
             sudo apt-get install socat
         fi
-        if ! ss -a | grep -q $SSH_AUTH_SOCK; then
-            rm -f $SSH_AUTH_SOCK
-            setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe &>/dev/null
-        fi
+        fuser -k /home/dave/.ssh/ssh_auth_sock &>/dev/null
+        rm -f $SSH_AUTH_SOCK
+        setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe &>/dev/null
     fi
 
 else
