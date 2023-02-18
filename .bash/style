@@ -38,6 +38,7 @@ style() {
 
         case "$style" in
 
+            reset)                  echo -en "\e[0m" ;;
             bold)                   echo -en "\e[1m" ;; # May do the same as the "l" colours, or may actually be bold
             dim)                    echo -en "\e[2m" ;;
             italic)                 echo -en "\e[3m" ;;
