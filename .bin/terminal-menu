@@ -68,13 +68,13 @@ while true; do
 
     # Work out what was pressed
     case $letter in
-        k) host=kara.djm.me; local_tmux=true ;;
+        k) host=kara.djm.me ;;
         m) host=maria.djm.me ;;
 
         b) host=beulah-penguin.maths.ox.ac.uk ;;
         e) host=edgbaston.maths.ox.ac.uk ;;
-        t) host=trent-bridge.maths.ox.ac.uk ;;
-        w) host=www.maths.ox.ac.uk ;;
+        t) host=trent-bridge.maths.ox.ac.uk; local_tmux=true ;;
+        w) host=www.maths.ox.ac.uk; local_tmux=true ;;
 
         l) host=$localhost ;;
         x) host= ; echo ;;
