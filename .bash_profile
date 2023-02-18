@@ -114,10 +114,6 @@ fi
 #    export LC_ALL='en_US.UTF-8'
 #fi
 
-#if [ -z "$XAUTHORITY" ]; then
-#    export XAUTHORITY="$HOME/.Xauthority"
-#fi
-
 
 #---------------------------------------
 # SSH agent
