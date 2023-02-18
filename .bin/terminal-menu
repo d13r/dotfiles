@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# Load 'style' as a function to avoid the overhead of calling a script
+source "$HOME/.bash/style"
+
+# Can't use 'trap ... EXIT' because 'exec' doesn't trigger that
+launch() {
+    clear
+    tput cnorm # Show cursor
+    exec "$@"
+}
+
+# Handle Ctrl-C
+interrupted() {
+    stty echo # Re-enable input, in case a terminal is displayed
+    exit
+}
+
+trap interrupted INT
+
+# Hide the cursor
+tput civis
+
+# Clear the screen in case anything was output before this (e.g. when testing it)
+clear
+
+# Determine the local hostname, so we can bypass SSH in case I select the local machine
+localhost=$(get-full-hostname)
+
+# Display menu
+echo
+echo "  $(style 'lcyan,bold' 'Personal')"
+echo "  $(style lyellow 'k') - $(style lwhite 'kara.djm.me') $(style grey '- VM on Chell')"
+echo "  $(style lyellow 'm') - $(style lwhite 'maria.djm.me') $(style grey '- Desktop PC')"
+echo
+echo "  $(style 'lcyan,bold' 'Mathematical Institute')"
+echo "  $(style lyellow 'b') - $(style lwhite 'beulah-penguin.maths.ox.ac.uk') $(style grey '- Desktop PC')"
+echo "  $(style lyellow 'e') - $(style lwhite 'edgbaston.maths.ox.ac.uk') $(style grey '- Development server')"
+echo "  $(style lyellow 't') - $(style lwhite 'trent-bridge.maths.ox.ac.uk') $(style grey '- Main website - staging')"
+echo "  $(style lyellow 'w') - $(style lwhite 'www.maths.ox.ac.uk') $(style grey '- Main website - live')"
+echo
+echo "  $(style 'lcyan,bold' 'Miscellaneous')"
+echo "  $(style lyellow 'l') - $(style lwhite 'localhost') $(style grey "- $USER@$localhost")"
+echo "  $(style lyellow 'x') - $(style lwhite 'Other...')"
+echo
+echo "  Type a $(style yellow lowercase) letter to connect to the given server and start 'tmux' (if available)."
+echo "  Type an $(style yellow uppercase) letter to connect to the given server and start a normal shell (Bash)."
+echo "  (If you just want a regular terminal, type '$(style lyellow "L")' for a local shell.)"
+
+# Loop until a valid input is given
+while true; do
+
+    # Wait for a single key to be pressed
+    read -rsn 1 letter
+
+    # Check if it was lowercase or uppercase
+    tmux=false
+    if [[ $letter =~ [a-z] ]]; then
+        tmux=true
+    fi
+
+    # Convert to lowercase
+    letter=${letter,,}
+
+    # For servers without dotfiles (or without tmux installed), run tmux locally
+    local_tmux=false
+
+    # Work out what was pressed
+    case $letter in
+        k) host=kara.djm.me; local_tmux=true ;;
+        m) host=maria.djm.me ;;
+
+        b) host=beulah-penguin.maths.ox.ac.uk ;;
+        e) host=edgbaston.maths.ox.ac.uk ;;
+        t) host=trent-bridge.maths.ox.ac.uk ;;
+        w) host=www.maths.ox.ac.uk ;;
+
+        l) host=$localhost ;;
+        x) host= ; echo ;;
+
+        !) exec "$0" "$@" ;; # reload menu (for development - not displayed in menu)
+        *) continue ;; # go back to 'read' for the next character
+    esac
+
+    # Prompt for hostname if needed (also accepts an alias defined in .ssh/config)
+    while [[ -z $host ]]; do
+        read -r -p "  $(style lwhite 'Enter Hostname:') " host
+    done
+
+    # Localhost (no SSH)
+    if [[ $host = $localhost ]]; then
+        if $tmux; then
+            # Can't use 'm' here because that is an alias not a script
+            launch tmux -2 new -A -s "$USER"
+        else
+            launch "$SHELL"
+        fi
+    fi
+
+    # Connect to the given server and run 'tmux' or $SHELL as appropriate
+    if ! $tmux; then
+        launch ssh "$host"
+    elif $local_tmux; then
+        launch ssh-local-tmux "$host"
+    else
+        launch h "$host"
+    fi
+
+done
