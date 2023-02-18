@@ -69,10 +69,10 @@ style() {
             fg=lwhite | lwhite)     echo -en "\e[97m" ;;
 
             fg=? | fg=?? | fg=???)  echo -en "\e[38;5;${style:3}m" ;;
-            fg=#???)                echo -en "\e[38;2;$(_color-hex-to-ansi "${style:4}")m" ;;
-            '#???')                 echo -en "\e[38;2;$(_color-hex-to-ansi "${style:1}")m" ;;
-            fg=#??????)             echo -en "\e[38;2;$(_color-hex-to-ansi "${style:4}")m" ;;
-            '#??????')              echo -en "\e[38;2;$(_color-hex-to-ansi "${style:1}")m" ;;
+            fg=\#???)               echo -en "\e[38;2;$(_color-hex-to-ansi "${style:4}")m" ;;
+            \#???)                  echo -en "\e[38;2;$(_color-hex-to-ansi "${style:1}")m" ;;
+            fg=\#??????)            echo -en "\e[38;2;$(_color-hex-to-ansi "${style:4}")m" ;;
+            \#??????)               echo -en "\e[38;2;$(_color-hex-to-ansi "${style:1}")m" ;;
 
             bg=black)               echo -en "\e[40m" ;;
             bg=red)                 echo -en "\e[41m" ;;
@@ -94,8 +94,8 @@ style() {
             bg=lwhite)              echo -en "\e[107m" ;;
 
             bg=? | bg=?? | bg=???)  echo -en "\e[48;5;${style:3}m" ;;
-            bg=#???)                echo -en "\e[48;2;$(_color-hex-to-ansi "${style:4}")m" ;;
-            bg=#??????)             echo -en "\e[48;2;$(_color-hex-to-ansi "${style:4}")m" ;;
+            bg=\#???)               echo -en "\e[48;2;$(_color-hex-to-ansi "${style:4}")m" ;;
+            bg=\#??????)            echo -en "\e[48;2;$(_color-hex-to-ansi "${style:4}")m" ;;
 
             *)
                 echo -e "\e[0m" # Reset

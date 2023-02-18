@@ -61,6 +61,7 @@ assert-style 'style fg=auto,bg=lyellow Auto foreground black on yellow' $'\e[0m\
 assert-style 'style lyellow,bg=auto Auto background yellow on black' $'\e[0m\e[93m\e[40mAuto background yellow on black\e[0m'
 assert-style 'style black,bg=auto Auto background black on white' $'\e[0m\e[30m\e[47mAuto background black on white\e[0m'
 assert-style 'style red,underline,bg=auto Auto background red underline' $'\e[0m\e[31m\e[4m\e[40mAuto background red underline\e[0m'
+assert-style 'style "#fa5,bg=#5af" Orange on blue' $'\e[0m\e[38;2;255;170;85m\e[48;2;85;170;255mOrange on blue\e[0m'
 
 if ! $assertions_passed; then
     exit 1
