@@ -36,7 +36,8 @@ echo "  $(style lyellow 'm') - $(style lwhite 'maria.djm.me') $(style grey '- De
 echo
 echo "  $(style 'lcyan,bold' 'Mathematical Institute')"
 echo "  $(style lyellow 'b') - $(style lwhite 'beulah-penguin.maths.ox.ac.uk') $(style grey '- Desktop PC')"
-echo "  $(style lyellow 'e') - $(style lwhite 'edgbaston.maths.ox.ac.uk') $(style grey '- Development server')"
+echo "  $(style lyellow 'c') - $(style lwhite 'centurion.maths.ox.ac.uk') $(style grey '- Development server (PHP 7.4)')"
+echo "  $(style lyellow 'e') - $(style lwhite 'edgbaston.maths.ox.ac.uk') $(style grey '- Development server (PHP 8.1)')"
 echo "  $(style lyellow 't') - $(style lwhite 'trent-bridge.maths.ox.ac.uk') $(style grey '- Main website - staging')"
 echo "  $(style lyellow 'w') - $(style lwhite 'www.maths.ox.ac.uk') $(style grey '- Main website - live')"
 echo
@@ -72,6 +73,7 @@ while true; do
         m) host=maria.djm.me ;;
 
         b) host=beulah-penguin.maths.ox.ac.uk ;;
+        c) host=centurion.maths.ox.ac.uk ;;
         e) host=edgbaston.maths.ox.ac.uk ;;
         t) host=trent-bridge.maths.ox.ac.uk; local_tmux=true ;;
         w) host=www.maths.ox.ac.uk; local_tmux=true ;;
