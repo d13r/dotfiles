@@ -1036,7 +1036,7 @@ shopt -u sourcepath
 stty -ixon # Disable Ctrl-S
 tabs -4
 
-_update-dpi
+#_update-dpi
 
 
 #---------------------------------------
