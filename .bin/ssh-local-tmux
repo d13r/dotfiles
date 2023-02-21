@@ -7,7 +7,7 @@ if [[ $# -lt 1 ]]; then
 fi
 
 host=$1
-session=${2:-${host//\./_}}
+session=${2:-${host//\.*}}
 
 ssh="ssh -o ForwardAgent=yes -o StrictHostKeyChecking=accept-new '$host'"
 
