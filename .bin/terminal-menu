@@ -13,7 +13,7 @@ launch() {
 
 # Handle Ctrl-C
 interrupted() {
-    stty echo # Re-enable input, in case a terminal is displayed
+    stty echo # Re-enable input, in case we drop back to a terminal
     exit
 }
 
@@ -95,6 +95,8 @@ while true; do
     local_tmux=false
 
     # Check if it matched any of the servers
+    host=
+
     while next_server; do
 
         # The lowercase version must be specified
@@ -134,12 +136,13 @@ while true; do
         tmux=false
     elif [[ $letter = '.' ]]; then
         # Prompt for the hostname (see below)
-        host=
         echo
     elif [[ $letter = '>' ]]; then
-        host=
         tmux=false
         echo
+    elif [[ $letter = $'\x1b' ]]; then
+        # Escape key (Note: Ctrl-C also exits - see above)
+        exit
     elif [[ $letter = '!' ]]; then
         # Reload menu (for development - not displayed in the menu)
         exec "$0" "$@"
