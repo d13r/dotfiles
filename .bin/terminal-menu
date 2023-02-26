@@ -28,23 +28,55 @@ clear
 # Determine the local hostname, so we can bypass SSH in case I select the local machine
 localhost=$(get-full-hostname)
 
+# Helpers to read the list of available servers from .ssh/config
+files=("$HOME/.ssh/config")
+
+if [[ -f "$HOME/.ssh/config_local" ]]; then
+    files+=("$HOME/.ssh/config_local")
+fi
+
+servers() {
+    sed -n 's/^##| *//p' "${files[@]}" | sed 's/ *| */|/g'
+}
+
+next_server() {
+    IFS='|' read -r section keys hostname description options
+}
+
 # Display menu
+menu_section() {
+    echo
+    echo "  $(style 'lcyan,bold' "$1")"
+}
+
+menu_server() {
+    local keys=$1
+    local hostname=$2
+    local description=${3:-}
+
+    echo -n "  $(style lyellow "${keys:0:1}") - $(style lwhite "$hostname")"
+    if [[ -n $description ]]; then
+        echo -n " $(style grey "- $description")"
+    fi
+    echo
+}
+
+prev_section=
+
+servers | while next_server; do
+    if [[ $section != $prev_section ]]; then
+        menu_section "$section"
+    fi
+
+    menu_server "$keys" "$hostname" "$description"
+
+    prev_section=$section
+done
+
 echo
-echo "  $(style 'lcyan,bold' 'Personal')"
-echo "  $(style lyellow 'k') - $(style lwhite 'kara.djm.me') $(style grey '- Development VM on Chell')"
-echo "  $(style lyellow 'm') - $(style lwhite 'maria.djm.me') $(style grey '- Desktop PC')"
-echo "  $(style lyellow '7') - $(style lwhite 'seven.djm.me') $(style grey '- Production VM (Hetzner)')"
-echo
-echo "  $(style 'lcyan,bold' 'Mathematical Institute')"
-echo "  $(style lyellow 'b') - $(style lwhite 'beulah-penguin.maths.ox.ac.uk') $(style grey '- Desktop PC')"
-echo "  $(style lyellow 'c') - $(style lwhite 'centurion.maths.ox.ac.uk') $(style grey '- Development VM (PHP 7.4)')"
-echo "  $(style lyellow 'e') - $(style lwhite 'edgbaston.maths.ox.ac.uk') $(style grey '- Development VM (PHP 8.1)')"
-echo "  $(style lyellow 't') - $(style lwhite 'trent-bridge.maths.ox.ac.uk') $(style grey '- Main website - staging')"
-echo "  $(style lyellow 'w') - $(style lwhite 'www.maths.ox.ac.uk') $(style grey '- Main website - live')"
-echo
-echo "  $(style 'lcyan,bold' 'Miscellaneous')"
-echo "  $(style lyellow 'l') - $(style lwhite 'localhost') $(style grey "- $USER@$localhost")"
-echo "  $(style lyellow 'x') - $(style lwhite 'Other...')"
+menu_section 'Miscellaneous'
+menu_server 'l' 'localhost' "$USER@$localhost"
+menu_server '.' 'Other...'
 echo
 echo "  Type a $(style yellow lowercase) letter to connect to the given server and start 'tmux' (if available)."
 echo "  Type an $(style yellow uppercase) letter to connect to the given server and start a normal shell (Bash)."
@@ -56,33 +88,65 @@ while true; do
     # Wait for a single key to be pressed
     read -rsn 1 letter
 
-    # Check if it was lowercase or uppercase
-    tmux=false
-    if [[ $letter =~ [a-z0-9] ]]; then
-        tmux=true
-    fi
+    # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
+    tmux=true
 
-    # For servers without dotfiles (or without tmux installed), run tmux locally
+    # If we know Tmux isn't available on the server, run it locally
     local_tmux=false
 
-    # Work out what was pressed
-    case ${letter,,} in
-        k) host=kara.djm.me ;;
-        m) host=maria.djm.me ;;
-        7|'&') host=seven.djm.me ;;
+    # Check if it matched any of the servers
+    while next_server; do
 
-        b) host=beulah-penguin.maths.ox.ac.uk ;;
-        c) host=centurion.maths.ox.ac.uk ;;
-        e) host=edgbaston.maths.ox.ac.uk ;;
-        t) host=trent-bridge.maths.ox.ac.uk; local_tmux=true ;;
-        w) host=www.maths.ox.ac.uk; local_tmux=true ;;
+        # The lowercase version must be specified
+        lowercase_key=${keys:0:1}
 
-        l) host=$localhost ;;
-        x) host= ; echo ;;
+        # The uppercase version may be specified, e.g. if it is a number + symbol
+        uppercase_key=${keys:1:1}
+        if [[ -z $uppercase_key ]]; then
+            uppercase_key=${lowercase_key^^}
+        fi
 
-        !) exec "$0" "$@" ;; # reload menu (for development - not displayed in menu)
-        *) continue ;; # go back to 'read' for the next character
-    esac
+        # Check for a match
+        if [[ $letter != $lowercase_key && $letter != $uppercase_key ]]; then
+            continue
+        fi
+
+        # Match found
+        host="$hostname"
+
+        if [[ $letter = $uppercase_key ]]; then
+            tmux=false
+        fi
+
+        if grep -qx 'local-tmux' <<< "$options"; then
+            local_tmux=true
+        fi
+
+        break
+
+    done < <(servers)
+
+    # Check for any special keys
+    if [[ $letter = 'l' ]]; then
+        host=$localhost
+    elif [[ $letter = 'L' ]]; then
+        host=$localhost
+        tmux=false
+    elif [[ $letter = '.' ]]; then
+        # Prompt for the hostname (see below)
+        host=
+        echo
+    elif [[ $letter = '>' ]]; then
+        host=
+        tmux=false
+        echo
+    elif [[ $letter = '!' ]]; then
+        # Reload menu (for development - not displayed in the menu)
+        exec "$0" "$@"
+    elif [[ -z $host ]]; then
+        # No match - go back to 'read' for the next character
+        continue;
+    fi
 
     # Prompt for hostname if needed (also accepts an alias defined in .ssh/config)
     while [[ -z $host ]]; do
