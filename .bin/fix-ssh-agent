@@ -60,8 +60,6 @@ for filename in $(find /run/user -user $(id -u) -iregex /run/user/[0-9]+/keyring
     try_socket "$filename"
 done
 
-/run/user/24681/keyring/ssh
-
 # Not found
 echo "Couldn't find any SSH agent sockets" >&2
 exit 1
