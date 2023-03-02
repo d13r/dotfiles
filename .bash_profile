@@ -84,7 +84,7 @@ export LESS='FRX'
 if is-mac; then
     export LSCOLORS='DxGxFxDaCaDaDahbaDacec'
 else
-    export LS_COLORS='rs=0:fi=01;37:di=01;33:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32'
+    export LS_COLORS='rs=0:fi=97:di=93:ln=96:mh=00:pi=40;33:so=95:do=95:bd=40;93:cd=40;93:or=40;91:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=92'
 fi
 
 export PAGER='less'
