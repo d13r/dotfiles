@@ -479,24 +479,6 @@ hackit() {
     git checkout master
 }
 
-m() {
-    session=${1:-$USER}
-
-    # Launch tmux, replacing the current shell (so when we quit, we don't have to exit again)
-    if [ -z "$TMUX" ]; then
-        exec tmux -2 new -A -s "$session"
-    fi
-
-    # Already running - switch session
-    current=$(tmux display-message -p '#S')
-    if [[ $session = $current ]]; then
-        echo "Already in '$session' session."
-    else
-        tmux -2 new -d -s "$session" 2>/dev/null
-        tmux -2 switch -t "$session"
-    fi
-}
-
 man() {
     # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
     LESS_TERMCAP_mb=$(printf "\e[91m") \
@@ -720,6 +702,24 @@ systemctl() {
         fi
     else
         maybe-sudo systemctl "$@"
+    fi
+}
+
+tm() {
+    session=${1:-$USER}
+
+    # Launch tmux, replacing the current shell (so when we quit, we don't have to exit again)
+    if [[ -z $TMUX ]]; then
+        exec tmux -2 new -A -s "$session"
+    fi
+
+    # Already running - switch session
+    current=$(tmux display-message -p '#S')
+    if [[ $session = $current ]]; then
+        echo "Already in '$session' session."
+    else
+        tmux -2 new -d -s "$session" 2>/dev/null
+        tmux -2 switch -t "$session"
     fi
 }
 

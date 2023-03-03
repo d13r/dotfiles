@@ -159,7 +159,7 @@ while true; do
     # Localhost (no SSH)
     if [[ $host = $localhost ]]; then
         if $tmux; then
-            # Can't use 'm' here because that is an alias not a script
+            # Can't use 'tm' here because that is an alias not a script
             launch tmux -2 new -A -s "$USER"
         else
             launch "$SHELL"
