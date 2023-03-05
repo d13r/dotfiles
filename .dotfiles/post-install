@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
+PATH="$HOME/.bin:$PATH"
+
 # Support for non-interactive installs (Ansible)
 interactive=true
 if [[ ${1:-} = '--unattended' ]]; then
@@ -11,8 +13,6 @@ fi
 if $interactive; then
     trap 'exec bash -l' EXIT
 fi
-
-PATH="$HOME/.bin:$PATH"
 
 # Reload tmux config
 if $interactive && [[ -n ${TMUX:-} ]]; then
@@ -30,20 +30,29 @@ date +%Y%m%d > ~/.local/dotfiles-last-auto-update
 style lblue 'Running post-update script...'
 ~/.dotfiles/post-update "$@"
 
-# Fix WSL permissions (defaults to umask 000)
 if is-wsl; then
-    style lblue 'Fixing WSL permissions'
-    umask 002
-    chmod o-w -R "$HOME"
+    style lblue 'Configuring WSL...'
 
+    # Fix WSL permissions (defaults to umask 000)
+    umask 002
+    chmod o-w -R "$HOME" || true
+
+    # Fix mount permission + enable Systemd
     sudo-write /etc/wsl.conf <<END
 [automount]
 options = "metadata,umask=0022"
+
+[boot]
+systemd=true
 END
+
+    echo
+    style lblue 'Restarting WSL (you will need to reconnect manually)...'
+    wsl.exe --terminate "$WSL_DISTRO_NAME"
 fi
 
 # Reload Bash
-if $interactive; then
+if $interactive && ! is-wsl; then
     style lblue 'Reloading Bash...'
     # See EXIT trap above
 fi
