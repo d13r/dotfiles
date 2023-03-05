@@ -148,7 +148,7 @@ elif is-wsl 2; then
     if [[ ! -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
         echo
         style lblue 'Downloading wsl2-ssh-pageant...'
-        curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.3.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
+        curl -L 'https://github.com/BlackReloaded/wsl2-ssh-pageant/releases/download/v1.4.0/wsl2-ssh-pageant.exe' > ~/.ssh/wsl2-ssh-pageant.exe
     fi
 
     if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
