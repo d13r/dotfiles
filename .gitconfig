@@ -83,6 +83,9 @@
     grep = auto
     status = auto
 
+[color "grep"]
+    match = brightred
+
 [commit]
     verbose = 2
 

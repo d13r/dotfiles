@@ -84,6 +84,9 @@ export LESS='FRX'
 if is-mac; then
     export LSCOLORS='DxGxFxDaCaDaDahbaDacec'
 else
+    # https://askubuntu.com/a/1042242/29806
+    # Also see .gitconfig
+    export GREP_COLORS='ms=91:mc=91:sl=:cx=:fn=35:ln=32:bn=32:se=36'
     export LS_COLORS='rs=0:fi=97:di=93:ln=96:mh=00:pi=40;33:so=95:do=95:bd=40;93:cd=40;93:or=40;91:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=92'
 fi
 
