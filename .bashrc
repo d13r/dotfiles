@@ -1021,7 +1021,7 @@ export QUOTING_STYLE='literal'
 shopt -s autocd
 shopt -s cdspell
 shopt -s checkhash
-#shopt -s checkjobs # Disabled 10 Mar 2023 because I often start GUI apps in the background
+shopt -s checkjobs
 shopt -s checkwinsize
 shopt -s cmdhist
 shopt -s dirspell
