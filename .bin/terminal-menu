@@ -136,7 +136,7 @@ while true; do
     elif [[ $letter = 'L' ]]; then
         host=$localhost
         tmux=false
-    elif [[ $letter = '.' ]]; then
+    elif [[ $letter = '.' || $letter = '' ]]; then
         # Prompt for the hostname (see below)
         echo
     elif [[ $letter = '>' ]]; then
