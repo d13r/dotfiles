@@ -84,7 +84,8 @@
     status = auto
 
 [color "grep"]
-    match = brightred
+    # This doesn't work on Ubuntu 20.04
+    #match = brightred
 
 [commit]
     verbose = 2
