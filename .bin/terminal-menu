@@ -154,7 +154,7 @@ while true; do
     # Localhost (no SSH)
     if [[ $host = $localhost ]]; then
         if $tmux; then
-            launch tm
+            launch t
         else
             launch "$SHELL"
         fi
