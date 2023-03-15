@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+if [[ -f /mi/bin/wake ]]; then
+    exec /mi/bin/wake "$@"
+fi
+
+ssh gate /mi/bin/wake "$@"
