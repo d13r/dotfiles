@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-if [[ -f /mi/bin/wake ]]; then
-    exec /mi/bin/wake "$@"
+args=$@
+host=${1:-}
+
+if [[ $host = '' || $host = 'b' || $host = 'bp' ]]; then
+    args='beulah-penguin'
 fi
 
-ssh gate /mi/bin/wake "$@"
+if [[ -f /mi/bin/wake ]]; then
+    exec /mi/bin/wake "${args[@]}"
+fi
+
+ssh gate /mi/bin/wake "${args[@]}"
