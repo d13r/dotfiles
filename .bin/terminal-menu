@@ -40,7 +40,7 @@ servers() {
 }
 
 next_server() {
-    IFS='|' read -r section keys hostname description options
+    IFS='|' read -r section keys hostname description
 }
 
 # Display menu
@@ -93,9 +93,6 @@ while true; do
     # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
     tmux=true
 
-    # If we know Tmux isn't available on the server, run it locally
-    local_tmux=false
-
     # Check if it matched any of the servers
     host=
 
@@ -120,10 +117,6 @@ while true; do
 
         if [[ $letter = $uppercase_key ]]; then
             tmux=false
-        fi
-
-        if grep -qx 'local-tmux' <<< "$options"; then
-            local_tmux=true
         fi
 
         break
@@ -161,20 +154,17 @@ while true; do
     # Localhost (no SSH)
     if [[ $host = $localhost ]]; then
         if $tmux; then
-            # Can't use 'tm' here because that is an alias not a script
-            launch tmux -2 new -A -s "$USER"
+            launch tm
         else
             launch "$SHELL"
         fi
     fi
 
     # Connect to the given server and run 'tmux' or $SHELL as appropriate
-    if ! $tmux; then
-        launch ssh "$host"
-    elif $local_tmux; then
-        launch ssh-local-tmux "$host"
-    else
+    if $tmux; then
         launch h "$host"
+    else
+        launch ssh "$host"
     fi
 
 done

@@ -705,45 +705,6 @@ systemctl() {
     fi
 }
 
-th() {
-    # Based on 'ssh-local-tmux' - maybe they can be merged at some point...
-    host=$1
-    session=${2:-${host//\.*}}
-
-    ssh="ssh -o ForwardAgent=yes -o StrictHostKeyChecking=accept-new '$host'"
-
-    # Create a detached session (if there isn't one already)
-    tmux -2 new -s "$session" -d bash -l -c "$ssh" || true 2>/dev/null
-
-    # Set the default command for new windows to connect to the same server
-    tmux set -t "$session" default-command "bash -l -c \"$ssh\""
-
-    # Connect to the session
-    if [[ -z $TMUX ]]; then
-        exec tmux -2 attach -t "$session"
-    fi
-
-    tmux -2 switch -t "$session"
-}
-
-tm() {
-    session=${1:-$USER}
-
-    # Launch tmux, replacing the current shell (so when we quit, we don't have to exit again)
-    if [[ -z $TMUX ]]; then
-        exec tmux -2 new -A -s "$session"
-    fi
-
-    # Already running - switch session
-    current=$(tmux display-message -p '#S')
-    if [[ $session = $current ]]; then
-        echo "Already in '$session' session."
-    else
-        tmux -2 new -d -s "$session" 2>/dev/null
-        tmux -2 switch -t "$session"
-    fi
-}
-
 unmark() {
     local marks=${@:-$(basename "$PWD")}
 

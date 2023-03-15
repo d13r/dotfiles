@@ -3,7 +3,7 @@ set -o errexit -o nounset -o pipefail
 
 # ssh + tmux ('h' for 'ssH', because 's' is in use)
 host=${1:-}
-name=${2:-\$USER}
+session=${2:-}
 
 if [[ -z $host ]]; then
     echo "Usage: h <host> [session]" >&2
@@ -11,14 +11,36 @@ if [[ -z $host ]]; then
 fi
 
 # For 'h user@host ^', upload SSH public key - easier than retyping it
-if [[ $# -eq 2 ]] && [[ "$name" = '^' ]]; then
+if [[ $# -eq 2 ]] && [[ "$session" = '^' ]]; then
     exec ssh-copy-id "$host"
 fi
 
 # For 'h user@host X', close the master connection
-if [[ $# -eq 2 ]] && [[ "$name" = 'X' ]]; then
+if [[ $# -eq 2 ]] && [[ "$session" = 'X' ]]; then
     exec ssh -O stop "$host"
 fi
 
-exec ssh -o ForwardAgent=yes -o StrictHostKeyChecking=accept-new "$host" \
-    -t "test -d ~/.dotfiles && command -v tmux &>/dev/null && tmux -2 new -A -s \"$name\" || bash -l"
+# If tmux and dotfiles are installed on the remote server, run it remotely
+if ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null'; then
+    exec ssh "$host" -t "tmux -2 new -A -s \"${session:-\$USER}\""
+fi
+
+# Otherwise run tmux locally...
+
+# Use the hostname as the session name
+if [[ -z $session ]]; then
+    session=${host//\.*}
+fi
+
+# Create a detached session (if there isn't one already)
+tmux -2 new -s "$session" -d bash -l -c "ssh '$host'" || true 2>/dev/null
+
+# Set the default command for new windows to connect to the same server
+tmux set -t "$session" default-command "bash -l -c \"ssh '$host'\""
+
+# Connect to the session
+if [[ -z ${TMUX:-} ]]; then
+    exec tmux -2 attach -t "$session"
+fi
+
+tmux -2 switch -t "$session"
