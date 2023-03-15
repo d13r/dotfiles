@@ -20,27 +20,35 @@ if [[ $# -eq 2 ]] && [[ "$session" = 'X' ]]; then
     exec ssh -O stop "$host"
 fi
 
-# If tmux and dotfiles are installed on the remote server, run it remotely
+# If both tmux and dotfiles are installed on the remote server, run it remotely
 if ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null'; then
     exec ssh "$host" -t "tmux -2 new -A -s \"${session:-\$USER}\""
 fi
 
-# Otherwise run tmux locally...
+# Otherwise we'll run tmux locally...
 
-# Use the hostname as the session name
+# Use the short hostname as the session name
+# (It may also include the username@ part if given)
 if [[ -z $session ]]; then
     session=${host//\.*}
 fi
 
-# Create a detached session (if there isn't one already)
-tmux -2 new -s "$session" -d bash -l -c "ssh '$host'" || true 2>/dev/null
+# Try to avoid connecting to an existing session inside itself
+current=$(tmux display-message -p '#S')
 
-# Set the default command for new windows to connect to the same server
-tmux set -t "$session" default-command "bash -l -c \"ssh '$host'\""
-
-# Connect to the session
-if [[ -z ${TMUX:-} ]]; then
-    exec tmux -2 attach -t "$session"
+if [[ -n ${TMUX:-} && $session = $current ]]; then
+    echo "Already in '$session' session."
+    exit 1
 fi
 
-tmux -2 switch -t "$session"
+# Allow nested sessions
+export TMUX=
+
+# Create a detached session (if there isn't one already)
+tmux -2 new -s "$session" -d ssh "$host" 2>/dev/null || true
+
+# Set the default command for new windows to connect to the same server
+tmux set -t "$session" default-command "ssh '$host'"
+
+# Connect to the session
+exec tmux -2 attach -t "$session"

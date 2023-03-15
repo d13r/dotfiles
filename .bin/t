@@ -1,20 +1,31 @@
 #!/usr/bin/env bash
 set -o errexit -o nounset -o pipefail
 
-session=${1:-$USER}
+session=${1:-}
 
-# Launch tmux
-if [[ -z ${TMUX:-} ]]; then
-    exec tmux -2 new -A -s "$session"
+if [[ -z $session ]]; then
+    # If we're already in a tmux session, require a named session
+    if [[ -n ${TMUX:-} ]]; then
+        echo 'sessions should be nested with care, unset $TMUX or provide a session name to force'
+        exit 1
+    fi
+
+    # Use the current username as the default session name
+    session=$USER
 fi
 
-# Already running - switch session
-current=$(tmux display-message -p '#S')
+# Try to avoid connecting to an existing session inside itself
+if [[ -n ${TMUX:-} ]]; then
+    current=$(tmux display-message -p '#S')
 
-if [[ $session = $current ]]; then
-    echo "Already in '$session' session."
-    exit 1
+    if [[ $session = $current ]]; then
+        echo "Already in '$session' session."
+        exit 1
+    fi
 fi
 
-tmux -2 new -d -s "$session" 2>/dev/null
-tmux -2 switch -t "$session"
+# Allow nested sessions
+export TMUX=
+
+# Start or connect to the given tmux session
+exec tmux -2 new -A -s "$session"
