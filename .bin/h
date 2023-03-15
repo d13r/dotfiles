@@ -21,7 +21,7 @@ if [[ $# -eq 2 ]] && [[ "$session" = 'X' ]]; then
 fi
 
 # If both tmux and dotfiles are installed on the remote server, run it remotely
-if ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null'; then
+if ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null' &>/dev/null; then
     exec ssh "$host" -t "tmux -2 new -A -s \"${session:-\$USER}\""
 fi
 
@@ -34,18 +34,20 @@ if [[ -z $session ]]; then
 fi
 
 # Try to avoid connecting to an existing session inside itself
-current=$(tmux display-message -p '#S')
+if [[ -n ${TMUX:-} ]]; then
+    current=$(tmux display-message -p '#S')
 
-if [[ -n ${TMUX:-} && $session = $current ]]; then
-    echo "Already in '$session' session."
-    exit 1
+    if [[ $session = $current ]]; then
+        echo "Already in '$session' session."
+        exit 1
+    fi
 fi
 
 # Allow nested sessions
 export TMUX=
 
 # Create a detached session (if there isn't one already)
-tmux -2 new -s "$session" -d ssh "$host" 2>/dev/null || true
+tmux -2 new -s "$session" -d bash -l -c "ssh '$host'" 2>/dev/null || true
 
 # Set the default command for new windows to connect to the same server
 tmux set -t "$session" default-command "ssh '$host'"
