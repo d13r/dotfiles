@@ -1183,7 +1183,10 @@ _dirhistory-push-past "$PWD"
 ~/.dotfiles/auto-update
 
 # Show the current directory name & contents
-_ls-current-directory
+# Only if running in tmux - because I normally only use a plan terminal to launch tmux
+if [[ -n ${TMUX:-} ]]; then
+    _ls-current-directory
+fi
 
 
 #===============================================================================
