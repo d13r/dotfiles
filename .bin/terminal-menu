@@ -8,7 +8,11 @@ source "$HOME/.bash/style"
 launch() {
     clear
     tput cnorm # Show cursor
-    exec "$@"
+    if ! "$@"; then
+        echo
+        echo 'Press any key to continue...'
+        read -rsn 1
+    fi
 }
 
 # Handle Ctrl-C
@@ -21,9 +25,6 @@ trap interrupted INT
 
 # Hide the cursor
 tput civis
-
-# Clear the screen in case anything was output before this (e.g. when testing it)
-clear
 
 # Determine the local hostname, so we can bypass SSH in case I select the local machine
 localhost=$(get-full-hostname)
@@ -43,7 +44,7 @@ next_server() {
     IFS='|' read -r section keys hostname description
 }
 
-# Display menu
+# Helpers for displaying the menu
 menu_section() {
     echo
     echo "  $(style 'lcyan,bold' "$1")"
@@ -61,110 +62,120 @@ menu_server() {
     echo
 }
 
-prev_section=
-
-servers | while next_server; do
-    if [[ $section != $prev_section ]]; then
-        menu_section "$section"
-    fi
-
-    menu_server "$keys" "$hostname" "$description"
-
-    prev_section=$section
-done
-
-echo
-menu_section 'Miscellaneous'
-menu_server 'l' 'localhost' "$USER@$localhost"
-menu_server '.' 'Other...'
-echo
-echo "  Type a $(style yellow 'lowercase') letter to connect to the given server and start 'tmux' (if available)."
-echo "  Type an $(style yellow 'uppercase') letter to connect to the given server and start a normal shell (Bash)."
-echo
-echo "  If you just want a regular terminal, type '$(style lyellow 'L')' for a local shell."
-echo "  To exit, press $(style lyellow 'Esc') or $(style lyellow 'Ctrl-C')."
-
-# Loop until a valid input is given
+# After exiting a terminal, return to the menu
 while true; do
 
-    # Wait for a single key to be pressed
-    read -rsn 1 letter
+    # Clear the screen
+    clear
 
-    # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
-    tmux=true
+    # Display the menu
+    prev_section=
 
-    # Check if it matched any of the servers
-    host=
-
-    while next_server; do
-
-        # The lowercase version must be specified
-        lowercase_key=${keys:0:1}
-
-        # The uppercase version may be specified, e.g. if it is a number + symbol
-        uppercase_key=${keys:1:1}
-        if [[ -z $uppercase_key ]]; then
-            uppercase_key=${lowercase_key^^}
+    servers | while next_server; do
+        if [[ $section != $prev_section ]]; then
+            menu_section "$section"
         fi
 
-        # Check for a match
-        if [[ $letter != $lowercase_key && $letter != $uppercase_key ]]; then
-            continue
-        fi
+        menu_server "$keys" "$hostname" "$description"
 
-        # Match found
-        host="$hostname"
+        prev_section=$section
+    done
 
-        if [[ $letter = $uppercase_key ]]; then
+    echo
+    menu_section 'Miscellaneous'
+    menu_server 'l' 'localhost' "$USER@$localhost"
+    menu_server '.' 'Other...'
+    echo
+    echo "  Type a $(style yellow 'lowercase') letter to connect to the given server and start 'tmux' (if available)."
+    echo "  Type an $(style yellow 'uppercase') letter to connect to the given server and start a normal shell (Bash)."
+    echo
+    echo "  If you just want a regular terminal, type '$(style lyellow 'L')' for a local shell."
+    echo "  To exit, press $(style lyellow 'Esc') or $(style lyellow 'Ctrl-C')."
+
+    # Loop until a valid input is given
+    while true; do
+
+        # Wait for a single key to be pressed
+        read -rsn 1 letter
+
+        # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
+        tmux=true
+
+        # Check if it matched any of the servers
+        host=
+
+        while next_server; do
+
+            # The lowercase version must be specified
+            lowercase_key=${keys:0:1}
+
+            # The uppercase version may be specified, e.g. if it is a number + symbol
+            uppercase_key=${keys:1:1}
+            if [[ -z $uppercase_key ]]; then
+                uppercase_key=${lowercase_key^^}
+            fi
+
+            # Check for a match
+            if [[ $letter != $lowercase_key && $letter != $uppercase_key ]]; then
+                continue
+            fi
+
+            # Match found
+            host="$hostname"
+
+            if [[ $letter = $uppercase_key ]]; then
+                tmux=false
+            fi
+
+            break
+
+        done < <(servers)
+
+        # Check for any special keys
+        if [[ $letter = 'l' ]]; then
+            host=$localhost
+        elif [[ $letter = 'L' ]]; then
+            host=$localhost
             tmux=false
+        elif [[ $letter = '.' || $letter = '' ]]; then
+            # Prompt for the hostname (see below)
+            echo
+        elif [[ $letter = '>' ]]; then
+            tmux=false
+            echo
+        elif [[ $letter = $'\x1b' ]]; then
+            # Escape key - Exit (Note: Ctrl-C also exits - see above)
+            exit
+        elif [[ $letter = '!' ]]; then
+            # Reload menu (for development - not displayed in the menu)
+            exec "$0" "$@"
+        elif [[ -z $host ]]; then
+            # No match - go back to 'read' for the next character
+            continue
         fi
 
         break
 
-    done < <(servers)
-
-    # Check for any special keys
-    if [[ $letter = 'l' ]]; then
-        host=$localhost
-    elif [[ $letter = 'L' ]]; then
-        host=$localhost
-        tmux=false
-    elif [[ $letter = '.' || $letter = '' ]]; then
-        # Prompt for the hostname (see below)
-        echo
-    elif [[ $letter = '>' ]]; then
-        tmux=false
-        echo
-    elif [[ $letter = $'\x1b' ]]; then
-        # Escape key - Exit (Note: Ctrl-C also exits - see above)
-        exit
-    elif [[ $letter = '!' ]]; then
-        # Reload menu (for development - not displayed in the menu)
-        exec "$0" "$@"
-    elif [[ -z $host ]]; then
-        # No match - go back to 'read' for the next character
-        continue;
-    fi
+    done
 
     # Prompt for hostname if needed (also accepts an alias defined in .ssh/config)
     while [[ -z $host ]]; do
         read -r -p "  $(style lwhite 'Enter Hostname:') " host
     done
 
-    # Localhost (no SSH)
+    # Connect to the given server and run 'tmux' or $SHELL as appropriate
     if [[ $host = $localhost ]]; then
         if $tmux; then
             launch t
         else
             launch "$SHELL"
         fi
-    fi
-
-    # Connect to the given server and run 'tmux' or $SHELL as appropriate
-    if $tmux; then
-        launch h "$host"
     else
-        launch ssh "$host"
+        if $tmux; then
+            launch h "$host"
+        else
+            launch ssh "$host"
+        fi
     fi
 
 done

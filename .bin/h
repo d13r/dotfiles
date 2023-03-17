@@ -21,7 +21,13 @@ if [[ $# -eq 2 ]] && [[ "$session" = 'X' ]]; then
 fi
 
 # If both tmux and dotfiles are installed on the remote server, run it remotely
-if ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null' &>/dev/null; then
+result=0
+ssh "$host" 'test -d ~/.dotfiles && command -v tmux &>/dev/null' || result=$?
+
+if [[ $result -eq 255 ]]; then
+    # SSH error, e.g. Could not resolve hostname
+    exit $result
+elif [[ $result -ge 0 ]]; then
     exec ssh "$host" -t "tmux -2 new -A -s \"${session:-\$USER}\""
 fi
 
