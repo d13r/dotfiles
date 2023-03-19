@@ -98,7 +98,7 @@ fi
 # (Add additional commands here if needed - e.g. run 'php artisan horizon:pause')
 
 # Check out the latest code for the current branch
-echo -e "\e[34;1mUpdating working copy...\e[0m"
+echo -e "\e[94mUpdating working copy...\e[0m"
 umask 007
 git reset --hard
 
