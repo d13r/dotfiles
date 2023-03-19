@@ -45,11 +45,6 @@ if [[ ${GIT_DIR:-} = '.' ]]; then
     export GIT_DIR='.git'
 fi
 
-# Try to obtain the usual system PATH
-if [[ -f /etc/profile ]]; then
-    export PATH=$(source /etc/profile; echo $PATH)
-fi
-
 # Check for local changes to working copy or stage, including untracked files
 if [[ -n $(git status --porcelain) ]]; then
     echo >&2 '========================================================================'
@@ -76,11 +71,6 @@ draw_line
 if [[ ${GIT_DIR:-} = '.' ]]; then
     cd ..
     export GIT_DIR='.git'
-fi
-
-# Try to obtain the usual system PATH
-if [[ -f /etc/profile ]]; then
-    export PATH=$(source /etc/profile; echo $PATH)
 fi
 
 # Get the current branch
