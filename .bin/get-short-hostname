@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+(
+    hostname 2>/dev/null \
+        || cat /proc/sys/kernel/hostname
+) \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed 's/\..*//'
