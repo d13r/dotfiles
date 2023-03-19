@@ -1,0 +1,129 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# To test this script (more or less), run:
+# WARNING: This will call "git reset --hard" and lose all local changes!
+# git push-hook -f
+# echo "X X $(git symbolic-ref HEAD)" | .git/hooks/pre-receive
+# echo "X X $(git symbolic-ref HEAD)" | .git/hooks/post-receive
+
+# To uninstall the push hook:
+# rm -f .git/hooks/pre-receive .git/hooks/post-receive
+# git config --unset receive.denyCurrentBranch
+
+pre_hook='.git/hooks/pre-receive'
+post_hook='.git/hooks/post-receive'
+
+if [[ ${1:-} != '-f' ]]; then
+
+    error=false
+
+    if [[ -f $pre_hook ]]; then
+        echo "Error: '$pre_hook' already exists (add -f to overwrite)" >&2
+        error=true
+    fi
+
+    if [[ -f $post_hook ]]; then
+        echo "Error: '$post_hook' already exists (add -f to overwrite)" >&2
+        error=true
+    fi
+
+    if $error; then
+        exit 1
+    fi
+
+fi
+
+echo "Creating '$pre_hook'..."
+cat <<'END' > $pre_hook
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# cd to the working copy
+if [[ ${GIT_DIR:-} = '.' ]]; then
+    cd ..
+    export GIT_DIR='.git'
+fi
+
+# Try to obtain the usual system PATH
+if [[ -f /etc/profile ]]; then
+    export PATH=$(source /etc/profile; echo $PATH)
+fi
+
+# Check for local changes to working copy or stage, including untracked files
+if [[ -n $(git status --porcelain) ]]; then
+    echo >&2 '========================================================================'
+    echo >&2 'Error: The remote has uncommitted changes.'
+    echo >&2 '========================================================================'
+    exit 1
+fi
+END
+
+echo "Creating '$post_hook'..."
+cat <<'END' > $post_hook
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# Use this separator to make it more noticable in the output on the remote site
+# It is 72 chars wide because the prefix "remote: " is 8 chars wide
+draw_line() {
+    echo '========================================================================'
+}
+
+draw_line
+
+# cd to the working copy
+if [[ ${GIT_DIR:-} = '.' ]]; then
+    cd ..
+    export GIT_DIR='.git'
+fi
+
+# Try to obtain the usual system PATH
+if [[ -f /etc/profile ]]; then
+    export PATH=$(source /etc/profile; echo $PATH)
+fi
+
+# Get the current branch
+head=$(git symbolic-ref HEAD)
+
+# Abort if we're on a detached head
+if [[ $? -ne 0 ]]; then
+    echo "Remote is in 'detached HEAD' state, aborting 'post-receive' hook."
+    draw_line
+    exit
+fi
+
+# Read the STDIN to detect if this push changed the current branch
+while read oldrev newrev refname; do
+    [[ "$refname" = "$head" ]] && break
+done
+
+# Abort if there's no update, or in case the branch is deleted
+if [[ -z ${newrev//0} ]]; then
+    echo "No updates to checked out '$(git symbolic-ref --short HEAD)' branch, skipping push hook."
+    draw_line
+    exit
+fi
+
+# (Add additional commands here if needed - e.g. run 'php artisan horizon:pause')
+
+# Check out the latest code for the current branch
+echo -e "\e[34;1mUpdating working copy...\e[0m"
+umask 007
+git reset --hard
+
+# Run setup script
+if [[ -f bin/setup ]]; then
+    DEPLOYING=true bin/setup
+fi
+
+draw_line
+END
+
+echo 'Making scripts executable...'
+chmod +x $pre_hook $post_hook
+
+echo 'Configuring Git to accept pushes...'
+git config receive.denyCurrentBranch ignore
+
+echo 'Push hook installed.'
