@@ -54,6 +54,11 @@ fi
 # lesspipe
 [[ -x /usr/bin/lesspipe ]] && eval "$(/usr/bin/lesspipe)"
 
+# nvm - https://github.com/nvm-sh/nvm#installing-and-updating
+export NVM_DIR="$HOME/.nvm"
+[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+
 # Python virtualenv
 if [[ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]]; then
     export VIRTUAL_ENV_DISABLE_PROMPT=1
