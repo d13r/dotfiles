@@ -153,9 +153,16 @@ while true; do
     done
 
     # Prompt for hostname if needed (also accepts an alias defined in .ssh/config)
-    while [[ -z $host ]]; do
+    if [[ -z $host ]]; then
+        clear
+        echo
         read -r -p "  $(style lwhite 'Enter Hostname:') " host
-    done
+    fi
+
+    # If nothing was entered, go back to the menu
+    if [[ -z $host ]]; then
+        continue
+    fi
 
     # Connect to the given server and run 'tmux' or $SHELL as appropriate
     if [[ $host = $localhost ]]; then
