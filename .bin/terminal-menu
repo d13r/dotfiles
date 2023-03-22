@@ -4,7 +4,7 @@ set -o errexit -o nounset -o pipefail
 # Load 'style' as a function to avoid the overhead of calling a script
 source "$HOME/.bash/style"
 
-# Can't use 'trap ... EXIT' because 'exec' doesn't trigger that
+# Helper to launch a command and check for errors
 launch() {
     clear
     tput cnorm # Show cursor
@@ -79,11 +79,12 @@ while true; do
     menu_server 'l' 'localhost' "$USER@$localhost"
     menu_server '.' 'Other...'
     echo
-    echo "  Type a $(style yellow 'lowercase') letter to connect to the given server and start 'tmux' (if available)."
-    echo "  Type an $(style yellow 'uppercase') letter to connect to the given server and start a normal shell (Bash)."
+    echo "  Type a $(style lyellow 'lowercase') letter to connect to the given server and start 'tmux'."
+    echo "  Type an $(style lyellow 'uppercase') letter to connect to the given server and start a normal shell (Bash)."
     echo
-    echo "  If you just want a regular terminal, type '$(style lyellow 'L')' for a local shell."
-    echo "  To exit, press $(style lyellow 'Esc') or $(style lyellow 'Ctrl-C')."
+    echo "  For a regular terminal, type an uppercase '$(style lyellow 'L')' (i.e. localhost shell)."
+    echo
+    echo "  To exit, press $(style lyellow 'Esc') (or Ctrl-C)."
 
     # Loop until a valid input is given
     while true; do
@@ -137,7 +138,7 @@ while true; do
             tmux=false
             echo
         elif [[ $letter = $'\x1b' ]]; then
-            # Escape key - Exit (Note: Ctrl-C also exits - see above)
+            # Escape key - Exit
             exit
         elif [[ $letter = '!' ]]; then
             # Reload menu (for development - not displayed in the menu)
