@@ -15,16 +15,9 @@ launch() {
     fi
 }
 
-# Handle Ctrl-C
-interrupted() {
-    stty echo # Re-enable input, in case we drop back to a terminal
-    exit
-}
-
-trap interrupted INT
-
 # Hide the cursor
 tput civis
+trap 'tput cnorm' EXIT
 
 # Determine the local hostname, so we can bypass SSH in case I select the local machine
 localhost=$(get-full-hostname)
