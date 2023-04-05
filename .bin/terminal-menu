@@ -67,6 +67,9 @@ while true; do
     # Hide the cursor so it's not visible when drawing the menu or waiting for input
     hide_cursor
 
+    # Set the window title - otherwise it may be blank or "Untitled window" when returning
+    echo -ne "\e]2;Terminal\a"
+
     # Clear the screen
     clear
 
