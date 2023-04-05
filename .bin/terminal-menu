@@ -7,7 +7,6 @@ source "$HOME/.bash/style"
 # Helper to launch a command and check for errors
 launch() {
     clear
-    tput cnorm # Show cursor
     if ! "$@"; then
         echo
         echo 'Press any key to continue...'
@@ -15,9 +14,16 @@ launch() {
     fi
 }
 
-# Hide the cursor
-tput civis
-trap 'tput cnorm' EXIT
+# Hide the cursor when waiting for input, and show again afterwards / on exit
+hide_cursor() {
+    tput civis
+}
+
+show_cursor() {
+    tput cnorm
+}
+
+trap show_cursor EXIT
 
 # Determine the local hostname, so we can bypass SSH in case I select the local machine
 localhost=$(get-full-hostname)
@@ -57,6 +63,9 @@ menu_server() {
 
 # After exiting a terminal, return to the menu
 while true; do
+
+    # Hide the cursor so it's not visible when drawing the menu or waiting for input
+    hide_cursor
 
     # Clear the screen
     clear
@@ -156,6 +165,7 @@ while true; do
     if [[ -z $host ]]; then
         clear
         echo
+        show_cursor
         read -r -p "  $(style lwhite 'Enter Hostname:') " host
     fi
 
@@ -165,6 +175,8 @@ while true; do
     fi
 
     # Connect to the given server and run 'tmux' or $SHELL as appropriate
+    show_cursor
+
     if [[ $host = $localhost ]]; then
         if $tmux; then
             launch t
