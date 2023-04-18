@@ -42,8 +42,9 @@ if is-wsl; then
 [automount]
 options = "metadata,umask=0022"
 
-[boot]
-systemd=true
+# Disabled 18 Apr 2023 because it takes slightly longer to cold boot (3s->5s), and I don't need it currently
+#[boot]
+#systemd=true
 END
 
     echo
