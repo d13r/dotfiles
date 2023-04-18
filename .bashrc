@@ -153,18 +153,16 @@ alias kns='kubectl config set-context --current --namespace'
 alias krm='kubectl delete'
 
 if is-mac; then
-    alias l="ls -hGFl"
-    alias la="ls -hGFlA"
-    alias ll="ls -hGFl"
-    alias ls="ls -hGF"
-    alias lsa="ls -hGFA"
+    ls_common='-GF'
 else
-    alias l="ls -hFl --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
-    alias la="ls -hFlA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
-    alias ll="ls -hFl --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
-    alias ls="ls -hF --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
-    alias lsa="ls -hFA --color=always --hide='*.pyc' --hide='*.sublime-workspace'"
+    ls_common="-hF --color=always --hide='*.pyc' --hide='*.sublime-workspace' --hide='\$RECYCLE.BIN' --hide='desktop.ini'"
 fi
+
+alias l="ls $ls_common -l"
+alias la="ls $ls_common -lA"
+alias ll="ls $ls_common -l"
+alias ls="ls $ls_common"
+alias lsa="ls $ls_common -A"
 
 alias mux='tmuxinator'
 
