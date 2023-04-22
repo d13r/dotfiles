@@ -221,6 +221,11 @@ alias yum="$sudo yum"
 # Functions
 #===============================================================================
 
+# This is a valid function name, but not a valid alias name
+-() {
+    cd - "$@"
+}
+
 1x() {
     rm -f $HOME/.config/bash/hidpi
     _update-dpi
