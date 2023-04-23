@@ -114,6 +114,8 @@ alias apt-add-repository="$sudo apt-add-repository"
 alias apt-mark="$sudo apt-mark"
 alias apt="$sudo apt"
 
+alias b='bin'
+
 if is-executable batcat && ! is-executable bat; then
     alias bat='batcat'
 fi
