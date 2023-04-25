@@ -150,8 +150,13 @@ while true; do
             tmux=false
             echo
         elif [[ $letter = $'\x1b' ]]; then
-            # Escape key - Exit
-            exit
+            # Escape key
+            # First, check if there are another two characters immediately following it
+            # (i.e. an escape code, such as an arrow key), and ignore them if so
+            if read -rsn 2 -t 0.01; then
+                continue
+            fi
+            exit 0
         elif [[ $letter = '!' ]]; then
             # Reload menu (for development - not displayed in the menu)
             exec "$0" "$@"
