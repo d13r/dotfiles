@@ -156,26 +156,16 @@ elif is-wsl 2; then
 
     if [[ -f ~/.ssh/wsl2-ssh-pageant.exe ]]; then
         chmod +x ~/.ssh/wsl2-ssh-pageant.exe
-        export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
+        export SSH_AUTH_SOCK="$HOME/.ssh/wsl2-ssh-pageant.sock"
         if ! is-executable socat; then
             echo
             style lblue 'Installing socat for wsl2-ssh-pageant...'
             sudo apt-get install socat
         fi
-        fuser -k /home/dave/.ssh/ssh_auth_sock &>/dev/null
-        rm -f $SSH_AUTH_SOCK
-        setsid --fork nohup socat UNIX-LISTEN:$SSH_AUTH_SOCK,fork EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe &>/dev/null
+        fuser -k "$SSH_AUTH_SOCK" &>/dev/null
+        rm -f "$SSH_AUTH_SOCK"
+        setsid --fork nohup socat "UNIX-LISTEN:$SSH_AUTH_SOCK,fork" "EXEC:$HOME/.ssh/wsl2-ssh-pageant.exe" &>/dev/null
     fi
-
-else
-
-    # Any other platform
-    # Workaround for losing SSH agent connection when reconnecting tmux
-    link="$HOME/.ssh/ssh_auth_sock"
-    if [[ $SSH_AUTH_SOCK != $link ]] && [[ -S $SSH_AUTH_SOCK ]]; then
-        ln -nsf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
-    fi
-    export SSH_AUTH_SOCK="$HOME/.ssh/ssh_auth_sock"
 
 fi
 

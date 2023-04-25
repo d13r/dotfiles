@@ -817,6 +817,11 @@ _prompt-before() {
     # Save (append) the Bash history after every command, instead of waiting until exit
     history -a
 
+    # Update $SSH_AUTH_SOCK and other variables
+    if [[ -n ${TMUX-} ]]; then
+        eval "$(tmux showenv -s)"
+    fi
+
     # Update the window title (no output)
     _prompt-titlebar
 
