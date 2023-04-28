@@ -37,7 +37,8 @@
         .local/dotfiles-last-auto-update \
         .vim
 
-    # Delete these only if they haven't been changed
+    # Delete .my.cnf only if it hadn't been changed from the default
+    # Note: Removed automatic generation 28 Apr 2023
     [[ $(md5sum .my.cnf | cut -d' ' -f1) = 'dce3584e1dd8b14b7ec0322d330946c1' ]] && rm -f .my.cnf
 
     # Restore the default (skeleton) files, skipping any existing files
