@@ -7,11 +7,13 @@ source "$HOME/.bash/style"
 # Helper to launch a command and check for errors
 launch() {
     clear
+    trap true INT
     if ! "$@"; then
         echo
         echo 'Press any key to continue...'
         read -rsn 1
     fi
+    trap INT
 }
 
 # Hide the cursor when waiting for input, and show again afterwards / on exit
@@ -107,7 +109,9 @@ while true; do
         while true; do
 
             # Wait for a single key to be pressed
+            trap exit INT
             read -rsn 1 letter
+            trap INT
 
             # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
             tmux=true
@@ -186,7 +190,10 @@ while true; do
         bind -r '\e[Z' 2>/dev/null
 
         # Default to the previous value so it's easy to correct mistakes or reconnect
-        read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
+        # This is a bit complex to handle Ctrl-C - https://stackoverflow.com/a/63713771/167815
+        trap 'host=' INT
+        host=$(read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" && echo "$REPLY") || true
+        trap INT
 
         # If nothing was entered, go back to the menu
         if [[ -z $host ]]; then
