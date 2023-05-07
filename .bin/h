@@ -31,6 +31,11 @@ elif [[ $result -eq 0 ]]; then
     exec ssh "$host" -t "tmux -2 new -A -s \"${session:-\$USER}\""
 fi
 
+# If tmux is not installed locally, just use SSH
+if ! command -v tmux &>/dev/null; then
+    exec ssh-with-bashrc "$host"
+fi
+
 # Otherwise we'll run tmux locally...
 
 # Use the short hostname as the session name
@@ -53,10 +58,10 @@ fi
 export TMUX=
 
 # Create a detached session (if there isn't one already)
-tmux -2 new -s "$session" -d bash -l -c "ssh '$host'" 2>/dev/null || true
+tmux -2 new -s "$session" -d bash -l -c "ssh-with-bashrc '$host'" 2>/dev/null || true
 
 # Set the default command for new windows to connect to the same server
-tmux set -t "$session" default-command "ssh '$host'"
+tmux set -t "$session" default-command "ssh-with-bashrc '$host'"
 
 # Connect to the session
 exec tmux -2 attach -t "$session"

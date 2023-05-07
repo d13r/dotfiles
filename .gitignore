@@ -14,6 +14,7 @@
 !/.bash_completion
 !/.bash_profile
 !/.bashrc
+!/.bashrc-remote
 
 !/.bin
 /.bin/local/*

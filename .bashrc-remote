@@ -1,0 +1,92 @@
+#===============================================================================
+# This is for use on servers where I can't add my own config files, so it's much
+# more limited than my full dotfiles - just the things I'm likely to use on
+# other people's servers.
+#
+# It is read by 'ssh-with-bashrc' and passed via SSH, so it can't be too long.
+# The maximum length of a command + environment variables is around 2MB on
+# Ubuntu (according to `getconf ARG_MAX`), which should be plenty. I tried
+# passing it over FD3 instead, but SSH doesn't pass additional file descriptors
+# to the remote server.
+#
+# Comments and blank lines are removed before sending.
+#===============================================================================
+
+# Read the standard config files, because --rcfile disables them
+[[ -f /etc/bash.bashrc ]] && source /etc/bash.bashrc
+[[ -f ~/.bashrc ]] && source ~/.bashrc
+
+# Just in case - don't override dotfiles config
+[[ -d ~/.dotfiles ]] && return
+
+# Escape hatch - reload Bash without this config
+# I tried using 'env -i', but it removes too much (e.g. $TERM)
+alias reload='exec env \
+    -u EDITOR \
+    -u GREP_COLORS \
+    -u LESS \
+    -u LS_COLORS \
+    -u GIT_AUTHOR_NAME \
+    -u GIT_AUTHOR_EMAIL \
+    -u GIT_COMMITTER_NAME \
+    -u GIT_COMMITTER_EMAIL \
+    bash -l'
+
+# Make Vim more usable (search .vimrc for explanations)
+export EDITOR='vim \
+    -c "colorscheme torte" \
+    -c "set confirm" \
+    -c "nmap <silent> ,q :q<CR>" \
+    -c "noremap  <silent> <C-S> :wall<CR>" \
+    -c "vnoremap <silent> <C-S> <C-C>:wall<CR>" \
+    -c "inoremap <silent> <C-S> <Esc>:wall<CR>gi"'
+
+# Shortcuts I use regularly
+c() {
+    cd "$@" && ls
+}
+
+g() {
+    case "${1-}" in
+        f) shift; git fetch "$@" ;;
+        io) git log --left-right --cherry-pick "${2-$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")}...${3-HEAD}" ;;
+        pl) shift; git pull "$@" ;;
+        s) shift; git status "$@" ;;
+        *) git "$@" ;;
+    esac
+}
+
+alias cw='c /local'
+alias e=$EDITOR
+alias l="ls -hFl"
+alias sc='systemctl'
+
+# Better history searching
+bind '"\e[A": history-search-backward'
+bind '"\e[B": history-search-forward'
+
+# Navigation via keyboard shortcuts (see .bashrc for explanations)
+bind -x '"\200": TEMP_LINE=$READLINE_LINE; TEMP_POINT=$READLINE_POINT'
+bind -x '"\201": READLINE_LINE=$TEMP_LINE; READLINE_POINT=$TEMP_POINT; unset TEMP_POINT; unset TEMP_LINE'
+bind '"\e[1;7D": "\200\C-a\C-kprevd\C-m\201"'
+bind '"\e[1;7C": "\200\C-a\C-knextd\C-m\201"'
+bind '"\e[1;7A": "\200\C-a\C-ku\C-m\201"'
+bind '"\e[1;7B": "\C-a\C-kc \e[Z"'
+
+# Better prompt (simplified version of what's in .bashrc)
+PS1='\n\e[90m[\e[91m$USER\e[90m@\e[92m$HOSTNAME\e[90m:\e[93m$PWD\e[90m at \e[37m$(date +%H:%M:%S)\e[90m \e[97;41m No Dotfiles \e[0;90m]\n\[\e[91m\]$\[\e[0m\] '
+
+# Configure other applications (same as in .bash_profile)
+export LESS='FRX'
+export GREP_COLORS='ms=91:mc=91:sl=:cx=:fn=35:ln=32:bn=32:se=36'
+export LS_COLORS='rs=0:fi=97:di=93:ln=96:mh=00:pi=40;33:so=95:do=95:bd=40;93:cd=40;93:or=40;91:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=92'
+
+# Git config (placeholders replaced in 'ssh-with-bashrc')
+export GIT_AUTHOR_NAME='__GIT_NAME__'
+export GIT_AUTHOR_EMAIL='__GIT_EMAIL__'
+export GIT_COMMITTER_NAME='__GIT_NAME__'
+export GIT_COMMITTER_EMAIL='__GIT_EMAIL__'
+
+# Uncomment these to test escaping
+#echo "Test 1 ' OK"
+#echo 'Test 2 " OK'

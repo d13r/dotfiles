@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+
+# In case something goes wrong, uncomment this temporarily to disable this
+# functionality everywhere it is used
+#exec ssh "$@"
+
+# Read from .bashrc-remote
+# Remove commands and blank lines
+bashrc=$(egrep -v '(^$|^#)' $HOME/.bashrc-remote )
+
+# Replace some placeholders
+bashrc=${bashrc//__GIT_NAME__/$(git config --global user.name)}
+bashrc=${bashrc//__GIT_EMAIL__/$(git config --global user.email)}
+
+# Replace ' with '\'' (that is close quote, escaped single quote, open quote - because Bash doesn't allow \' inside a string)
+bashrc=${bashrc//\'/\'\\\'\'}
+
+# Pass that to Bash on the remote server
+exec ssh "$@" -t "bash --rcfile <(echo '$bashrc')"
