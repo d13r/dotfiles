@@ -81,7 +81,7 @@ bind '"\e[1;7A": "\200\C-a\C-ku\C-m\201"'
 bind '"\e[1;7B": "\C-a\C-kc \e[Z"'
 
 # Better prompt (simplified version of what's in .bashrc)
-PS1='\n\e[90m[\e[91m$USER\e[90m@\e[92m$HOSTNAME\e[90m:\e[93m$PWD\e[90m at \e[37m$(date +%H:%M:%S)\e[90m \e[97;41m No Dotfiles \e[0;90m]\n\[\e[91m\]$\[\e[0m\] '
+PS1='\e]2;$USER@\h:$PWD\a\n\e[90m[\e[91m$USER\e[90m@\e[92m$HOSTNAME\e[90m:\e[93m$PWD\e[90m at \e[37m$(date +%H:%M:%S)\e[90m \e[97;41m No Dotfiles \e[0;90m]\n\[\e[91m\]$\[\e[0m\] '
 
 # Configure other applications (same as in .bash_profile)
 export LESS='FRX'

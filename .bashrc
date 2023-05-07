@@ -968,7 +968,7 @@ _prompt-titlebar() {
     if [[ -n $prompt_message ]]; then
         echo -n "[$prompt_message] "
     fi
-    echo -n "$USER@$prompt_hostname:$PWD"
+    echo -n "$USER@${titlebar_hostname}:$PWD"
     #echo -ne "\a\002"
     echo -ne "\a"
 }
@@ -1076,6 +1076,7 @@ if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
 fi
 
 prompt_hostname=$(get-full-hostname)
+titlebar_hostname=$(get-short-hostname)
 
 
 #---------------------------------------
