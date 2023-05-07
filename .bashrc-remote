@@ -41,9 +41,14 @@ export EDITOR='vim \
     -c "vnoremap <silent> <C-S> <C-C>:wall<CR>" \
     -c "inoremap <silent> <C-S> <Esc>:wall<CR>gi"'
 
-# Shortcuts I use regularly
+# Shortcuts I use regularly (simplified versions in many cases)
 c() {
-    cd "$@" && ls
+    if cd "$@"; then
+        echo -en "\n\e[97;1;4m"
+        echo -n "$PWD"
+        echo -e "\e[0m"
+        ls --color=always -hFld * | timeout 1 head -100
+    fi
 }
 
 g() {
@@ -58,7 +63,7 @@ g() {
 
 alias cw='c /local'
 alias e=$EDITOR
-alias l="ls -hFl"
+alias l="ls --color=always -hFl"
 alias sc='systemctl'
 
 # Better history searching
@@ -86,6 +91,9 @@ export GIT_AUTHOR_NAME='__GIT_NAME__'
 export GIT_AUTHOR_EMAIL='__GIT_EMAIL__'
 export GIT_COMMITTER_NAME='__GIT_NAME__'
 export GIT_COMMITTER_EMAIL='__GIT_EMAIL__'
+
+# Display directory listing
+c .
 
 # Uncomment these to test escaping
 #echo "Test 1 ' OK"

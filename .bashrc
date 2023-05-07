@@ -807,8 +807,24 @@ _find-wp-content() {
 
 _ls-current-directory() {
     echo
-    style lwhite,underline "$PWD"
-    ls
+    style lwhite,bold,underline "$PWD"
+
+    local timeout=1
+    local max=${LINES-100}
+    local count
+
+    # Allow space for the header and prompt
+    (( max -= 4 ))
+
+    # Fast counting - https://stackoverflow.com/a/1427327/167815
+    if ! count=$(ls -fb1 | grep -v '^\..*' | timeout $timeout wc -l 2>/dev/null); then
+        style grey "Unable to count the files in this directory within ${timeout}s"
+    elif [[ $count -gt $max ]]; then
+        style grey "This directory contains $(printf "%'d" $count) files"
+    else
+        # Skip the "total" line - https://unix.stackexchange.com/a/318888/14368
+        l -d *
+    fi
 }
 
 _prompt-before() {
