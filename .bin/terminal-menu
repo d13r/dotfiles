@@ -95,7 +95,7 @@ while true; do
 
         echo
         menu_section 'Miscellaneous'
-        menu_server 'l' 'localhost' "$USER@$localhost"
+        menu_server 'l' 'localhost' "$USER@$(get-short-hostname)"
         menu_server '.' 'Other...'
         echo
         echo "  Type a $(style lyellow 'lowercase') letter to connect to the given server and start 'tmux'."
