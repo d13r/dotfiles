@@ -23,6 +23,7 @@
 /.cache/*
 
 !/.dotfiles
+!/.digrc
 
 !/.drush
 /.drush/cache

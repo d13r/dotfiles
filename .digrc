@@ -1,0 +1,5 @@
+# Use '-r' to override these
++multiline
++nocmd
++noquestion
++nostats
