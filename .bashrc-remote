@@ -68,9 +68,25 @@ alias e=$EDITOR
 alias l="ls --color=always -hFl"
 alias sc='systemctl'
 
-# Better history searching
+# Better tab completion + history searching (see .inputrc)
+bind 'set colored-completion-prefix on'
+bind 'set colored-stats on'
+bind 'set completion-ignore-case on'
+bind 'set completion-map-case on'
+bind 'set mark-symlinked-directories on'
+bind 'set match-hidden-files off'
+bind 'set menu-complete-display-prefix on'
+bind 'set page-completions off'
+bind 'set revert-all-at-newline on'
+bind 'set show-all-if-ambiguous on'
+bind 'set show-all-if-unmodified on'
+bind 'set visible-stats on'
+
 bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
+
+bind 'Tab: menu-complete'
+bind '"\e[Z": menu-complete-backward'
 
 # Navigation via keyboard shortcuts (see .bashrc for explanations)
 bind -x '"\200": TEMP_LINE=$READLINE_LINE; TEMP_POINT=$READLINE_POINT'
