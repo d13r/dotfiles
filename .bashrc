@@ -619,12 +619,17 @@ prevd() {
 }
 
 prompt() {
+    local set_titlebar=false
+
     prompt_style=''
 
     while [[ -n $1 ]]; do
         case "$1" in
             # Stop parsing parameters
             --)             shift; break ;;
+
+            # Set titlebar as well
+            -t|--titlebar)  set_titlebar=true ;;
 
             # Presets
             -l|--live)      prompt_style='bg=red' ;;
@@ -643,6 +648,10 @@ prompt() {
     done
 
     prompt_message="$@"
+
+    if $set_titlebar; then
+        titlebar_message="$@"
+    fi
 }
 
 sc() {
@@ -965,8 +974,8 @@ _prompt-titlebar() {
     # This doesn't work in Windows Terminal
     #echo -ne "\001\e]2;"
     echo -ne "\e]2;"
-    if [[ -n $prompt_message ]]; then
-        echo -n "[$prompt_message] "
+    if [[ -n $titlebar_message ]]; then
+        echo -n "[$titlebar_message] "
     fi
     echo -n "$USER@${titlebar_hostname}"
     #echo -ne "\a\002"
@@ -1069,6 +1078,7 @@ prompt_style=''
 prompt_command=''
 prompt_default=''
 prompt_message=''
+titlebar_message=''
 
 if [[ -z $prompt_default ]] && is-root-user && ! is-docker; then
     prompt_style='bg=red'
