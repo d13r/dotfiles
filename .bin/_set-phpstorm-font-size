@@ -10,7 +10,6 @@ if ($argc !== 3) {
 
 [, $uiFontSize, $codeFontSize] = $argv;
 
-// UI font size
 foreach (glob("$HOME/.config/JetBrains/*/options/other.xml") as $file) {
     $xml = simplexml_load_file($file);
 
@@ -28,10 +27,20 @@ foreach (glob("$HOME/.config/JetBrains/*/options/other.xml") as $file) {
 
     $fontSize['value'] = $uiFontSize;
 
+    $node = $xml->xpath('component[@name="PropertyService"]')[0] ?? null;
+    if (!$node) {
+        $node = $xml->addChild('component', '{}');
+        $node['name'] = 'PropertyService';
+    }
+
+    $json = json_decode((string)$node, true);
+    $json['keyToString']['fontSizeToResetConsole'] = "$codeFontSize.0";
+    $json['keyToString']['fontSizeToResetEditor'] = "$codeFontSize.0";
+    $node[0] = json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+
     $xml->saveXML($file);
 }
 
-// Code font size
 foreach (glob("$HOME/.config/JetBrains/*/options/editor-font.xml") as $file) {
     $xml = simplexml_load_file($file);
 
@@ -46,8 +55,14 @@ foreach (glob("$HOME/.config/JetBrains/*/options/editor-font.xml") as $file) {
         $fontSize = $defaultFont->addChild('option');
         $fontSize['name'] = 'FONT_SIZE';
     }
-
     $fontSize['value'] = $codeFontSize;
+
+    $fontSize2D = $defaultFont->xpath('option[@name="FONT_SIZE_2D"]')[0] ?? null;
+    if (!$fontSize2D) {
+        $fontSize2D = $defaultFont->addChild('option');
+        $fontSize2D['name'] = 'FONT_SIZE_2D';
+    }
+    $fontSize2D['value'] = "$codeFontSize.0";
 
     $xml->saveXML($file);
 }

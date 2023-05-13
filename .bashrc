@@ -989,10 +989,10 @@ _update-dpi() {
     if is-executable php; then
         if [[ -f $HOME/.config/bash/hidpi ]]; then
             export GDK_SCALE=2
-            _set-phpstorm-font-size 10 11
+            _set-phpstorm-font-size 10 13
         else
             export GDK_SCALE=1
-            _set-phpstorm-font-size 13 15
+            _set-phpstorm-font-size 13 17
         fi
     fi
 }
@@ -1059,7 +1059,7 @@ shopt -u sourcepath
 stty -ixon # Disable Ctrl-S
 tabs -4
 
-#_update-dpi
+_update-dpi
 
 
 #---------------------------------------
