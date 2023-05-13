@@ -968,7 +968,7 @@ _prompt-titlebar() {
     if [[ -n $prompt_message ]]; then
         echo -n "[$prompt_message] "
     fi
-    echo -n "$USER@${titlebar_hostname}:$PWD"
+    echo -n "$USER@${titlebar_hostname}"
     #echo -ne "\a\002"
     echo -ne "\a"
 }
