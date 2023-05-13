@@ -863,8 +863,7 @@ _prompt() {
     # Message
     local message=${prompt_message:-$prompt_default}
     if [[ -n $message ]]; then
-        local spaces=$(printf '%*s\n' $(( $COLUMNS - ${#message} - 1 )) '')
-        style "bg=magenta,fg=lwhite,$prompt_style" " $message$spaces"
+        style "bg=magenta,fg=lwhite,$prompt_style" "$(printf "%-${COLUMNS}s" " $message")"
     fi
 
     # Information
