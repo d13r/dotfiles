@@ -829,10 +829,9 @@ _ls-current-directory() {
     if ! count=$(ls -fb1 | grep -v '^\..*' | timeout $timeout wc -l 2>/dev/null); then
         style grey "Unable to count the files in this directory within ${timeout}s"
     elif [[ $count -gt $max ]]; then
-        style grey "This directory contains $(printf "%'d" $count) files"
-    else
-        # Skip the "total" line - https://unix.stackexchange.com/a/318888/14368
-        l -d *
+        style grey "This directory contains $(printf "%'d" $count) files (excluding hidden files)"
+    elif ! l | grep -v '^total '; then
+        style grey "This directory contains no visible files"
     fi
 }
 
