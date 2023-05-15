@@ -225,6 +225,10 @@ nmap <silent> ,tn :set number!<CR>
 nmap <silent> ,tp :set paste!<CR>
 nmap <silent> ,tw :set wrap!<CR>
 
+" ,x
+nmap <silent> ,x :x<CR>
+nmap <silent> ,X :xa<CR>
+
 " ;
 nnoremap ; :
 vnoremap ; :
