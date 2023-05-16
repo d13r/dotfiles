@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Load 'style' as a function to avoid the overhead of calling a script
 source "$HOME/.bash/style"

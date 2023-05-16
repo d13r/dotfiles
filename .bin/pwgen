@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Usage: pwgen [len=20] [chars=a-zA-Z0-9]
 len=${1:-20}

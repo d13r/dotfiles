@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Note: If Explorer is given a path to a file, it launches itself in Documents
 # instead, but if it's given a filename in the current directory it works OK.

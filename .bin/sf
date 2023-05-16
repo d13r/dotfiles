@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 if ! dir=$(findup -f symfony); then
     echo "You do not appear to be within a Symfony directory" >&2

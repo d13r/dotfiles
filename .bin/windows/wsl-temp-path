@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 winpath=$(cd /mnt/c && cmd.exe /C 'echo %TEMP%' | tr -d '\r')
 

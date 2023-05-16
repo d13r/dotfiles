@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Not already 'root' and 'sudo' is available and not in 'docker' group
 if [[ $EUID -gt 0 ]] && is-executable sudo && ! id -nG | grep -wq docker; then

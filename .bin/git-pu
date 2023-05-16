@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # git pu = Push Upstream (push current branch and set as upstream)
 remote=${1:-origin}

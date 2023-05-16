@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # In case something goes wrong, uncomment this temporarily to disable this
 # functionality everywhere it is used

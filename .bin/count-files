@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Source: https://hostarina.com/Support/kb-article/81/how-to-count-inode-usage-in-linux-/
 find "${1:-.}" -printf "%h\n" | cut -d/ -f-2 | sort | uniq -c | sort -rn

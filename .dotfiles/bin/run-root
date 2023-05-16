@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # Rebuild the image if the 'dot' script changes (if not it's cached so this is quick)

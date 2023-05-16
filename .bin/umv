@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Easier undoing!
 # (Not perfect because it doesn't cope with moving a file to a directory or with options but still...)

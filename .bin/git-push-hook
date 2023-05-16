@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # To test this script (more or less), run:
 # WARNING: This will call "git reset --hard" and lose all local changes!
@@ -37,7 +37,7 @@ fi
 echo "Creating '$pre_hook'..."
 cat <<'END' > $pre_hook
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # cd to the working copy
 if [[ ${GIT_DIR:-} = '.' ]]; then
@@ -57,7 +57,7 @@ END
 echo "Creating '$post_hook'..."
 cat <<'END' > $post_hook
 #!/usr/bin/env bash
-set -o errexit -o nounset -o pipefail
+set -euo pipefail
 
 # Use this separator to make it more noticable in the output on the remote site
 # It is 72 chars wide because the prefix "remote: " is 8 chars wide
