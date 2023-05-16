@@ -819,19 +819,23 @@ _ls-current-directory() {
     style lwhite,bold,underline "$PWD"
 
     local timeout=1
-    local max=${LINES-100}
+    local max_for_long=${LINES-42}
     local count
 
     # Allow space for the header and prompt
-    (( max -= 4 ))
+    (( max_for_long -= 4 ))
+
+    local max_for_short=$(( max_for_long * 6 ))
 
     # Fast counting - https://stackoverflow.com/a/1427327/167815
     if ! count=$(ls -fb1 | grep -v '^\..*' | timeout $timeout wc -l 2>/dev/null); then
         style grey "Unable to count the files in this directory within ${timeout}s"
-    elif [[ $count -gt $max ]]; then
-        style grey "This directory contains $(printf "%'d" $count) files (excluding hidden files)"
+    elif [[ $count -gt $max_for_short ]]; then
+        echo "This directory contains $(printf "%'d" $count) files (excluding hidden files)"
+    elif [[ $count -gt $max_for_long ]]; then
+        ls
     elif ! l | grep -v '^total '; then
-        style grey "This directory contains no visible files"
+        echo "This directory contains no visible files"
     fi
 }
 
