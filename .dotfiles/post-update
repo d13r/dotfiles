@@ -88,3 +88,8 @@ fi
 if [[ -d .vim/bundle ]]; then
     rm -rf .vim/bundle
 fi
+
+# Clean up old symlinks (17 May 2023)
+if [[ -L .ssh/ssh_auth_sock && ! -e .ssh/ssh_auth_sock ]]; then
+    rm .ssh/ssh_auth_sock
+fi
