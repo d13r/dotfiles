@@ -78,6 +78,7 @@
 !/.Xmodmap
 
 .ea-php-cli.cache
+.nfs*
 *.pyc
 
 !.gitkeep
