@@ -93,7 +93,7 @@ bind -x '"\200": TEMP_LINE=$READLINE_LINE; TEMP_POINT=$READLINE_POINT'
 bind -x '"\201": READLINE_LINE=$TEMP_LINE; READLINE_POINT=$TEMP_POINT; unset TEMP_POINT; unset TEMP_LINE'
 bind '"\e[1;7D": "\200\C-a\C-kprevd\C-m\201"'
 bind '"\e[1;7C": "\200\C-a\C-knextd\C-m\201"'
-bind '"\e[1;7A": "\200\C-a\C-ku\C-m\201"'
+bind '"\e[1;7A": "\200\C-a\C-kc ..\C-m\201"'
 bind '"\e[1;7B": "\C-a\C-kc \e[Z"'
 
 # Better prompt (simplified version of what's in .bashrc)
