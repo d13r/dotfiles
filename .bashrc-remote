@@ -56,7 +56,8 @@ c() {
 g() {
     case "${1-}" in
         f) shift; git fetch "$@" ;;
-        io) git log --left-right --cherry-pick "${2-$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")}...${3-HEAD}" ;;
+        io) shift; git log --left-right --cherry-pick "${1-$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")}...${2-HEAD}" ;;
+        l) shift; git log "$@" ;;
         pl) shift; git pull "$@" ;;
         s) shift; git status "$@" ;;
         *) git "$@" ;;
