@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+exe=bin/pest
+if dir=$(findup -f $exe); then
+    cd "$dir"
+    exec $exe "$@"
+fi
+
+exe=vendor/bin/pest
+if dir=$(findup -f $exe); then
+    cd "$dir"
+    exec $exe "$@"
+fi
+
+echo "You do not appear to be within a project with Pest installed ($exe)" >&2
+exit 1
