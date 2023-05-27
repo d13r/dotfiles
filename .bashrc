@@ -371,6 +371,29 @@ cwt() {
     fi
 }
 
+desc() {
+    if [[ $# -ne 1 ]]; then
+        echo 'Usage: desc COMMAND' >&2
+        return 1
+    fi
+
+    local command=$1
+
+    if [[ $(type -t "$command") != 'file' ]]; then
+        type "$command"
+        return
+    fi
+
+    local file=$(command -v "$command")
+    local description=$(file "$file")
+
+    if [[ $description = *ASCII* ]]; then
+        cat "$file"
+    else
+        echo "$description"
+    fi
+}
+
 docker-compose() {
     if dir=$(findup -x bin/docker-compose); then
         "$dir/bin/docker-compose" "$@"
