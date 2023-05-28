@@ -1,8 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if [[ $(basename "$0") = 'se' ]]; then
-    exec maybe-sudo "$EDITOR" "$@"
-fi
-
 exec "$EDITOR" "$@"

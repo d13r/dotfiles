@@ -1,1 +1,8 @@
-e
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $EUID -gt 0 ]]; then
+    exec sudo --set-home "$EDITOR" "$@"
+fi
+
+exec "$EDITOR" "$@"
