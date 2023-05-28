@@ -78,6 +78,7 @@ case "${1:-}" in
             --cpus "$cpus" \
             --disk "$disk" \
             --memory "$memory" \
+            --network 'name=Hyper-V Internal Network,mode=manual' \
             "$@" \
             "$image"
 
