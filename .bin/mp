@@ -65,15 +65,29 @@ case "${1:-}" in
         get-name "$@"
         shift
 
+        ip=$(dig +short "$name.djm.me")
+        if [[ -n $ip ]]; then
+            ip="$ip/24"
+        fi
+
         input cpus 'CPUs' 4
         input disk 'Disk' 20G
         input memory 'Memory' 4G
         input image 'Image' lts
+        input ip 'Static IP' "$ip"
 
         echo
 
+        trap "rm /tmp/cloud-config-$$.yaml" EXIT
+
+        if [[ -n $ip ]]; then
+            sed "s!- 1\.2\.3\.4/24!$ip!g" ~/.multipass/cloud-config.yaml > /tmp/cloud-config-$$.yaml
+        else
+            sed "s!- 1\.2\.3\.4/24![]!g" ~/.multipass/cloud-config.yaml > /tmp/cloud-config-$$.yaml
+        fi
+
         multipass launch \
-            --cloud-init ~/.multipass/cloud-config.yaml \
+            --cloud-init /tmp/cloud-config-$$.yaml \
             --name "$name" \
             --cpus "$cpus" \
             --disk "$disk" \

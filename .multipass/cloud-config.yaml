@@ -2,6 +2,16 @@
 
 timezone: Europe/London
 
+write_files:
+  - path: /etc/netplan/80-static-ip.yaml
+    content: |
+      network:
+        version: 2
+        ethernets:
+          eth1:
+            addresses:
+              - 1.2.3.4/24
+
 users:
   - name: dave
     shell: /bin/bash
@@ -11,6 +21,7 @@ users:
       - 'ALL=(ALL) NOPASSWD:ALL'
 
 runcmd:
+  - netplan apply
   - echo '[[ ! -d .git ]] && cd && wget https://djm.me/dot && source dot' >> /home/dave/.bashrc
 
 # vim:ts=2 sts=2 sw=2
