@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $(basename "$0") TEMPLATE FILENAME"
+    echo
+    echo 'Available templates:'
+    ls -1 ~/.new | sed 's/^/  /'
+    exit
+fi
+
+template=$1
+filename=$2
+
+if [[ ! -e "$HOME/.new/$template" ]]; then
+    echo "'$template' is not a valid template" >&2
+    exit 1
+fi
+
+if [[ -e $filename ]]; then
+    echo "'$filename' already exists" >&2
+    exit 1
+fi
+
+cp -v "$HOME/.new/$template" "$filename"
