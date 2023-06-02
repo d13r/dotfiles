@@ -208,7 +208,7 @@ while true; do
 
     if [[ $host = $localhost ]]; then
         if $tmux; then
-            launch t
+            launch tm
         else
             launch "$SHELL"
         fi
