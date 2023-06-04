@@ -421,16 +421,12 @@ exitif() {
 }
 
 g() {
-    git "$@"
-}
-
-git() {
     if [[ $# -gt 0 ]]; then
-        command git "$@"
+        git "$@"
     elif is-executable lazygit; then
         lazygit
     else
-        command git status
+        git status
     fi
 }
 
@@ -929,8 +925,8 @@ _prompt-pwd-git() {
     local root
 
     # Look for .git directory
-    if ! root=$(findup -d .git); then
-        # No .git found - just show the working directory
+    if ! command -v git &>/dev/null || ! root=$(findup -d .git); then
+        # No .git found (or git not installed) - just show the working directory
         style -n lyellow "$PWD"
         return
     fi
