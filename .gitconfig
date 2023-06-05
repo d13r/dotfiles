@@ -64,6 +64,7 @@
     rbc         = rebase --continue
     rbi         = rebase --interactive
     rbs         = rebase --skip
+    rem         = remote -v
     remotes     = remote -v
     rl          = reflog
     rmc         = rm --cached -r
