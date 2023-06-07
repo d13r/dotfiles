@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+ask 'Are you sure? This will delete the reflog too.' N
+
+# https://stackoverflow.com/q/4698759/167815
+git pull --depth 1
+git reflog expire --expire=all --all
+git gc --aggressive --prune=all
