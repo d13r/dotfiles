@@ -67,3 +67,150 @@ snippet wh
 	while [ ${1:condition} ]; do
 		${2}
 	done
+
+snippet RESET
+	RESET=$'\e[0m'
+
+snippet BOLD
+	BOLD=$'\e[1m'
+
+snippet DIM
+	DIM=$'\e[2m'
+
+snippet UNDERLINE
+	UNDERLINE=$'\e[4m'
+
+snippet BLINK
+	BLINK=$'\e[5m'
+
+snippet REVERSE
+	REVERSE=$'\e[7m'
+
+snippet HIDE
+	HIDE=$'\e[8m'
+
+snippet STRIKE
+	STRIKE=$'\e[9m'
+
+snippet NORMAL
+	NORMAL=$'\e[22m' # Not BOLD or DIM
+
+snippet NO_UNDERLINE
+	NO_UNDERLINE=$'\e[24m'
+
+snippet NO_BLINK
+	NO_BLINK=$'\e[25m'
+
+snippet NO_REVERSE
+	NO_REVERSE=$'\e[27m'
+
+snippet SHOW
+	SHOW=$'\e[28m'
+
+snippet NO_STRIKE
+	NO_STRIKE=$'\e[29m'
+
+snippet BLACK
+	BLACK=$'\e[30m'
+
+snippet RED
+	RED=$'\e[31m'
+
+snippet GREEN
+	GREEN=$'\e[32m'
+
+snippet YELLOW
+	YELLOW=$'\e[33m'
+
+snippet BLUE
+	BLUE=$'\e[34m'
+
+snippet MAGENTA
+	MAGENTA=$'\e[35m'
+
+snippet CYAN
+	CYAN=$'\e[36m'
+
+snippet WHITE
+	WHITE=$'\e[37m'
+
+snippet GREY
+	GREY=$'\e[90m'
+
+snippet LBLACK
+	LBLACK=$'\e[90m'
+
+snippet LRED
+	LRED=$'\e[91m'
+
+snippet LGREEN
+	LGREEN=$'\e[92m'
+
+snippet LYELLOW
+	LYELLOW=$'\e[93m'
+
+snippet LBLUE
+	LBLUE=$'\e[94m'
+
+snippet LMAGENTA
+	LMAGENTA=$'\e[95m'
+
+snippet LCYAN
+	LCYAN=$'\e[96m'
+
+snippet LWHITE
+	LWHITE=$'\e[97m'
+
+snippet BG_BLACK
+	BG_BLACK=$'\e[40m'
+
+snippet BG_RED
+	BG_RED=$'\e[41m'
+
+snippet BG_GREEN
+	BG_GREEN=$'\e[42m'
+
+snippet BG_YELLOW
+	BG_YELLOW=$'\e[43m'
+
+snippet BG_BLUE
+	BG_BLUE=$'\e[44m'
+
+snippet BG_MAGENTA
+	BG_MAGENTA=$'\e[45m'
+
+snippet BG_CYAN
+	BG_CYAN=$'\e[46m'
+
+snippet BG_WHITE
+	BG_WHITE=$'\e[47m'
+
+snippet BG_GREY
+	BG_GREY=$'\e[100m'
+
+snippet BG_LBLACK
+	BG_LBLACK=$'\e[100m'
+
+snippet BG_LRED
+	BG_LRED=$'\e[101m'
+
+snippet BG_LGREEN
+	BG_LGREEN=$'\e[102m'
+
+snippet BG_LYELLOW
+	BG_LYELLOW=$'\e[103m'
+
+snippet BG_LBLUE
+	BG_LBLUE=$'\e[104m'
+
+snippet BG_LMAGENTA
+	BG_LMAGENTA=$'\e[105m'
+
+snippet BG_LCYAN
+	BG_LCYAN=$'\e[106m'
+
+snippet BG_LWHITE
+	BG_LWHITE=$'\e[107m'
+
+snippet HEADING
+	HEADING=$'\e[96;1m' # LCYAN+BOLD
