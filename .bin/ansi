@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+source "$HOME/.bash/ansi"
+
+heading() {
+    echo
+    printf "${LYELLOW}${UNDERLINE} %-118s ${RESET}\n" "$1"
+    echo
+}
+
+color-cube() {
+    for color in "$@"; do
+        if [[ $color = X ]]; then
+            echo -n '     '
+        else
+            eval "printf '%s%3s  %s' $'\e[38;5;${color}m' $color $RESET"
+        fi
+    done
+    echo
+}
+
+clear
+
+heading 'Styles'
+echo -n $RESET     "\$RESET                       " $RESET
+echo -n '    '
+echo -n $BLINK     "\$BLINK     ... \$NO_BLINK    " $NO_BLINK
+echo
+echo -n $BOLD      "\$BOLD      ... \$NORMAL      " $NORMAL
+echo -n '    '
+echo -n $REVERSE   "\$REVERSE   ... \$NO_REVERSE  " $NO_REVERSE
+echo
+echo -n $DIM       "\$DIM       ... \$NORMAL      " $NORMAL
+echo -n '    '
+echo -n $HIDE      "\$HIDE      ... \$SHOW        " $SHOW         " <-- \$HIDE ... \$SHOW"
+echo
+echo -n $UNDERLINE "\$UNDERLINE ... \$NO_UNDERLINE" $NO_UNDERLINE
+echo -n '    '
+echo -n $STRIKE    "\$STRIKE    ... \$NO_STRIKE   " $NO_STRIKE
+echo
+
+heading '16 colours'
+echo -n $BLACK$BG_WHITE     "\$BLACK      " $RESET
+echo -n $RED                "\$RED        " $RESET
+echo -n $GREEN              "\$GREEN      " $RESET
+echo -n $YELLOW             "\$YELLOW     " $RESET
+echo -n $BLUE               "\$BLUE       " $RESET
+echo -n $MAGENTA            "\$MAGENTA    " $RESET
+echo -n $CYAN               "\$CYAN       " $RESET
+echo -n $WHITE              "\$WHITE      " $RESET
+echo
+echo -n $GREY               "\$GREY       " $RESET
+echo -n $LRED               "\$LRED       " $RESET
+echo -n $LGREEN             "\$LGREEN     " $RESET
+echo -n $LYELLOW            "\$LYELLOW    " $RESET
+echo -n $LBLUE              "\$LBLUE      " $RESET
+echo -n $LMAGENTA           "\$LMAGENTA   " $RESET
+echo -n $LCYAN              "\$LCYAN      " $RESET
+echo -n $LWHITE             "\$LWHITE     " $RESET
+echo
+echo
+echo -n $BG_BLACK$LWHITE    "\$BG_BLACK   " $RESET
+echo -n $BG_RED$LWHITE      "\$BG_RED     " $RESET
+echo -n $BG_GREEN$LWHITE    "\$BG_GREEN   " $RESET
+echo -n $BG_YELLOW$BLACK    "\$BG_YELLOW  " $RESET
+echo -n $BG_BLUE$LWHITE     "\$BG_BLUE    " $RESET
+echo -n $BG_MAGENTA$LWHITE  "\$BG_MAGENTA " $RESET
+echo -n $BG_CYAN$BLACK      "\$BG_CYAN    " $RESET
+echo -n $BG_WHITE$BLACK     "\$BG_WHITE   " $RESET
+echo
+echo -n $BG_LBLACK$LWHITE   "\$BG_LBLACK  " $RESET
+echo -n $BG_LRED$LWHITE     "\$BG_LRED    " $RESET
+echo -n $BG_LGREEN$BLACK    "\$BG_LGREEN  " $RESET
+echo -n $BG_LYELLOW$BLACK   "\$BG_LYELLOW " $RESET
+echo -n $BG_LBLUE$BLACK     "\$BG_LBLUE   " $RESET
+echo -n $BG_LMAGENTA$LWHITE "\$BG_LMAGENTA" $RESET
+echo -n $BG_LCYAN$BLACK     "\$BG_LCYAN   " $RESET
+echo -n $BG_LWHITE$BLACK    "\$BG_LWHITE  " $RESET
+echo
+
+heading '256 colours'
+echo -n $'\e[38;5;125m'        "Text: $'\e[38;5;XXm'" $RESET
+echo -n $'\e[48;5;125m'$LWHITE "BG: $'\e[48;5;XXm'" $RESET
+echo
+echo
+color-cube 0  8  {16..21}   {52..57}   {88..93}  {232..235}
+color-cube 1  9  {22..27}   {58..63}   {94..99}  {236..239}
+color-cube 2 10  {28..33}   {64..69}  {100..105} {240..243}
+color-cube 3 11  {34..39}   {70..75}  {106..111} {244..247}
+color-cube 4 12  {40..45}   {76..81}  {112..117} {248..251}
+color-cube 5 13  {46..51}   {82..87}  {118..123} {252..255}
+color-cube 6 14 {124..129} {160..165} {196..201}
+color-cube 7 15 {130..135} {166..171} {202..207}
+color-cube X  X {136..141} {172..177} {208..213}
+color-cube X  X {142..147} {178..183} {214..219}
+color-cube X  X {148..153} {184..189} {220..225}
+color-cube X  X {154..159} {190..195} {226..231}
+
+heading '24-bit color'
+echo -n $'\e[38;2;255;170;85m'       "Text: $'\e[38;2;RR;GG;BBm'" $RESET
+echo -n $'\e[48;2;255;170;85m'$BLACK "BG: $'\e[48;2;RR;GG;BBm'" $RESET
+echo ' - RR/GG/BB are each from 0 to 255'
