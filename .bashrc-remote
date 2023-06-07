@@ -64,6 +64,7 @@ g() {
     esac
 }
 
+alias com='composer'
 alias cw='c /local'
 alias e=$EDITOR
 alias l="ls --color=always -hFl"
