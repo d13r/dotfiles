@@ -1,3 +1,8 @@
+#===============================================================================
+# Part of Dave James Miller's dotfiles - https://github.com/d13r/dotfiles
+# To uninstall: source ~/.dotfiles/uninstall
+#===============================================================================
+
 scriptencoding utf-8
 
 " Debugging
