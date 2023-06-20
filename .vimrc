@@ -47,6 +47,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'posva/vim-vue'
     Plug 'pprovost/vim-ps1'
     Plug 'preservim/nerdcommenter'
+    Plug 'rodjek/vim-puppet'
     Plug 'tomtom/tlib_vim' " Dependency of SnipMate
     Plug 'tpope/vim-eunuch' " :Rename, :Delete, :SudoWrite, etc.
 call plug#end()
