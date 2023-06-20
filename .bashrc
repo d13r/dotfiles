@@ -929,8 +929,8 @@ _prompt() {
 _prompt-pwd-git() {
     local root
 
-    # Look for .git directory
-    if ! command -v git &>/dev/null || ! root=$(findup -d .git); then
+    # Look for .git directory (or file)
+    if ! command -v git &>/dev/null || ! root=$(findup -e .git); then
         # No .git found (or git not installed) - just show the working directory
         style -n lyellow "$PWD"
         return
@@ -964,18 +964,24 @@ _prompt-pwd-git() {
     style -n lblack ' on '
     style -n lmagenta "${branch:-(unknown)}"
 
+    # If .git is a file, work out the actual repo root
+    local git="$root/.git"
+    if [[ -f $git ]]; then
+        git=$(git rev-parse --git-dir)
+    fi
+
     # Status (only the most important one, to make it easy to understand)
-    if [[ -f "$root/.git/MERGE_HEAD" ]]; then
+    if [[ -f "$git/MERGE_HEAD" ]]; then
         style -n fg=111 ' (merging)'
-    elif [[ -f "$root/.git/rebase-apply/applying" ]]; then
+    elif [[ -f "$git/rebase-apply/applying" ]]; then
         style -n fg=111 ' (applying)'
-    elif [[ -d "$root/.git/rebase-merge" || -d "$root/.git/rebase-apply/rebase-apply" ]]; then
+    elif [[ -d "$git/rebase-merge" || -d "$git/rebase-apply/rebase-apply" ]]; then
         style -n fg=111 ' (rebasing)'
-    elif [[ -f "$root/.git/CHERRY_PICK_HEAD" ]]; then
+    elif [[ -f "$git/CHERRY_PICK_HEAD" ]]; then
         style -n fg=111 ' (cherry picking)'
-    elif [[ -f "$root/.git/REVERT_HEAD" ]]; then
+    elif [[ -f "$git/REVERT_HEAD" ]]; then
         style -n fg=111 ' (reverting)'
-    elif [[ -f "$root/.git/BISECT_LOG" ]]; then
+    elif [[ -f "$git/BISECT_LOG" ]]; then
         style -n fg=111 ' (bisecting)'
     else
         local gstatus
@@ -994,7 +1000,7 @@ _prompt-pwd-git() {
             style -n fg=245 ' (git timeout)'
         elif [[ -n $(echo "$gstatus" | grep -v '^#' | head -1) ]]; then
             style -n fg=111 ' (modified)'
-        elif [[ -f "$root/.git/logs/refs/stash" ]]; then
+        elif [[ -f "$git/logs/refs/stash" ]]; then
             style -n fg=111 ' (stashed)'
         else
             local ahead behind
