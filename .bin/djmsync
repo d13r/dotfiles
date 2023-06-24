@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-exec ssh -t seven /local/djm/bin/sync
