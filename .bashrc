@@ -392,7 +392,7 @@ desc() {
     local file=$(command -v "$command")
     local description=$(file "$file")
 
-    if [[ $description = *ASCII* ]]; then
+    if [[ $description = *ASCII* || $description = *text* ]]; then
         cat "$file"
     else
         echo "$description"
