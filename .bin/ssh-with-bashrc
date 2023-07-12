@@ -5,9 +5,9 @@ set -euo pipefail
 # functionality everywhere it is used
 #exec ssh "$@"
 
-# Read from .bashrc-remote
+# Read from .bashrc_remote
 # Remove commands and blank lines
-bashrc=$(egrep -v '(^$|^#)' $HOME/.bashrc-remote )
+bashrc=$(egrep -v '(^$|^#)' $HOME/.bashrc_remote )
 
 # Replace some placeholders
 bashrc=${bashrc//__GIT_NAME__/$(git config --global user.name)}
