@@ -41,7 +41,9 @@ export EDITOR='vim \
     -c "nmap <silent> ,q :q<CR>" \
     -c "noremap  <silent> <C-S> :wall<CR>" \
     -c "vnoremap <silent> <C-S> <C-C>:wall<CR>" \
-    -c "inoremap <silent> <C-S> <Esc>:wall<CR>gi"'
+    -c "inoremap <silent> <C-S> <Esc>:wall<CR>gi" \
+    -c "nnoremap ; :" \
+    -c "vnoremap ; :"'
 
 # Shortcuts I use regularly (simplified versions in many cases)
 c() {
