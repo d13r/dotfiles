@@ -8,6 +8,11 @@ if [[ -f /.dockerenv ]]; then
     exit
 fi
 
+# Disable auto-update on machines without git installed (e.g. gate)
+if ! command -v git &>/dev/null; then
+    exit
+fi
+
 # Only run it once per day
 today=$(date +%Y%m%d)
 
