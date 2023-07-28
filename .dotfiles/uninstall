@@ -35,6 +35,7 @@
         .gitignore \
         .local/bash-last-directory \
         .local/dotfiles-last-auto-update \
+        .marks \
         .vim
 
     # Delete .my.cnf only if it hadn't been changed from the default
