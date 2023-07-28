@@ -1,13 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+if [[ -z "${BAT_STYLE-}" ]]; then
+    export BAT_STYLE=plain
+fi
+
 # https://github.com/sharkdp/bat#on-ubuntu-using-apt
 if is-executable batcat; then
-    exec batcat --style=plain "$@"
+    exec batcat "$@"
 fi
 
 if is-executable bat; then
-    exec bat --style=plain "$@"
+    exec bat "$@"
 fi
 
 exec cat "$@"

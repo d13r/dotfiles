@@ -393,7 +393,7 @@ desc() {
     local description=$(file "$file")
 
     if [[ $description = *ASCII* || $description = *text* ]]; then
-        cat "$file"
+        BAT_STYLE='header,grid' cat "$file"
     else
         echo "$description"
     fi
