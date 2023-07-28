@@ -9,6 +9,8 @@ fi
 
 if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == */*/* ]]; then
     : # No change
+elif [[ $repo == it/* ]]; then
+    repo="git@git.maths.ox.ac.uk:$repo.git"
 elif [[ $repo == */* ]]; then
     repo="git@github.com:$repo.git"
 elif [[ -n $repo ]]; then
