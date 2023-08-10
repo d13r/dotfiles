@@ -591,7 +591,6 @@ nextd() {
     fi
 }
 
-
 php() {
     if dir=$(findup -x bin/php); then
         "$dir/bin/php" "$@"

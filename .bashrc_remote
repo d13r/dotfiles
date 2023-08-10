@@ -94,6 +94,56 @@ bind 'Tab: menu-complete'
 bind '"\e[Z": menu-complete-backward'
 
 # Navigation via keyboard shortcuts (see .bashrc for explanations)
+dirhistory_past=()
+dirhistory_future=()
+
+_dirhistory-push-future() {
+    if [[ ${#dirhistory_future[@]} -eq 0 || ${dirhistory_future[0]} != "$1" ]]; then
+        dirhistory_future=("$1" "${dirhistory_future[@]:0:49}")
+    fi
+}
+
+_dirhistory-push-past() {
+    if [[ ${#dirhistory_past[@]} -eq 0 || ${dirhistory_past[0]} != "$1" ]]; then
+        dirhistory_past=("$1" "${dirhistory_past[@]:0:49}")
+    fi
+}
+
+nextd() {
+    local dir=$PWD
+
+    while [[ ${dirhistory_future[0]} == $dir ]]; do
+        dirhistory_future=("${dirhistory_future[@]:1}")
+    done
+
+    if [[ ${#dirhistory_future[@]} -gt 0 ]]; then
+        if builtin cd "${dirhistory_future[0]}"; then
+            _dirhistory-push-past "$dir"
+        fi
+    fi
+}
+
+prevd() {
+    local dir=$PWD
+
+    while [[ ${dirhistory_past[0]} == $dir ]]; do
+        dirhistory_past=("${dirhistory_past[@]:1}")
+    done
+
+    if [[ ${#dirhistory_past[@]} -gt 0 ]]; then
+        if builtin cd "${dirhistory_past[0]}"; then
+            _dirhistory-push-future "$dir"
+        fi
+    fi
+}
+
+cd() {
+    local dir=$PWD
+    builtin cd "$@" && _dirhistory-push-past "$dir"
+}
+
+_dirhistory-push-past "$PWD"
+
 bind -x '"\200": TEMP_LINE=$READLINE_LINE; TEMP_POINT=$READLINE_POINT'
 bind -x '"\201": READLINE_LINE=$TEMP_LINE; READLINE_POINT=$TEMP_POINT; unset TEMP_POINT; unset TEMP_LINE'
 bind '"\e[1;7D": "\200\C-a\C-kprevd\C-m\201"'
