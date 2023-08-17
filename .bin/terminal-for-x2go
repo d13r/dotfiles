@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# X2Go doesn't support SSH agent forwarding, so we have to hijack the agent from a different connection
+# https://wiki.x2go.org/doku.php/doc:howto:ssh-agent-workaround
+exec mate-terminal --maximize -e 'bash -lc "share-ssh-agent; tm x2go"'
