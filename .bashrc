@@ -407,6 +407,16 @@ docker-compose() {
     fi
 }
 
+drupal() {
+    if dir=$(findup -f bin/drupal); then
+        "$dir/bin/drupal" "$@"
+    elif dir=$(findup -f vendor/bin/drupal); then
+        "$dir/vendor/bin/drupal" "$@"
+    else
+        command drupal "$@"
+    fi
+}
+
 drush() {
     if dir=$(findup -f bin/drush); then
         "$dir/bin/drush" "$@"
