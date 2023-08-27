@@ -27,6 +27,9 @@ BASHRC_SOURCED=true
 # Only load in interactive shells
 [[ -z $PS1 ]] && return
 
+# Prevent errors if $HOME is not set (e.g. Proxmox after running Upgrade)
+[[ -z $HOME ]] && return
+
 
 #---------------------------------------
 # Third party scripts

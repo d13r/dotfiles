@@ -21,6 +21,9 @@
 [[ -n $BASH_PROFILE_SOURCED ]] && return
 BASH_PROFILE_SOURCED=true
 
+# Prevent errors if $HOME is not set (e.g. Proxmox after running Upgrade)
+[[ -z $HOME ]] && return
+
 
 #---------------------------------------
 # Environment checks
