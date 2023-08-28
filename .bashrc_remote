@@ -14,8 +14,8 @@
 
 # Read the standard config files, because --rcfile disables them
 [[ -f /etc/profile ]] && source /etc/profile
-[[ -f ~/.profile ]] && source ~/.profile
 [[ -f /etc/bash.bashrc ]] && source /etc/bash.bashrc
+[[ -f ~/.profile ]] && source ~/.profile
 [[ -f ~/.bashrc ]] && source ~/.bashrc
 
 # Just in case - don't override dotfiles config
