@@ -140,6 +140,7 @@ alias dpkg-reconfigure="$sudo dpkg-reconfigure"
 
 alias db="$sudo_for_docker docker build"
 alias dc='docker-compose' # See function below
+alias dcr='drush cr'
 alias dive="$sudo_for_docker dive"
 alias docker="$sudo_for_docker docker"
 alias dr="$sudo_for_docker docker run"
@@ -213,6 +214,7 @@ alias uuuuu='c ../../../../..'
 alias uuuuuu='c ../../../../../..'
 
 alias ufw="$sudo ufw"
+alias updb='drush updb'
 alias updatedb="$sudo updatedb"
 alias update-grub="$sudo update-grub"
 alias useradd="$sudo useradd"
