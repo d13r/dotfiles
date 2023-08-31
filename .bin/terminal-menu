@@ -63,8 +63,11 @@ menu_server() {
     echo
 }
 
-mode='menu'
+# Changed to default to prompt because I'm considering removing the menu (31 Aug 2023)
+#mode='menu'
+mode='prompt'
 host=''
+tmux=true
 
 # After exiting a terminal, return to the menu
 while true; do
@@ -166,7 +169,7 @@ while true; do
                 if read -rsn 2 -t 0.01; then
                     continue
                 fi
-                exit 0
+                host='exit'
             elif [[ $letter = '!' ]]; then
                 # Reload menu (for development - not displayed in the menu)
                 exec "$0" "$@"
@@ -191,7 +194,7 @@ while true; do
 
         # Default to the previous value so it's easy to correct mistakes or reconnect
         # This is a bit complex to handle Ctrl-C - https://stackoverflow.com/a/63713771/167815
-        trap 'host=' INT
+        trap 'host=exit' INT
         host=$(read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" && echo "$REPLY") || true
         trap INT
 
@@ -206,7 +209,9 @@ while true; do
     # Connect to the given server and run 'tmux' or $SHELL as appropriate
     show_cursor
 
-    if [[ $host = $localhost ]]; then
+    if [[ $host = 'exit' || $host = 'quit' ]]; then
+        exit 0
+    elif [[ $host = $localhost ]]; then
         if $tmux; then
             launch tm
         else
