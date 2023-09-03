@@ -4,225 +4,93 @@ set -euo pipefail
 # Load 'style' as a function to avoid the overhead of calling a script
 source "$HOME/.bash/style"
 
-# Helper to launch a command and check for errors
-launch() {
+# Changed to default to prompt because I'm considering removing the menu (31 Aug 2023)
+host=''
+
+# Disable tab completion (tab, shift+tab, escape escape)
+bind -r '\t' 2>/dev/null
+bind -r '\e[Z' 2>/dev/null
+bind -r '\e\e' 2>/dev/null
+
+# Bind Escape key
+bind -x '"\e": handle_escape' 2>/dev/null
+
+handle_escape() {
+    echo exit
+    exit
+}
+
+# Allow Tmux mode to be toggled
+tmux=true
+
+print_tmux_status() {
+    if $tmux; then
+        style grey "  Tmux: ON   (ctrl-t to toggle)"
+    else
+        style grey "  Tmux: OFF  (ctrl-t to toggle)"
+    fi
+}
+
+update_tmux_status() {
+    tput sc # Save cursor
+    tput cup 1 0
+    tput el # Clear line
+    print_tmux_status
+    tput rc # Restore cursor
+}
+
+bind -x '"\C-t": toggle_tmux' 2>/dev/null
+
+toggle_tmux() {
+    if $tmux; then
+        tmux=false
+    else
+        tmux=true
+    fi
+    update_tmux_status
+}
+
+# After exiting a terminal, return to the menu
+while true; do
+
+    # Set the window title - otherwise it may be blank or "Untitled window" when returning
+    echo -ne "\e]2;Terminal\a"
+
+    # Display prompt
+    clear
+    echo
+    print_tmux_status
+    echo
+
+    # Prompt for hostname (also accepts an alias defined in .ssh/config)
+    trap 'echo; exit' INT
+    read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
+    trap INT
+
+    # Connect to the given server and run 'tmux' or $SHELL as appropriate
+    if [[ -z $host ]]; then
+        # Local
+        if $tmux; then
+            command='tm'
+        else
+            command=$SHELL
+        fi
+    else
+        # SSH
+        if $tmux; then
+            command="h '$host'"
+        else
+            command="ssh '$host'"
+        fi
+    fi
+
     clear
     trap true INT
-    if ! "$@"; then
+    if ! eval "$command"; then
         echo
         echo 'Press any key to continue...'
         read -rsn 1
     fi
     trap INT
-}
-
-# Hide the cursor when waiting for input, and show again afterwards / on exit
-hide_cursor() {
-    tput civis
-}
-
-show_cursor() {
-    tput cnorm
-}
-
-trap show_cursor EXIT
-
-# Determine the local hostname, so we can bypass SSH in case I select the local machine
-localhost=$(get-full-hostname)
-
-# Helpers to read the list of available servers from .ssh/config
-files=("$HOME/.ssh/config")
-
-if [[ -f "$HOME/.ssh/config_local" ]]; then
-    files+=("$HOME/.ssh/config_local")
-fi
-
-servers() {
-    sed -n 's/^##| *//p' "${files[@]}" | sed 's/ *| */|/g'
-}
-
-next_server() {
-    IFS='|' read -r section keys hostname description
-}
-
-# Helpers for displaying the menu
-menu_section() {
-    echo
-    echo "  $(style 'lcyan,bold' "$1")"
-}
-
-menu_server() {
-    local keys=$1
-    local hostname=$2
-    local description=${3:-}
-
-    echo -n "  $(style lyellow "${keys:0:1}") - $(style lwhite "$hostname")"
-    if [[ -n $description ]]; then
-        echo -n " $(style grey "- $description")"
-    fi
-    echo
-}
-
-# Changed to default to prompt because I'm considering removing the menu (31 Aug 2023)
-#mode='menu'
-mode='prompt'
-host=''
-tmux=true
-
-# After exiting a terminal, return to the menu
-while true; do
-
-    # Hide the cursor so it's not visible when drawing the menu or waiting for input
-    hide_cursor
-
-    # Set the window title - otherwise it may be blank or "Untitled window" when returning
-    echo -ne "\e]2;Terminal\a"
-
-    # Clear the screen
-    clear
-
-    if [[ $mode = 'menu' ]]; then
-
-        # Display the menu
-        prev_section=
-
-        while next_server; do
-            if [[ $section != $prev_section ]]; then
-                menu_section "$section"
-            fi
-
-            menu_server "$keys" "$hostname" "$description"
-
-            prev_section=$section
-        done < <(servers)
-
-        echo
-        menu_section 'Miscellaneous'
-        menu_server 'l' 'localhost' "$USER@$(get-short-hostname)"
-        menu_server '.' 'Other...'
-        echo
-        echo "  Type a $(style lyellow 'lowercase') letter to connect to the given server and start 'tmux'."
-        echo "  Type an $(style lyellow 'uppercase') letter to connect to the given server and start a normal shell (Bash)."
-        echo
-        echo "  For a regular terminal, type an uppercase '$(style lyellow 'L')' (i.e. localhost shell)."
-        echo
-        echo "  To exit, press $(style lyellow 'Esc') (or Ctrl-C)."
-
-        # Loop until a valid input is given
-        while true; do
-
-            # Wait for a single key to be pressed
-            trap exit INT
-            read -rsn 1 letter
-            trap INT
-
-            # Use Tmux by default (if available), but disable if uppercase (shift+key) was used
-            tmux=true
-
-            # Check if it matched any of the servers
-            host=''
-
-            while next_server; do
-
-                # The lowercase version must be specified
-                lowercase_key=${keys:0:1}
-
-                # The uppercase version may be specified, e.g. if it is a number + symbol
-                uppercase_key=${keys:1:1}
-                if [[ -z $uppercase_key ]]; then
-                    uppercase_key=${lowercase_key^^}
-                fi
-
-                # Check for a match
-                if [[ $letter != $lowercase_key && $letter != $uppercase_key ]]; then
-                    continue
-                fi
-
-                # Match found
-                host="$hostname"
-
-                if [[ $letter = $uppercase_key ]]; then
-                    tmux=false
-                fi
-
-                break
-
-            done < <(servers)
-
-            # Check for any special keys
-            if [[ $letter = 'l' ]]; then
-                host=$localhost
-            elif [[ $letter = 'L' ]]; then
-                host=$localhost
-                tmux=false
-            elif [[ $letter = '.' || $letter = '' ]]; then
-                # Prompt for the hostname (see below)
-                mode='prompt'
-                continue 2
-            elif [[ $letter = '>' ]]; then
-                tmux=false
-                echo
-            elif [[ $letter = $'\x1b' ]]; then
-                # Escape key
-                # First, check if there are another two characters immediately following it
-                # (i.e. an escape code, such as an arrow key), and ignore them if so
-                if read -rsn 2 -t 0.01; then
-                    continue
-                fi
-                host='exit'
-            elif [[ $letter = '!' ]]; then
-                # Reload menu (for development - not displayed in the menu)
-                exec "$0" "$@"
-            elif [[ -z $host ]]; then
-                # No match - go back to 'read' for the next character
-                continue
-            fi
-
-            break
-
-        done
-
-    else
-
-        # Prompt for hostname (also accepts an alias defined in .ssh/config)
-        echo
-        show_cursor
-
-        # Disable tab/shift+tab - we need to enable readline to set a default value
-        bind -r '\t' 2>/dev/null
-        bind -r '\e[Z' 2>/dev/null
-
-        # Default to the previous value so it's easy to correct mistakes or reconnect
-        # This is a bit complex to handle Ctrl-C - https://stackoverflow.com/a/63713771/167815
-        trap 'host=exit' INT
-        host=$(read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" && echo "$REPLY") || true
-        trap INT
-
-        # If nothing was entered, go back to the menu
-        if [[ -z $host ]]; then
-            mode='menu'
-            continue
-        fi
-
-    fi
-
-    # Connect to the given server and run 'tmux' or $SHELL as appropriate
-    show_cursor
-
-    if [[ $host = 'exit' || $host = 'quit' ]]; then
-        exit 0
-    elif [[ $host = $localhost ]]; then
-        if $tmux; then
-            launch tm
-        else
-            launch "$SHELL"
-        fi
-    else
-        if $tmux; then
-            launch h "$host"
-        else
-            launch ssh "$host"
-        fi
-    fi
 
 done
