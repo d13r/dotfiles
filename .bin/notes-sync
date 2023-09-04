@@ -1,4 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-exec ssh -t seven /local/notes/bin/sync
+source_dirs=(
+    /mnt/c/Users/dave/Obsidian
+    "$HOME/Obsidian Vault"
+)
+
+source_dir=
+
+for dir in "${source_dirs[@]}"; do
+    if [[ -d "$dir" ]]; then
+        source_dir=$dir
+        break
+    fi
+done
+
+if [[ -z $source_dir ]]; then
+    echo 'Unable to find source directory to rsync' >&2
+    exit 1
+fi
+
+rsync -rlt --delete --stats --info=progress2 "$source_dir/" seven:/local/notes-v2/quartz/content --exclude .obsidian
+
+ssh -t seven 'cd /local/notes-v2/quartz && npx quartz build'
