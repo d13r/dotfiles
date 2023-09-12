@@ -1,9 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+RESET=$'\e[0m'
+BOLD=$'\e[1m'
+LCYAN=$'\e[96m'
+
+echo "${LCYAN}${BOLD}IPv4${RESET}"
+
 if is-executable jq; then
     curl -fsS https://ipinfo.io/ | jq
 else
     curl https://ipinfo.io/
     echo # Add missing trailing new line
 fi
+
+echo
+echo "${LCYAN}${BOLD}IPv4${RESET}"
+
+curl -6 icanhazip.com || true
