@@ -20,6 +20,6 @@ if [[ -z $source_dir ]]; then
     exit 1
 fi
 
-rsync -rlt --delete --stats --info=progress2 "$source_dir/" seven:/local/notes/quartz/content --exclude .obsidian
+rsync -rlt --delete --stats --info=progress2 "$source_dir/" red:/local/notes/quartz/content --exclude .obsidian
 
-ssh -t seven 'cd /local/notes/quartz && npx quartz build'
+ssh -t red 'cd /local/notes/quartz && npx quartz build'
