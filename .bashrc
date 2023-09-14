@@ -761,6 +761,64 @@ systemctl() {
     fi
 }
 
+terraform() {
+    if dir=$(findup -f bin/terraform); then
+        "$dir/bin/terraform" "$@"
+    else
+        command terraform "$@"
+    fi
+}
+
+tf() {
+    case "${1:-}" in
+
+        a) # Apply
+            shift
+            terraform apply "$@"
+            ;;
+
+        an) # Apply No Refresh
+            shift
+            terraform apply -refresh=false "$@"
+            ;;
+
+        ar) # Apply Refresh Only
+            shift
+            terraform apply -refresh-only "$@"
+            ;;
+
+        i) # Init
+            shift
+            terraform init "$@"
+            ;;
+
+        mv) # State Move
+            shift
+            terraform state mv "$@"
+            ;;
+
+        o) # Output
+            shift
+            terraform output "$@"
+            ;;
+
+        p) # Plan
+            shift
+            terraform plan "$@"
+            ;;
+
+        v) # Validate
+            shift
+            terraform validate "$@"
+            ;;
+
+        *)
+            terraform "$@"
+            ;;
+
+    esac
+}
+
 unmark() {
     local marks=${@:-$(basename "$PWD")}
 
