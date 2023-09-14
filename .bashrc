@@ -792,6 +792,21 @@ tf() {
             terraform init "$@"
             ;;
 
+        ia) # Init and Apply
+            shift
+            terraform init && terraform apply "$@"
+            ;;
+
+        ian) # Init and Apply No Refresh
+            shift
+            terraform init && terraform apply -refresh=false "$@"
+            ;;
+
+        iar) # Init and Apply Refresh Only
+            shift
+            terraform init && terraform apply -refresh-only "$@"
+            ;;
+
         mv) # State Move
             shift
             terraform state mv "$@"
