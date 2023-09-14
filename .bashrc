@@ -121,6 +121,7 @@ alias ap='ansible-playbook'
 alias apt-add-repository="$sudo apt-add-repository"
 alias apt-mark="$sudo apt-mark"
 alias apt="$sudo apt"
+alias art='artisan'
 
 alias b='bin'
 
@@ -247,10 +248,6 @@ alias yum="$sudo yum"
     mkdir -p $HOME/.config/bash
     touch $HOME/.config/bash/hidpi
     _update-dpi
-}
-
-art() {
-    artisan "$@"
 }
 
 c() {
