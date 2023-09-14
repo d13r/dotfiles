@@ -134,6 +134,7 @@ alias cat="$HOME/.bin/bat-or-cat"
 alias certbot="$sudo certbot"
 alias chmox='chmod' # Common typo
 alias com='composer'
+alias composer='bin --shim composer'
 alias cp='cp -i'
 alias cy='cypress'
 
@@ -181,6 +182,7 @@ alias mux='tmuxinator'
 alias ncdu='ncdu --color dark'
 alias nslookup='_domain-command nslookup'
 
+alias php='bin --shim php'
 alias php5dismod="$sudo php5dismod"
 alias php5enmod="$sudo php5enmod"
 alias phpdismod="$sudo phpdismod"
@@ -205,6 +207,7 @@ alias storm='phpstorm'
 alias sudo='sudo ' # Expand aliases
 alias sw='sw ' # Expand aliases
 
+alias terraform='bin --shim terraform'
 alias tree='tree -C'
 
 alias u='c ..'
@@ -317,14 +320,6 @@ cv() {
             echo 'Multiple matches found:' >&2
             printf '%s\n' "${matches[@]}" >&2
         fi
-    fi
-}
-
-composer() {
-    if dir=$(findup -x bin/composer); then
-        "$dir/bin/composer" "$@"
-    else
-        command composer "$@"
     fi
 }
 
@@ -603,14 +598,6 @@ nextd() {
     fi
 }
 
-php() {
-    if dir=$(findup -x bin/php); then
-        "$dir/bin/php" "$@"
-    else
-        command php "$@"
-    fi
-}
-
 phpstorm() {
     local args=()
     local path
@@ -761,14 +748,6 @@ systemctl() {
     fi
 }
 
-terraform() {
-    if dir=$(findup -f bin/terraform); then
-        "$dir/bin/terraform" "$@"
-    else
-        command terraform "$@"
-    fi
-}
-
 tf() {
     case "${1:-}" in
 
@@ -857,11 +836,7 @@ yarn() {
         *) args=() ;;
     esac
 
-    if dir=$(findup -x bin/yarn); then
-        "$dir/bin/yarn" "${args[@]}" "$@"
-    else
-        command yarn "${args[@]}" "$@"
-    fi
+    bin --shim yarn "${args[@]}" "$@"
 }
 
 
