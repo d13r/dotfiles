@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sudo mkdir -p ~root/.ssh
+ssh-add -L | grep d@djm.me | sudo tee -a ~root/.ssh/authorized_keys
