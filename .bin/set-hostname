@@ -1,0 +1,93 @@
+#!/usr/bin/env bash
+set -eno pipefail
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Usage: $exe <hostname>"
+    echo "       $exe [options]"
+    echo
+    echo "Set the hostname and stop cloud-init overwriting it."
+    echo
+    echo "Options:"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    re-enable cloud-init-provided hostnames"
+}
+
+args=$(getopt -n "$exe" -o 'hr' -l 'help,revert' -- "$@")
+eval set -- "$args"
+
+revert=false
+
+while true; do
+    case "$1" in
+        -h | --help)    help; exit ;;
+        -r | --revert)  revert=true; shift ;;
+        --)             shift; break ;;
+    esac
+done
+
+fqdn=${1:-}
+
+# Revert
+if $revert; then
+    echo 'Removing cloud-init override...'
+    maybe-sudo rm -f /etc/cloud/cloud.cfg.d/99-static-hostname.cfg
+
+    # See if we can determine the old hostname to revert to
+    fqdn=$(cat /var/lib/cloud/data/previous-hostname || true 2>/dev/null)
+    if [[ -z ${fqdn} ]]; then
+        echo 'Unable to determine the previous hostname. cloud-init may be disabled?'
+        exit
+    fi
+fi
+
+# Validate arguments
+if [[ -z $fqdn ]]; then
+    help >&2
+    exit 1
+fi
+
+hostname=${fqdn%%.*}
+
+# cloud-init
+if ! $revert; then
+    echo 'Configuring cloud-init...'
+    sudo mkdir -p /etc/cloud/cloud.cfg.d
+    echo -e 'preserve_hostname: true\nmanage_etc_hosts: false' | sudo-write /etc/cloud/cloud.cfg.d/99-static-hostname.cfg
+fi
+
+# Helper
+update_etc_hosts() {
+    line="127.0.1.1 $1"
+
+    if sudo grep -q '^127\.0\.1\.1 ' /etc/hosts; then
+        sudo sed -i "s/^127\.0\.1\.1 .*$/$line/" /etc/hosts
+    else
+        echo "$line" | sudo-write -a /etc/hosts
+    fi
+}
+
+# Update /etc/hosts to include both old and new hostnames temporarily
+# otherwise 'sudo' warns 'unable to resolve host'
+echo 'Updating /etc/hosts (using both old and new values)...'
+update_etc_hosts "$(cat /etc/hostname) $fqdn $hostname"
+
+# Hostname
+echo 'Setting hostname...'
+sudo hostnamectl set-hostname "$fqdn"
+
+# /etc/hosts
+echo 'Updating /etc/hosts (using new value only)...'
+update_etc_hosts "$fqdn $hostname"
+
+# /etc/mailname
+if [[ -f /etc/mailname ]]; then
+    echo 'Updating /etc/mailname...'
+    echo "$fqdn" | sudo-write /etc/mailname
+else
+    echo "Skipping /etc/mailname as it doesn't exist."
+fi
+
+echo "Hostname is now '$fqdn'."

@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+set -eno pipefail
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Remap Ctrl-Alt-Arrow keys (for switching workspace) to Win-Alt-Arrow keys in"
+    echo "GNOME Desktop, so I can use Ctrl-Alt-Arrow keys for PhpStorm, Bash, etc."
+    echo
+    echo "Usage: $exe [options]"
+    echo
+    echo "Options:"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    revert to the default bindings"
+    echo "  -s, --show      show the current settings"
+}
+
+args=$(getopt -n "$exe" -o 'hrs' -l 'help,revert,show' -- "$@")
+eval set -- "$args"
+
+revert=false
+show=false
+
+while true; do
+    case "$1" in
+        -h | --help)    help; exit ;;
+        -r | --revert)  revert=true; shift ;;
+        -s | --show)    show=true; shift ;;
+        --)             shift; break ;;
+    esac
+done
+
+if $show && $revert; then
+    echo "$exe: '--show' and '--reset' are incompatible" >&2
+    exit 1
+fi
+
+# Key bindings
+for_each_binding() {
+    $1 'switch-to-workspace-left' "['<Super>Page_Up', '<Super><Alt>Left']"
+    $1 'switch-to-workspace-right' "['<Super>Page_Down', '<Super><Alt>Right']"
+    $1 'switch-to-workspace-up' "['<Super><Alt>Up']"
+    $1 'switch-to-workspace-down' "['<Super><Alt>Down']"
+    $1 'move-to-workspace-left' "['<Super><Shift>Page_Up', '<Super><Shift><Alt>Left']"
+    $1 'move-to-workspace-right' "['<Super><Shift>Page_Down', '<Super><Shift><Alt>Right']"
+    $1 'move-to-workspace-up' "['<Super><Shift><Alt>Up']"
+    $1 'move-to-workspace-down' "['<Super><Shift><Alt>Down']"
+}
+
+# Show settings
+show_binding() {
+    printf "%s\t%s\n" "$1" "= $(gsettings get org.gnome.desktop.wm.keybindings "$1")"
+}
+
+show_bindings() {
+    style lwhite,bold,underline "$1"
+    for_each_binding show_binding | column -ts $'\t'
+}
+
+if $show; then
+    show_bindings 'Current Key Bindings'
+    exit
+fi
+
+# Change key bindings
+revert_binding() {
+    gsettings reset org.gnome.desktop.wm.keybindings "$1"
+}
+
+set_binding() {
+    gsettings set org.gnome.desktop.wm.keybindings "$1" "$2"
+}
+
+show_bindings 'Previous Key Bindings'
+echo
+
+if $revert; then
+    for_each_binding revert_binding
+else
+    for_each_binding set_binding
+fi
+
+show_bindings 'New Key Bindings'

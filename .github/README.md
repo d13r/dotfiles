@@ -15,8 +15,7 @@ wget djm.me/dot
 If it is a work machine, override my name and email address:
 
 ```bash
-git config -f .gitconfig_local user.name 'Dave Miller'
-git config -f .gitconfig_local user.email 'dave.miller@maths.ox.ac.uk'
+setup-identity dave.miller@maths.ox.ac.uk 'Dave Miller'
 ```
 
 ### Custom prompt message

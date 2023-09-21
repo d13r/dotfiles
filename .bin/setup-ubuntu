@@ -1,0 +1,118 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! command -v sudo &>/dev/null; then
+    echo 'sudo is not available' >&2
+    exit 1
+fi
+
+# Sudo
+if [[ -d /etc/sudoers.d && ! -f /etc/sudoers.d/dave ]]; then
+    if ask 'Configure sudo to always set $HOME (for Vim)?' Y; then
+        setup-sudo
+    fi
+    echo
+fi
+
+# Locales
+if ask 'Generate en_GB and en_US locales?' Y; then
+    setup-locales
+fi
+echo
+
+# Timezone
+if ! is-wsl; then
+    timezone='Europe/London'
+
+    if ask "Set timezone to $timezone?" Y; then
+        set-timezone "$timezone"
+    fi
+
+    echo
+fi
+
+# Hostname
+if ! is-wsl; then
+    default=Y
+    if [[ $HOSTNAME = *.djm.me ]]; then
+        default=N
+    fi
+
+    if ask 'Change the hostname?' $default; then
+        read -p 'New hostname: ' hostname
+        set-hostname "$hostname"
+    fi
+
+    echo
+fi
+
+# Swap
+if ! is-wsl && [[ -z $(swapon -s) ]]; then
+    if ask 'Create swap file?' Y; then
+        read -p 'Size in GiB [2]: ' size_gb
+        if [[ -z $size_gb ]]; then
+            size_gb=2
+        fi
+        resize-swap "${size_gb}"
+    fi
+
+    echo
+fi
+
+# Upgrade
+upgraded=false
+
+if ask 'Install updates now?' Y; then
+    sudo apt update
+    sudo apt full-upgrade --auto-remove
+    upgraded=true
+fi
+
+echo
+
+# General utilities
+for package in bat curl fzf httpie pv tmux tree vim; do
+    case $package in
+        bat) command=batcat ;;
+        httpie) command=http ;;
+        *) command=$package ;;
+    esac
+    if ! command -v "$command" &>/dev/null; then
+        if ask "Install $package?" Y; then
+            sudo apt install "$package"
+        fi
+        echo
+    fi
+done
+
+# Git utilities
+if ! command -v delta &>/dev/null || ! command -v lazygit; then
+    if ask 'Install Lazygit and Delta (via Homebrew)?'; then
+        setup-git-utilities
+    fi
+    echo
+fi
+
+# WSL symlinks
+if is-wsl; then
+    if ask 'Create symlinks to Windows folders?'; then
+        if path=$(wsl-mydocs-path 2>/dev/null); then
+            ln -nsfv "$path" Documents
+        fi
+        if path=$(wsl-dropbox-path 2>/dev/null); then
+            ln -nsfv "$path" Dropbox
+        fi
+    fi
+    echo
+fi
+
+# Reboot
+if $upgraded; then
+    if ask 'Reboot now?'; then
+        sudo reboot
+    fi
+    echo
+fi
+
+# All done
+echo 'Setup finished.'

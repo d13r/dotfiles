@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+set -eno pipefail
+
+# Parse arguments
+exe=$(basename "$0")
+
+help() {
+    echo "Usage: $exe [options]"
+    echo
+    echo "Install Git-related tools (Lazy Git, Delta)."
+    echo
+    echo "Options:"
+    echo "  -h, --help      display this help"
+    echo "  -r, --revert    uninstall everything"
+}
+
+args=$(getopt -n "$exe" -o 'hr' -l 'help,revert' -- "$@")
+eval set -- "$args"
+
+revert=false
+
+while true; do
+    case "$1" in
+        -h | --help)    help; exit ;;
+        -r | --revert)  revert=true; shift ;;
+        --)             shift; break ;;
+    esac
+done
+
+setup-brew --auto
+
+if $revert; then
+    brew uninstall git-delta jesseduffield/lazygit/lazygit || true
+else
+    brew install git-delta jesseduffield/lazygit/lazygit
+fi
