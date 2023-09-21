@@ -8,6 +8,35 @@ wget djm.me/dot
 . dot
 ```
 
+## Configuration
+
+### Custom Git config
+
+If it is a work machine, override my name and email address:
+
+```bash
+git config -f .gitconfig_local user.name 'Dave Miller'
+git config -f .gitconfig_local user.email 'dave.miller@maths.ox.ac.uk'
+```
+
+### Custom prompt message
+
+Add one of these to `.bashrc_local`:
+
+```bash
+prompt --live 'Live server'
+prompt --staging 'Staging server'
+prompt --dev 'Development server'
+prompt --special 'Something else'
+prompt --bg=magenta --fg=lwhite --bold 'Custom styles' 
+```
+
+The short options are `-l` (live), `-s` (staging), `-d` (dev) and `-x` (special).
+
+See [.bash/style](../.bash/style) for the supported custom styles.
+
+Optionally add `--titlebar` (`-t`) to display the same message in the titlebar.
+
 ## Uninstallation
 
 ```bash
