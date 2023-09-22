@@ -34,6 +34,13 @@ if $revert; then
     exit
 fi
 
+# Move the files to /local
+if [[ -d /local && ! -d /var/lib/mysql ]]; then
+    sudo mkdir -p /local/mysql
+    sudo chown mysql:mysql /local/mysql
+    sudo ln -s /local/mysql /var/lib/mysql
+fi
+
 # Install
 sudo apt install -y mariadb-client mariadb-server
 
