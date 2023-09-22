@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -d /etc/apache2/sites-enabled ]]; then
+    echo 'Apache is not installed' >&2
+    exit 1
+fi
+
+if [[ ! -d /local ]]; then
+    setup-local
+fi
+
+mkdir -p /local/temp/public
+
+echo 'Options +Indexes' > /local/temp/public/.htaccess
+echo '<?php phpinfo();' > /local/temp/public/phpinfo.php
+
+hostname=$(hostname -f)
+
+cat | sudo tee /etc/apache2/sites-enabled/temp.conf <<END
+<VirtualHost *:443>
+    ServerName temp.$hostname
+    DocumentRoot /local/temp/public
+</VirtualHost>
+
+<Directory /local/temp/public>
+    AllowOverride All
+    Require all granted
+</Directory>
+END
+
+sudo systemctl reload apache2
+sudo systemctl status apache2
