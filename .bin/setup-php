@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eno pipefail
+set -euo pipefail
 shopt -s nullglob
 
 # Parse arguments

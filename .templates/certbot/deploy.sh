@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eno pipefail
+set -euo pipefail
 
 # Only run this hook for the default certificate
 if [[ ${RENEWED_LINEAGE:-} != '/etc/letsencrypt/live/default' ]]; then

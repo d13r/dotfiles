@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eno pipefail
+set -euo pipefail
 
 # Updates ~/.config/user-dirs.dirs
 # https://askubuntu.com/a/1336990/29806
