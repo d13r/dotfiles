@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Get username & password
+echo "You will need an AWS SES username and password."
+echo "Visit https://console.aws.amazon.com/iamv2/home?SESRegion=eu-west-1#/users/smtp/create to create a new user."
+echo "Set the IAM username to \"${HOSTNAME%%.*}-ses-postfix-user\"."
+echo
+
+username=''
+while [[ -z "$username" ]]; do
+    read -rp 'Enter SMTP username ("AKIA..."): ' username
+done
+
+password=''
+while [[ -z "$password" ]]; do
+    read -rsp 'Enter SMTP password (not displayed): ' password
+done
+
+echo
+echo
+
+# Install
+sudo debconf-set-selections <<END
+postfix postfix/main_mailer_type select Internet Site
+END
+
+sudo apt install -y postfix mailutils mutt
+
+# Configure
+config='/etc/postfix/main.cf'
+
+set-config() {
+    local key=$1
+    local value=$2
+
+    if grep -Eq "^$key\s*=" "$config"; then
+        sudo sed -i "s!^$key\s*=.*!$key = $value!" "$config"
+    else
+        echo "$key = $value" | sudo-write -a "$config"
+    fi
+}
+
+sudo cp "$config" "$config.bak"
+
+if [[ -d /etc/letsencrypt ]]; then
+    set-config 'smtpd_tls_cert_file' '/etc/letsencrypt/live/default/fullchain.pem'
+    set-config 'smtpd_tls_key_file' '/etc/letsencrypt/live/default/privkey.pem'
+fi
+
+set-config 'relayhost' '[email-smtp.eu-west-1.amazonaws.com]:587'
+set-config 'smtp_sasl_auth_enable' 'yes'
+set-config 'smtp_sasl_password_maps' 'hash:/etc/postfix/sasl_passwd'
+set-config 'smtp_sasl_security_options' 'noanonymous'
+
+echo "[email-smtp.eu-west-1.amazonaws.com]:587 $username:$password" | sudo-write /etc/postfix/sasl_passwd
+
+sudo chmod 600 /etc/postfix/sasl_passwd
+sudo postmap /etc/postfix/sasl_passwd
+
+if ! grep -q '^root:' /etc/aliases; then
+    echo 'root: d@djm.me' | sudo-write -a /etc/aliases
+fi
+
+sudo newaliases
+sudo systemctl reload postfix
+
+# Test email
+echo
+echo 'Sending test email to root...'
+echo 'Test from setup-postfix script.' | mail -s "Test root@$HOSTNAME" root
+sleep 2
+echo
+tail -10 /var/log/mail.log
