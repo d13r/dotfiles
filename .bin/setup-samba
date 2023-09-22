@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -f /etc/samba/smb.conf ]]; then
+    echo 'Samba is already configured' >&2
+    exit 1
+fi
+
+sudo apt install samba
+
+sudo tee -A /etc/samba/smb.conf >/dev/null <<END
+
+[homes]
+browseable = no
+read only = no
+
+[local]
+path = /local
+read only = no
+create mask = 664
+directory mask = 775
+END
+
+sudo systemctl reload smbd
+sudo smbpasswd -a $USER
