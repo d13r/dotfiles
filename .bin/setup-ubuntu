@@ -103,6 +103,14 @@ if ! command -v delta &>/dev/null || ! command -v lazygit; then
     echo
 fi
 
+# Local directory
+if ! is-wsl && [[ ! -d /local ]]; then
+    if ask 'Create /local directory?' Y; then
+        setup-local
+    fi
+    echo
+fi
+
 # WSL symlinks
 if is-wsl; then
     if ask 'Create symlinks to Windows folders?'; then

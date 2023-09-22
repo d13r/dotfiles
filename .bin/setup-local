@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sudo mkdir -p /local
+sudo chgrp adm /local
+sudo chmod g+ws /local
