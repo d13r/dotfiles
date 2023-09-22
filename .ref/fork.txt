@@ -1,0 +1,39 @@
+-----------------------------------------------
+How to temporarily fork a PHP package on GitHub
+-----------------------------------------------
+
+Fork the project on GitHub.
+
+Run:
+
+    c vendor/NAMESPACE/PACKAGE
+    hackit
+    g cob BRANCH
+    g ra d13r git@github.com:d13r/REPO.git
+    g pu d13r
+
+Update the project's composer.json:
+
+    // ADD THIS:
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/d13r/REPO.git"
+        }
+    ],
+
+    "require": {
+        // UPDATE THIS:
+        "NAMESPACE/PACKAGE": "dev-BRANCH"
+    }
+
+If I'm using someone else's fork and want to pin to a specific commit:
+
+    "require": {
+        // UPDATE THIS:
+        "NAMESPACE/PACKAGE": "dev-BRANCH#COMMIT"
+    }
+
+Run:
+
+    com up
