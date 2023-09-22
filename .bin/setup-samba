@@ -8,7 +8,7 @@ fi
 
 sudo apt install -y samba
 
-sudo tee -A /etc/samba/smb.conf >/dev/null <<END
+sudo-write -a /etc/samba/smb.conf <<END
 
 [homes]
 browseable = no

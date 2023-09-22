@@ -2,4 +2,4 @@
 set -euo pipefail
 
 sudo mkdir -p ~root/.ssh
-ssh-add -L | grep d@djm.me | sudo tee -a ~root/.ssh/authorized_keys
+ssh-add -L | grep d@djm.me | sudo-write -a ~root/.ssh/authorized_keys

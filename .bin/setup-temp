@@ -17,7 +17,7 @@ cp $HOME/.templates/temp/phpinfo.php /local/temp/public/
 
 hostname=$(hostname -f)
 
-sudo tee /etc/apache2/sites-available/temp.conf >/dev/null <<END
+sudo-write /etc/apache2/sites-available/temp.conf <<END
 <VirtualHost *:443>
     ServerName temp.$hostname
     DocumentRoot /local/temp/public

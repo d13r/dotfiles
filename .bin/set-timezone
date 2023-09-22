@@ -12,5 +12,5 @@ sudo timedatectl set-timezone "$timezone"
 
 # This seemed to be necessary on Proxmox (Debian 11):
 if [[ -f /etc/timezone ]]; then
-    echo "$timezone" | sudo tee /etc/timezone >/dev/null
+    echo "$timezone" | sudo-write /etc/timezone
 fi
