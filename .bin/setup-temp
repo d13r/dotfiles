@@ -17,7 +17,7 @@ echo '<?php phpinfo();' > /local/temp/public/phpinfo.php
 
 hostname=$(hostname -f)
 
-cat | sudo tee /etc/apache2/sites-enabled/temp.conf <<END
+sudo tee /etc/apache2/sites-enabled/temp.conf >/dev/null <<END
 <VirtualHost *:443>
     ServerName temp.$hostname
     DocumentRoot /local/temp/public
