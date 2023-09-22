@@ -6,7 +6,7 @@ if [[ -f /etc/samba/smb.conf ]]; then
     exit 1
 fi
 
-sudo apt install samba
+sudo apt install -y samba
 
 sudo tee -A /etc/samba/smb.conf >/dev/null <<END
 

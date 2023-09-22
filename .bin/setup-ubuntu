@@ -89,7 +89,7 @@ for package in bat curl fzf httpie pv tmux tree vim; do
     esac
     if ! command -v "$command" &>/dev/null; then
         if ask "Install $package?" Y; then
-            sudo apt install "$package"
+            sudo apt install -y "$package"
         fi
         echo
     fi

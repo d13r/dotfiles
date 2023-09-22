@@ -4,7 +4,7 @@
 
 Install it:
 
-    sudo apt install postfix mailutils mutt
+    sudo apt install -y postfix mailutils mutt
 
     Select "Internet Site"
     Confirm the system mail name
