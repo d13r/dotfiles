@@ -15,7 +15,7 @@ help() {
     echo "  -r, --revert    uninstall"
 }
 
-args=$(getopt -n "$exe" -o 'hr' -l 'help,revert' -- "$@")
+args=$(getopt -n "$exe" -o 'hr' -l 'auto,help,revert' -- "$@")
 eval set -- "$args"
 
 auto=false
