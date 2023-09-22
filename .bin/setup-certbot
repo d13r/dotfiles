@@ -61,6 +61,7 @@ fi
 
 # Install Certbot
 style lcyan,bold 'Installing Certbot...'
+sudo apt install -y snapd
 sudo snap install --classic certbot
 sudo snap set certbot trust-plugin-with-root=ok
 sudo snap install certbot-dns-cloudflare
