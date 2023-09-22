@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+sudo apt install fail2ban ufw
+
+sudo ufw default reject incoming # Default is 'deny'
+sudo ufw allow ssh
+sudo ufw allow http
+sudo ufw allow https
+sudo ufw enable
+sudo ufw status verbose

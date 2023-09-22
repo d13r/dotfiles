@@ -70,6 +70,16 @@ fi
 
 echo
 
+# Firewall
+if ! is-wsl; then
+    if ask 'Enable firewall (UFW)?' Y; then
+        setup-firewall
+    elif ask 'Enable Fail2ban?' Y; then
+        setup-fail2ban
+    fi
+    echo
+fi
+
 # General utilities
 for package in bat curl fzf httpie pv tmux tree vim; do
     case $package in
