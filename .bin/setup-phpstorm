@@ -53,4 +53,8 @@ else
     # Install PhpStorm
     sudo snap install --classic phpstorm
 
+    # Display workaround for known bug
+    echo
+    ref phpstorm
+
 fi
