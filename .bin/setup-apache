@@ -68,8 +68,8 @@ if [[ -f /etc/apache2/sites-enabled/000-default.conf ]]; then
     sudo a2dissite 000-default
 fi
 
-if [[ ! -f /etc/apache2/sites-enabled/001-default.conf ]]; then
-    sudo-write /etc/apache2/sites-enabled/001-default.conf <~/.templates/apache/default-site.conf
+if [[ ! -f /etc/apache2/sites-available/001-default.conf ]]; then
+    sudo-write /etc/apache2/sites-available/001-default.conf <~/.templates/apache/default-site.conf
     sudo a2ensite 001-default
 fi
 
