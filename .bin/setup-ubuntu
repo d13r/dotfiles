@@ -81,7 +81,7 @@ if ! is-wsl; then
 fi
 
 # General utilities
-for package in bat curl fzf httpie pv tmux tree vim; do
+for package in bat curl fzf httpie file pv tmux tree vim; do
     case $package in
         bat) command=batcat ;;
         httpie) command=http ;;
