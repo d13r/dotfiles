@@ -97,7 +97,9 @@ done
 
 # Git utilities
 if ! command -v delta &>/dev/null || ! command -v lazygit; then
-    if ask 'Install Lazygit and Delta (via Homebrew)?'; then
+    if is-root-user; then
+        echo 'Cannot install Homebrew as root - skipping Lazygit, Delta'
+    elif ask 'Install Lazygit and Delta (via Homebrew)?'; then
         setup-git-utilities
     fi
     echo
