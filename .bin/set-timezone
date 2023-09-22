@@ -1,6 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+timezone=${1-}
+
+if [[ -z $timezone ]]; then
+    echo "Usage: $0 <timezone>"
+    exit
+fi
+
 sudo timedatectl set-timezone "$timezone"
 
 # This seemed to be necessary on Proxmox (Debian 11):
