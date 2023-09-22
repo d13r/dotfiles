@@ -30,7 +30,8 @@ done
 setup-brew --auto
 
 if $revert; then
-    brew uninstall git-delta jesseduffield/lazygit/lazygit || true
+    /home/linuxbrew/.linuxbrew/bin/brew uninstall git-delta jesseduffield/lazygit/lazygit || true
 else
-    brew install git-delta jesseduffield/lazygit/lazygit
+    sudo apt install -y gcc
+    /home/linuxbrew/.linuxbrew/bin/brew install git-delta jesseduffield/lazygit/lazygit
 fi
