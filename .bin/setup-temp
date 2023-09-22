@@ -12,12 +12,12 @@ fi
 
 mkdir -p /local/temp/public
 
-echo 'Options +Indexes' > /local/temp/public/.htaccess
-echo '<?php phpinfo();' > /local/temp/public/phpinfo.php
+cp $HOME/.templates/temp/.htaccess /local/temp/public/
+cp $HOME/.templates/temp/phpinfo.php /local/temp/public/
 
 hostname=$(hostname -f)
 
-sudo tee /etc/apache2/sites-enabled/temp.conf >/dev/null <<END
+sudo tee /etc/apache2/sites-available/temp.conf >/dev/null <<END
 <VirtualHost *:443>
     ServerName temp.$hostname
     DocumentRoot /local/temp/public
@@ -29,5 +29,6 @@ sudo tee /etc/apache2/sites-enabled/temp.conf >/dev/null <<END
 </Directory>
 END
 
+sudo a2ensite temp
 sudo systemctl reload apache2
 sudo systemctl status apache2
