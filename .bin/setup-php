@@ -6,14 +6,14 @@ shopt -s nullglob
 exe=$(basename "$0")
 
 help() {
-    echo "Usage: $exe [-d] <version>"
+    echo "Usage: $exe <version>"
     echo "       $exe -r [version]"
     echo
     echo "Install and configure a given version of PHP."
     echo
     echo "Options:"
     echo "  -h, --help      display this help"
-    echo "  -r, --revert    uninstall everything"
+    echo "  -r, --revert    uninstall the given version, or all versions"
 }
 
 args=$(getopt -n "$exe" -o 'dhr' -l 'help,revert' -- "$@")
