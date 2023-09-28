@@ -61,7 +61,8 @@
 !/.ssh
 /.ssh/*
 !/.ssh/config
-!/.ssh/*.pub
+!/.ssh/d13r.pub
+!/.ssh/mi-dave.pub
 /.ssh/google_compute_engine.pub
 /.ssh/id_rsa.pub
 
