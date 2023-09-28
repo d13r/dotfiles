@@ -15,6 +15,6 @@ else
 fi
 
 echo
-echo "${LCYAN}${BOLD}IPv4${RESET}"
+echo "${LCYAN}${BOLD}IPv6${RESET}"
 
 curl -6 icanhazip.com || true
