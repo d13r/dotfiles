@@ -92,7 +92,7 @@ else
     sudo=''
 fi
 
-if [[ $EUID -gt 0 ]] && is-executable sudo && ! id -nG | grep -wq docker; then
+if [[ $EUID -gt 0 ]] && is-executable sudo && ! id -nG | command grep -wq docker; then
     sudo_for_docker='sudo'
 else
     sudo_for_docker=''
@@ -936,13 +936,13 @@ _ls-current-directory() {
     local max_for_short=$(( max_for_long * 6 ))
 
     # Fast counting - https://stackoverflow.com/a/1427327/167815
-    if ! count=$(ls -fb1 | grep -v '^\..*' | timeout $timeout wc -l 2>/dev/null); then
+    if ! count=$(ls -fb1 | command grep -v '^\..*' | timeout $timeout wc -l 2>/dev/null); then
         style grey "Unable to count the files in this directory within ${timeout}s"
     elif [[ $count -gt $max_for_short ]]; then
         echo "This directory contains $(printf "%'d" $count) files (excluding hidden files)"
     elif [[ $count -gt $max_for_long ]]; then
         ls
-    elif ! l | grep -v '^total '; then
+    elif ! l | command grep -v '^total '; then
         echo "This directory contains no visible files"
     fi
 }
@@ -1061,7 +1061,7 @@ _prompt-pwd-git() {
 
         if [[ $exitcode -eq 124 ]]; then
             style -n fg=245 ' (git timeout)'
-        elif [[ -n $(echo "$gstatus" | grep -v '^#' | head -1) ]]; then
+        elif [[ -n $(echo "$gstatus" | command grep -v '^#' | head -1) ]]; then
             style -n fg=111 ' (modified)'
         elif [[ -f "$git/logs/refs/stash" ]]; then
             style -n fg=111 ' (stashed)'
@@ -1078,7 +1078,7 @@ _prompt-pwd-git() {
             else
                 if [[ $behind -gt 0 ]]; then
                     style -n fg=111 " ($behind behind)"
-                elif $using_status_v2 && ! echo "$gstatus" | grep -qE '^# branch.upstream '; then
+                elif $using_status_v2 && ! echo "$gstatus" | command grep -qE '^# branch.upstream '; then
                     style -n fg=245 ' (no upstream)'
                 fi
             fi
