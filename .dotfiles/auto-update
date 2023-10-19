@@ -9,7 +9,7 @@ if [[ -f /.dockerenv ]]; then
 fi
 
 # Disable auto-update on machines without git installed (e.g. gate)
-if ! command -v git &>/dev/null; then
+if ! is-executable git; then
     exit
 fi
 

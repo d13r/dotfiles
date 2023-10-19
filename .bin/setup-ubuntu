@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! command -v sudo &>/dev/null; then
+if ! is-executable sudo; then
     echo 'sudo is not available' >&2
     exit 1
 fi
@@ -87,7 +87,7 @@ for package in bat curl fzf httpie file pv tmux tree vim; do
         httpie) command=http ;;
         *) command=$package ;;
     esac
-    if ! command -v "$command" &>/dev/null; then
+    if ! is-executable "$command"; then
         if ask "Install $package?" Y; then
             sudo apt install -y "$package"
         fi
@@ -96,7 +96,7 @@ for package in bat curl fzf httpie file pv tmux tree vim; do
 done
 
 # Git utilities
-if ! command -v delta &>/dev/null || ! command -v lazygit; then
+if ! is-executable delta || ! is-executable lazygit; then
     if is-root-user; then
         echo 'Cannot install Homebrew as root - skipping Lazygit, Delta'
     elif ask 'Install Lazygit and Delta (via Homebrew)?'; then

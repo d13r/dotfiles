@@ -32,7 +32,7 @@ elif [[ $result -eq 0 ]]; then
 fi
 
 # If tmux is not installed locally, just use SSH
-if ! command -v tmux &>/dev/null; then
+if ! is-executable tmux; then
     exec ssh-with-bashrc "$host"
 fi
 
