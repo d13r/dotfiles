@@ -3,8 +3,8 @@ set -o errexit -o nounset -o pipefail
 shopt -s nullglob
 
 ################################################################################
-# Bin - A simple task runner        Copyright (c) 2023 Dave James Miller       #
-# https://bin-cli.com/              MIT License                                #
+# Bin - A simple task runner           Copyright (c) 2023 Dave James Miller    #
+# https://github.com/bin-cli/bin-cli   MIT License                             #
 ################################################################################
 
 #===============================================================================
@@ -12,7 +12,7 @@ shopt -s nullglob
 #===============================================================================
 
 # Version (set by build script - don't change in source file)
-VERSION='0.4.0'
+VERSION='0.5.0'
 
 # Executable
 BIN_EXECUTABLE="$0"
@@ -620,6 +620,8 @@ help() {
     echo "  --version, -v         Display the current version number and exit"
     echo
     echo "Any options must be given before the command, because everything after the command will be passed as parameters to the script."
+    echo
+    echo "For more details see https://github.com/bin-cli/bin-cli#readme"
 }
 
 action=''
@@ -827,7 +829,7 @@ else
     if root=$(findup -f .binconfig); then
         binconfig="$root/.binconfig"
         bin_dir_from_root=$(bin_dir_for "$binconfig" true)
-        bin_dir="$root/$bin_dir_from_root"
+        bin_dir="${root%/}/$bin_dir_from_root"
 
         if [[ ! -d $bin_dir ]]; then
             fail "Found '$binconfig', but '$bin_dir/' directory is missing"
@@ -841,7 +843,7 @@ else
 
         binconfig=''
         bin_dir_from_root='bin'
-        bin_dir="$root/$bin_dir_from_root"
+        bin_dir="${root%/}/$bin_dir_from_root"
 
         if in_array "$bin_dir" "$BIN_TEST_ROOT/bin" "$BIN_TEST_ROOT/usr/bin" "$BIN_TEST_ROOT/usr/local/bin" "$BIN_TEST_ROOT/snap/bin" "$HOME/bin"; then
             fail "Could not find 'bin/' directory or '.binconfig' file starting from '$PWD' (ignored '$bin_dir')" $ERR_NOT_FOUND
