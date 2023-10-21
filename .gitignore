@@ -22,6 +22,12 @@
 !/.cache
 /.cache/*
 
+!/.config/
+/.config/*
+!/.config/composer/
+/.config/composer/*
+!/.config/composer/config.json
+
 !/.dotfiles
 !/.digrc
 
