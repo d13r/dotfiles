@@ -44,6 +44,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'editorconfig/editorconfig-vim'
     Plug 'itchyny/lightline.vim'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
+    Plug 'NoahTheDuke/vim-just'
     Plug 'posva/vim-vue'
     Plug 'pprovost/vim-ps1'
     Plug 'preservim/nerdcommenter'
