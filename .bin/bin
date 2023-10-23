@@ -12,7 +12,7 @@ shopt -s nullglob
 #===============================================================================
 
 # Version (set by build script - don't change in source file)
-VERSION='0.6.0'
+VERSION='0.6.1'
 
 # Executable
 BIN_EXECUTABLE="$0"
@@ -51,6 +51,9 @@ DEBUG_RESET=$'\e[0m'
 ERR_NOT_EXECUTABLE=126
 ERR_NOT_FOUND=127
 ERR_GENERIC=246
+
+# Other constants
+NEW_LINE=$'\n'
 
 #===============================================================================
 # Cross-platform `realpath`
@@ -1255,7 +1258,12 @@ while [[ $# -gt $last_parameter ]]; do
         if [[ -f "$current_directory/$subcommand" && ! -x "$current_directory/$subcommand" ]]; then
             fail "'$current_directory/$subcommand' is not executable (chmod +x)" $ERR_NOT_EXECUTABLE
         fi
-        fail "Command '${full_command:1}' not found in $bin_dir or $binconfig" $ERR_NOT_FOUND
+
+        append=''
+        if in_array "${full_command:1}" completion create edit help version; then
+            append="${NEW_LINE}${GREY}Perhaps you meant to run 'bin --${full_command:1}'?${RESET}"
+        fi
+        fail "Command '${full_command:1}' not found in $bin_dir/ or $binconfig$append" $ERR_NOT_FOUND
     fi
 
     # Otherwise display the list of matches
@@ -1420,7 +1428,7 @@ for command in ${visible_commands+"${visible_commands[@]}"}; do
     else
         printf "%s %s\n" "$exe" "$command"
     fi
-done
+done | sort
 
 if [[ ${#visible_commands[@]} -eq 0 ]]; then
     echo "${GREY}None found${RESET}"
@@ -1452,7 +1460,8 @@ fi
 missing_commands=()
 for command in ${commands_listed_in_config+"${commands_listed_in_config[@]}"}; do
     executable=$(map_get command_to_executable "$command")
-    if [[ -z $executable ]]; then
+    script=$(map_get command_to_inline_script "$command")
+    if [[ -z $executable && -z $script ]]; then
         missing_commands+=("$command")
     fi
 done
