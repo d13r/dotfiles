@@ -12,7 +12,7 @@ shopt -s nullglob
 #===============================================================================
 
 # Version (set by build script - don't change in source file)
-VERSION='0.7.1'
+VERSION='v0.7.1'
 
 # Executable
 BIN_EXECUTABLE="$0"
