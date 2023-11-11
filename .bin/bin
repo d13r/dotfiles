@@ -12,7 +12,7 @@ shopt -s nullglob
 #===============================================================================
 
 # Version (set by build script - don't change in source file)
-VERSION='v0.7.2'
+VERSION='v0.8.0'
 
 # Executable
 BIN_EXECUTABLE="$0"
@@ -280,12 +280,8 @@ if [[ $action = 'completion' ]]; then
 fi
 
 #===============================================================================
-# Helper functions
+# Generic helper functions
 #===============================================================================
-
-#---------------------------------------
-# General
-#---------------------------------------
 
 in_array() {
     local needle value
@@ -300,6 +296,18 @@ in_array() {
     done
 
     return 1
+}
+
+trim() {
+    local string
+
+    string=$1
+
+    # https://stackoverflow.com/a/3352015/167815
+    string="${string#"${string%%[![:space:]]*}"}"
+    string="${string%"${string##*[![:space:]]}"}"
+
+    echo "$string"
 }
 
 #---------------------------------------
@@ -351,15 +359,29 @@ map_set() {
 }
 
 map_get() {
-    local default key map
+    local key map
 
     map=$1
     key=$2
-    default=${3-}
 
     key=$(map_key "$map" "$key")
 
-    echo "${!key-$default}"
+    if [[ -z ${!key+isset} ]]; then
+        return 1
+    fi
+
+    echo "${!key}"
+}
+
+map_has() {
+    local key map
+
+    map=$1
+    key=$2
+
+    key=$(map_key "$map" "$key")
+
+    [[ -n ${!key+isset} ]]
 }
 
 #---------------------------------------
@@ -474,6 +496,10 @@ _canonicalize_file_path() {
 }
 # kcov-ignore-end
 
+#===============================================================================
+# Bin functions
+#===============================================================================
+
 #---------------------------------------
 # Config files
 #---------------------------------------
@@ -489,6 +515,8 @@ bin_dir_for() {
     while IFS='=' read -r key value; do
         ((line += 1))
 
+        key=$(trim "$key")
+
         if [[ $key = '' || $key = '#'* || $key = ';'* ]]; then
             # Skip blank lines & comments
             :
@@ -497,6 +525,7 @@ bin_dir_for() {
             break
         elif [[ $key = 'dir' ]]; then
             # dir=scripts
+            value=$(trim "$value")
             result="${value%%/}"
             break
         fi
@@ -680,10 +709,11 @@ is_hidden_command() {
 }
 
 find_matching_commands() {
-    local alias alias_found command target type
+    local alias command target type
 
     type=$1
     target=$2
+    stop_after_first=${3-false}
 
     map_init commands_matching_aliases
 
@@ -696,13 +726,29 @@ find_matching_commands() {
 
     matching_commands=()
     for command in ${registered_commands+"${registered_commands[@]}"}; do
-        alias_found=$(map_get commands_matching_aliases "$command" false)
-        if $alias_found; then
+        if map_has commands_matching_aliases "$command"; then
             matching_commands+=("$command")
         elif command_matches "$type" "$target" "$command"; then
             matching_commands+=("$command")
+        else
+            continue
+        fi
+
+        if $stop_after_first; then
+            break
         fi
     done
+}
+
+has_matching_commands() {
+    local alias command target type
+
+    type=$1
+    target=$2
+
+    find_matching_commands "$type" "$target" true
+
+    [[ ${#matching_commands[@]} -gt 0 ]]
 }
 
 matching_commands_shared_prefix() {
@@ -798,9 +844,7 @@ prevent_duplicate_alias() {
     name=$1
     source=$2
 
-    existing=$(map_get alias_sources "$name")
-
-    if [[ -n $existing ]]; then
+    if existing=$(map_get alias_sources "$name"); then
         fail "The alias '$name' defined in $source conflicts with the alias defined in $existing"
     fi
 }
@@ -887,13 +931,11 @@ run_command_if_only_one_match() {
     # And this can be used to display other command names
     export BIN_EXE="$exe"
 
-    executable=$(map_get command_to_executable "$command")
-    if [[ -n "$executable" ]]; then
+    if executable=$(map_get command_to_executable "$command"); then
         run_command "$executable" "$@"
     fi
 
-    script=$(map_get command_to_inline_script "$command")
-    if [[ -n "$script" ]]; then
+    if script=$(map_get command_to_inline_script "$command"); then
         # These variables are useful for inline commands, but aren't made available
         # to regular commands because it is better to use "$(dirname "$0")" instead
         export BIN_ROOT="$root"
@@ -914,10 +956,6 @@ non_executable_files=()
 commands_listed_in_config=()
 
 #---------------------------------------
-# Determine the start directory
-#---------------------------------------
-
-#---------------------------------------
 # Repeat while 'merge=true' is set
 #---------------------------------------
 
@@ -930,6 +968,7 @@ main_is_root_dir=false
 main_root=''
 merging=false
 start_directory=$PWD
+template='_TBC'
 
 map_init help
 
@@ -1048,6 +1087,8 @@ while $keep_looking; do
         while IFS='=' read -r key value; do
             ((line += 1))
 
+            key=$(trim "$key")
+
             if [[ $key = '' || $key = '#'* || $key = ';'* ]]; then
                 # Skip blank lines & comments
                 :
@@ -1059,10 +1100,11 @@ while $keep_looking; do
                 # Already handled (above)
                 :
             elif [[ -z $command && $key = 'exact' ]]; then
-                # exact=true
-                # exact=false (default)
+                # exact = true
+                # exact = false (default)
                 if [[ -z $exact ]]; then
                     # Can't use ${value,,} because it doesn't work in Bash 3 (macOS)
+                    value=$(trim "$value")
                     lc_value=$(echo "$value" | tr '[:upper:]' '[:lower:]')
                     if in_array "$lc_value" 'false' 'no' 'off' '0'; then
                         exact=false
@@ -1073,9 +1115,10 @@ while $keep_looking; do
                     fi
                 fi
             elif [[ -z $command && $key = 'merge' ]]; then
-                # merge=true
-                # merge=optional
-                # merge=false (default)
+                # merge = true
+                # merge = optional
+                # merge = false (default)
+                value=$(trim "$value")
                 lc_value=$(echo "$value" | tr '[:upper:]' '[:lower:]')
                 if in_array "$lc_value" 'false' 'no' 'off' '0'; then
                     keep_looking=false
@@ -1088,27 +1131,34 @@ while $keep_looking; do
                 else
                     fail "Invalid value for 'merge' in $binconfig line $line: $value"
                 fi
+            elif [[ -z $command && $key = 'template' ]]; then
+                if [[ $template = '_TBC' ]]; then
+                    template=$(trim "$value")
+                fi
             elif [[ -z $command ]]; then
                 # Unknown keys don't trigger an error for forwards compatibility (global)
-                :
+                debug "Ignored unknown key '$key' in $binconfig line $line"
             elif [[ ($key = 'alias' || $key = 'aliases') ]]; then
-                # alias=blah
-                # aliases=blah1, blah2
+                # alias = blah
+                # aliases = blah1, blah2
                 IFS=',' read -ra line_aliases <<<"$value"
                 for alias in ${line_aliases+"${line_aliases[@]}"}; do
-                    alias=${alias## }
-                    alias=${alias%% }
+                    alias=$(trim "$alias")
                     register_command_alias "$alias" "$command" "$binconfig line $line"
                 done
             elif [[ $key = 'command' ]]; then
-                # command=echo 'Hello, World!'
+                # command = echo 'Hello, World!'
+                value=$(trim "$value")
                 register_inline_command "$command" "$value" "$binconfig line $line"
             elif [[ $key = 'help' ]]; then
                 # help=Description
-                map_set help "$command" "$value"
+                value=$(trim "$value")
+                if [[ -n "$value" ]]; then
+                    map_set help "$command" "$value"
+                fi
             else
                 # Unknown keys don't trigger an error for forwards compatibility (command)
-                :
+                debug "Ignored unknown key '$key' in $binconfig line $line"
             fi
         done <"$binconfig" # kcov-ignore-line: Usage not detected
     fi
@@ -1123,8 +1173,7 @@ while $keep_looking; do
     #---------------------------------------
 
     for alias in ${alias_to_executable+"${alias_to_executable[@]}"}; do
-        executable=$(map_get alias_to_executable "$alias")
-        if [[ -n $executable ]]; then
+        if executable=$(map_get alias_to_executable "$alias"); then
             command=$(map_get executable_to_command "$executable")
             map_set original_commands "$alias" "$command"
         fi
@@ -1215,9 +1264,24 @@ while [[ $# -gt $last_parameter ]]; do
             fi
 
             ( # kcov-ignore-line: Usage not detected
+                output_started=false
+
                 if [[ $main_bin_dir_from_root != 'bin' ]]; then
-                    echo "dir=$main_bin_dir_from_root"
-                else
+                    echo "dir = $main_bin_dir_from_root"
+                    output_started=true
+                fi
+
+                for command in ${registered_commands+"${registered_commands[@]}"}; do
+                    if $output_started; then
+                        echo
+                    fi
+                    echo "[$command]"
+                    echo 'alias ='
+                    echo 'help ='
+                    output_started=true
+                done
+
+                if ! $output_started; then
                     echo
                 fi
             ) > "$main_root/.binconfig" # kcov-ignore-line: Usage not detected
@@ -1272,7 +1336,13 @@ while [[ $# -gt $last_parameter ]]; do
 
         mkdir -p "$current_directory"
         script="$current_directory/$subcommand"
-        echo -e "#!/usr/bin/env bash\nset -euo pipefail\n\n" >"$script"
+        if [[ $template = '_TBC' ]]; then
+            # Using '_TBC' as the placeholder allows the user to set it to a blank string
+            # in the config file. We can't just initialise it to the following value
+            # because we want the first (lowest) .binconfig file to take precedence.
+            template='#!/usr/bin/env bash\nset -euo pipefail\n\n'
+        fi
+        echo -e "$template" > "$script"
         chmod +x "$script"
         echo "Created script $script"
         open_in_editor "$script"
@@ -1307,7 +1377,7 @@ while [[ $# -gt $last_parameter ]]; do
     # If there were no prefix matches, stop searching
     if [[ ${#matching_commands[@]} -eq 0 ]]; then
         if $main_is_root_dir && [[ -d "$current_directory/$subcommand" ]]; then
-            fail "Subcommands are not supported with the config option 'dir=$main_bin_dir_from_root'"
+            fail "Subcommands are not supported with the config option 'dir = $main_bin_dir_from_root'"
         fi
         if [[ $subcommand = .* && -e "$current_directory/$subcommand" ]]; then
             fail "Command names may not start with '.'"
@@ -1337,7 +1407,6 @@ done
 shortened_commands=()
 
 for command in ${list_commands+"${list_commands[@]}"}; do
-    executable=$(map_get command_to_executable "$command")
     short=$(remove_extension "$command")
 
     if [[ "$short" = "$command" ]]; then
@@ -1468,23 +1537,26 @@ get_command_aliases() {
         echo "alias: ${command_aliases:2}"
     elif [[ $command_alias_count -gt 1 ]]; then
         echo "aliases: ${command_aliases:2}"
+    else
+        return 1
     fi
 }
 
 echo "$LWHITE$BOLD$UNDERLINE$list_title$RESET"
 
 for command in ${visible_commands+"${visible_commands[@]}"}; do
-    command_help=$(map_get help "$command")
-    command_aliases=$(get_command_aliases "$command")
-
-    if [[ -n $command_help && -n $command_aliases ]]; then
-        printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$command_help $GREY($command_aliases)$RESET"
-    elif [[ -n $command_help ]]; then
-        printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$command_help"
-    elif [[ -n $command_aliases ]]; then
-        printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$GREY($command_aliases)$RESET"
+    if command_help=$(map_get help "$command"); then
+        if command_aliases=$(get_command_aliases "$command"); then
+            printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$command_help $GREY($command_aliases)$RESET"
+        else
+            printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$command_help"
+        fi
     else
-        printf "%s %s\n" "$exe" "$command"
+        if command_aliases=$(get_command_aliases "$command"); then
+            printf "%s %-${maxlength}s    %s\n" "$exe" "$command" "$GREY($command_aliases)$RESET"
+        else
+            printf "%s %s\n" "$exe" "$command"
+        fi
     fi
 done | sort
 
@@ -1517,11 +1589,23 @@ fi
 # Missing commands in .binconfig
 missing_commands=()
 for command in ${commands_listed_in_config+"${commands_listed_in_config[@]}"}; do
-    executable=$(map_get command_to_executable "$command")
-    script=$(map_get command_to_inline_script "$command")
-    if [[ -z $executable && -z $script ]]; then
-        missing_commands+=("$command")
+
+    # Regular script
+    if map_has command_to_executable "$command"; then
+        continue
     fi
+
+    # Inline command
+    if map_has command_to_inline_script "$command"; then
+        continue
+    fi
+
+    # Directory
+    if has_matching_commands subcommands "$command"; then
+        continue
+    fi
+
+    missing_commands+=("$command")
 done
 
 if [[ ${#missing_commands[@]} -gt 0 ]]; then
