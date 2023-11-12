@@ -1,9 +1,4 @@
 if declare -f __load_completion &>/dev/null; then
-    if ! declare -f _complete_alias &>/dev/null; then
-        source "$HOME/.bash/_complete_alias"
-    fi
-
     __load_completion pass
-
     complete -o filenames -F _pass pvview
 fi

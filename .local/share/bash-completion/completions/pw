@@ -1,0 +1,9 @@
+if declare -f __load_completion &>/dev/null; then
+    __load_completion pass
+
+    _pw() {
+        PASSWORD_STORE_DIR="$HOME/.password-store/MI/" _pass "$@"
+    }
+
+    complete -o filenames -F _pw pw
+fi
