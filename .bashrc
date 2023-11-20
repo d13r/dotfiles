@@ -689,35 +689,6 @@ prompt() {
     fi
 }
 
-ntfy-status() {
-    local status=$?
-
-    if [[ $# -eq 0 ]]; then
-        # task; ntfy-status
-        if [[ $status -eq 0 ]]; then
-            ntfy 'Finished'
-        else
-            ntfy "FAILED: Code $status"
-        fi
-    elif [[ $# -eq 1 ]]; then
-        # task; ntfy-status <topic>
-        if [[ $status -eq 0 ]]; then
-            ntfy "$1" 'Finished'
-        else
-            ntfy "$1" "FAILED: Code $status"
-        fi
-    else
-        # task; ntfy-status <topic> <task>
-        if [[ $status -eq 0 ]]; then
-            ntfy "$1" "$2 finished"
-        else
-            ntfy "$1" "$2 FAILED: Code $status"
-        fi
-    fi
-
-    return $status
-}
-
 sc() {
     case "${1:-}" in
         d|down) shift; systemctl stop "$@" ;;
