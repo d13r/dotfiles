@@ -31,6 +31,14 @@ print_tmux_status() {
     fi
 }
 
+print_quick_reference() {
+    style yellow,bold '  Quick Reference'
+    sed -n 's/^#|\s*/  /p' ~/.ssh/config
+    if [[ -f ~/.ssh/config_local ]]; then
+        sed -n 's/^#|\s*/  /p' ~/.ssh/config_local
+    fi
+}
+
 update_tmux_status() {
     tput sc # Save cursor
     tput cup 1 0
@@ -61,6 +69,11 @@ while true; do
     echo
     print_tmux_status
     echo
+    tput sc # Save cursor
+    echo
+    echo
+    print_quick_reference
+    tput rc # Restore cursor
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
     trap 'echo; exit' INT
