@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+exe=bin/wp
+if dir=$(findup -f $exe); then
+    exec "$dir/$exe" "$@"
+fi
+
 exe=vendor/bin/wp
 if dir=$(findup -f $exe); then
     exec "$dir/$exe" "$@"
