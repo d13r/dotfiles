@@ -11,6 +11,8 @@ fi
 
 if [[ $repo == *@* ]] || [[ $repo == *:* ]] || [[ $repo == /* ]] || [[ $repo == *..* ]]; then
     : # No change
+elif [[ $repo == drupal/* && $repo != drupal/core && $repo != drupal/recommended-project ]]; then
+    repo="https://git.drupalcode.org/project/${repo#drupal/}.git"
 elif [[ $repo == it/* ]]; then
     repo="git@git.maths.ox.ac.uk:$repo.git"
 elif [[ $repo == */* ]]; then
