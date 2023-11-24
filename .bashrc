@@ -711,6 +711,26 @@ sc() {
     esac
 }
 
+setup() {
+    local name
+
+    if [[ $# -eq 0 ]]; then
+        bin setup
+        return
+    fi
+
+    name=$1
+
+    if [[ ! -e $name ]]; then
+        git clone "git@github.com:d13r/$name.git"
+        echo
+    fi
+
+    cd "$name"
+
+    bin/setup
+}
+
 status() {
     # Show the result of the last command
     local status=$?
