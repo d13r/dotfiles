@@ -133,7 +133,6 @@ alias cas='c /etc/apache2/sites-enabled'
 alias cat="$HOME/.bin/bat-or-cat"
 alias certbot="$sudo certbot"
 alias chmox='chmod' # Common typo
-alias com='composer'
 alias cp='cp -i'
 alias cy='cypress'
 
@@ -291,6 +290,15 @@ cg() {
     fi
 
     c "$path"
+}
+
+com() {
+    if [[ ${1-} = 'ul' ]]; then
+        shift
+        composer update --lock "$@"
+    else
+        composer "$@"
+    fi
 }
 
 cv() {
