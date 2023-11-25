@@ -1187,6 +1187,10 @@ export HISTSIZE=50000
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
 
+if is-wsl; then
+    export BROWSER='start'
+fi
+
 shopt -s autocd
 shopt -s cdspell
 shopt -s checkhash

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ $PWD != /mnt/?/* ]]; then
+    cd "$(wsl-temp-path)"
+fi
+
+exec cmd.exe /c start "$@"
