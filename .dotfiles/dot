@@ -42,6 +42,14 @@
         exit 1
     }
 
+    sudo() {
+        if [[ $EUID -gt 0 ]] && command -v sudo &>/dev/null; then
+            command sudo "$@"
+        else
+            command "$@"
+        fi
+    }
+
     # Sanity checks
     [[ -f dot ]] || fail 'This script must be named ~/dot'
     [[ -d .git ]] && fail '~/.git already exists'
@@ -50,7 +58,7 @@
     if ! command -v git &>/dev/null; then
         # Attempt to install it if not
         say 'Installing Git...'
-        if ! (sudo apt-get update && sudo apt-get install -y git); then
+        if ! (sudo apt-get update; sudo apt-get install -y git); then
             fail 'Git could not be installed'
         fi
     fi
