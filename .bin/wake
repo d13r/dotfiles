@@ -3,13 +3,45 @@ set -euo pipefail
 
 args=$@
 host=${1:-}
+mac=
 
-if [[ $host = '' || $host = 'b' || $host = 'bp' ]]; then
+# Shortcuts
+if [[ $host = 'b' || $host = 'bp' ]]; then
     args='beulah-penguin'
 fi
 
-if [[ -f /mi/bin/wake ]]; then
-    exec /mi/bin/wake "${args[@]}"
+# List of machines
+if [[ $host = 'pve' ]]; then
+    mac=b8:ca:3a:9a:9f:e8
 fi
 
-ssh gate /mi/bin/wake "${args[@]}"
+# If none found, assume it is a work machine
+if [[ -z $mac ]]; then
+    if [[ -f /mi/bin/wake ]]; then
+        exec /mi/bin/wake "${args[@]}"
+    fi
+
+    exec ssh gate /mi/bin/wake "${args[@]}"
+fi
+
+# Install wakeonlan if missing
+if ! is-executable wakeonlan; then
+    maybe-sudo apt install wakeonlan
+fi
+
+# Send the wake packet
+wakeonlan "$mac"
+
+# Wait for the machine to load
+while ! ping -q -c1 "$host.djm.me" &>/dev/null; do
+    echo -n '#'
+    sleep 1
+done
+
+while ! nc -z "$host.djm.me" 22 &>/dev/null; do
+    echo -n '.'
+    sleep 1
+done
+
+echo
+echo "$host.djm.me is awake."
