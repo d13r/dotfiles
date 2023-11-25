@@ -16,7 +16,7 @@ bind -r '\e\e' 2>/dev/null
 bind -x '"\e": handle_escape' 2>/dev/null
 
 handle_escape() {
-    echo exit
+    clear
     exit
 }
 
@@ -76,7 +76,7 @@ while true; do
     tput rc # Restore cursor
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
-    trap 'echo; exit' INT
+    trap 'clear; exit' INT
     read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
     trap INT
 
