@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo tee "$@" >/dev/null
+maybe-sudo tee "$@" >/dev/null

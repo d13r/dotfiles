@@ -54,7 +54,7 @@ hostname=${fqdn%%.*}
 # cloud-init
 if ! $revert; then
     echo 'Configuring cloud-init...'
-    sudo mkdir -p /etc/cloud/cloud.cfg.d
+    maybe-sudo mkdir -p /etc/cloud/cloud.cfg.d
     echo -e 'preserve_hostname: true\nmanage_etc_hosts: false' | sudo-write /etc/cloud/cloud.cfg.d/99-static-hostname.cfg
 fi
 
@@ -62,8 +62,8 @@ fi
 update_etc_hosts() {
     line="127.0.1.1 $1"
 
-    if sudo grep -q '^127\.0\.1\.1 ' /etc/hosts; then
-        sudo sed -i "s/^127\.0\.1\.1 .*$/$line/" /etc/hosts
+    if maybe-sudo grep -q '^127\.0\.1\.1 ' /etc/hosts; then
+        maybe-sudo sed -i "s/^127\.0\.1\.1 .*$/$line/" /etc/hosts
     else
         echo "$line" | sudo-write -a /etc/hosts
     fi
@@ -76,7 +76,7 @@ update_etc_hosts "$(cat /etc/hostname) $fqdn $hostname"
 
 # Hostname
 echo 'Setting hostname...'
-sudo hostnamectl set-hostname "$fqdn"
+maybe-sudo hostnamectl set-hostname "$fqdn"
 
 # /etc/hosts
 echo 'Updating /etc/hosts (using new value only)...'

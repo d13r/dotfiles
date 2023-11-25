@@ -1,13 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-if ! is-executable sudo; then
-    echo 'sudo is not available' >&2
-    exit 1
-fi
-
 # Sudo
-if [[ -d /etc/sudoers.d && ! -f /etc/sudoers.d/dave ]]; then
+if is-executable sudo && [[ -d /etc/sudoers.d && ! -f /etc/sudoers.d/dave ]]; then
     if ask 'Configure sudo to always set $HOME (for Vim)?' Y; then
         setup-sudo
     fi
@@ -62,16 +57,25 @@ fi
 # Upgrade
 upgraded=false
 
+if is-pve; then
+    if [[ -f /etc/apt/sources.list.d/pve-enterprise.list ]] && ask 'Disable Proxmox Enterprise repo?' Y; then
+        maybe-sudo rm /etc/apt/sources.list.d/pve-enterprise.list
+    fi
+    if [[ -f /etc/apt/sources.list.d/ceph.list ]] && grep -q enterprise.proxmox.com /etc/apt/sources.list.d/ceph.list && ask 'Disable Ceph repo?' Y; then
+        maybe-sudo rm /etc/apt/sources.list.d/ceph.list
+    fi
+fi
+
 if ask 'Install updates now?' Y; then
-    sudo apt update
-    sudo apt full-upgrade --auto-remove
+    maybe-sudo apt update
+    maybe-sudo apt full-upgrade --auto-remove
     upgraded=true
 fi
 
 echo
 
 # Firewall
-if ! is-wsl; then
+if ! is-wsl && ! is-pve; then
     if ask 'Enable firewall (UFW)?' Y; then
         setup-firewall
     elif ask 'Enable Fail2ban?' Y; then
@@ -89,7 +93,7 @@ for package in bat curl fzf httpie file pv tmux tree vim; do
     esac
     if ! is-executable "$command"; then
         if ask "Install $package?" Y; then
-            sudo apt install -y "$package"
+            maybe-sudo apt install -y "$package"
         fi
         echo
     fi
@@ -127,12 +131,10 @@ if is-wsl; then
 fi
 
 # Reboot
-if $upgraded; then
-    if ask 'Reboot now?'; then
-        sudo reboot
-    fi
-    echo
+if ask 'Reboot now?'; then
+    maybe-sudo reboot
 fi
+echo
 
 # All done
 echo 'Setup finished.'
