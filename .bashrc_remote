@@ -74,6 +74,14 @@ alias cw='c /local'
 alias l="ls --color=always -hFl"
 alias sc='systemctl'
 
+# Shortcut to upgrade to full dotfiles install
+setup-dotfiles() {
+    wget djm.me/dot -O ~/dot
+    cd
+    . dot
+    unset -f setup-dotfiles
+}
+
 # Better tab completion + history searching (see .inputrc)
 bind 'set colored-completion-prefix on'
 bind 'set colored-stats on'
