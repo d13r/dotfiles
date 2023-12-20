@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+path='/home/sysman/bin/queryOAK.sh'
+
+if [[ -x "$path" ]]; then
+    exec "$path" "$@"
+fi
+
+exec ssh gate $(printf "ssh gate %q" "$path $*")
