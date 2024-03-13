@@ -188,7 +188,7 @@ alias poweroff="$sudo poweroff"
 alias pow="$sudo poweroff"
 alias pu='phpunit'
 alias puw='when-changed -r -s -1 app database tests -c "clear; bin/phpunit"'
-alias pw='PASSWORD_STORE_DIR="$HOME/.password-store/MI/" pvview'
+alias pw='PASSWORD_STORE_DIR="$HOME/.password-store/MI" pvview'
 
 alias reboot="$sudo reboot"
 alias reload='exec bash -l'
