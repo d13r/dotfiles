@@ -1131,7 +1131,7 @@ _record-last-directory() {
 }
 
 _update-dpi() {
-    if is-executable php; then
+    if [[ -d $HOME/.config/JetBrains ]] && is-executable php; then
         if [[ -f $HOME/.config/bash/hidpi ]]; then
             export GDK_SCALE=2
             _set-phpstorm-font-size 10 12
