@@ -44,6 +44,7 @@ if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
 fi
 
 PATH="$HOME/go/bin:$PATH"
+PATH="$HOME/.local/bin:$PATH" # pip (and perhaps others)
 PATH="$HOME/.rvm/bin:$PATH"
 PATH="$HOME/.yarn/bin:$PATH"
 
