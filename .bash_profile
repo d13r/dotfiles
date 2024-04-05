@@ -185,9 +185,10 @@ share-ssh-agent() {
     for socket in \
         "$SSH_AUTH_SOCK" \
         $(find /run/user -user $(id -u) -iregex /run/user/[0-9]+/keyring/ssh -type s 2>/dev/null) \
-        $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-z0-9]+/agent.[0-9]+ -type s 2>/dev/null)
+        $(find /tmp -user $(id -u) -iregex /tmp/ssh-[a-zA-Z0-9]+/agent.[0-9]+ -type s 2>/dev/null)
     do
-        if SSH_AUTH_SOCK=$socket timeout 1 ssh-add -l &>/dev/null; then
+        echo "Checking $socket..."
+        if SSH_AUTH_SOCK=$socket timeout 10 ssh-add -l &>/dev/null; then
             export SSH_AUTH_SOCK=$socket
             echo "Using $socket"
             echo
