@@ -60,6 +60,7 @@ e() {
 g() {
     case "${1-}" in
         co) shift; git checkout "$@" ;;
+        d) shift; git diff "$@" ;;
         f) shift; git fetch "$@" ;;
         io) shift; git log --left-right --cherry-pick "${1-$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")}...${2-HEAD}" ;;
         l) shift; git log "$@" ;;
