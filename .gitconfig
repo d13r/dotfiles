@@ -90,6 +90,7 @@
     #match = brightred
 
 [commit]
+    cleanup = scissors
     verbose = 2
 
 [core]
