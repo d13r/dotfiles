@@ -238,17 +238,6 @@ alias yum="$sudo yum"
     cd - "$@"
 }
 
-1x() {
-    rm -f $HOME/.config/bash/hidpi
-    _update-dpi
-}
-
-2x() {
-    mkdir -p $HOME/.config/bash
-    touch $HOME/.config/bash/hidpi
-    _update-dpi
-}
-
 c() {
     # 'cd' and 'ls'
     if [[ $@ != . ]]; then
@@ -1130,18 +1119,6 @@ _record-last-directory() {
     pwd > ~/.local/bash-last-directory
 }
 
-_update-dpi() {
-    if [[ -d $HOME/.config/JetBrains ]] && is-executable php; then
-        if [[ -f $HOME/.config/bash/hidpi ]]; then
-            export GDK_SCALE=2
-            _set-phpstorm-font-size 10 12
-        else
-            export GDK_SCALE=1
-            _set-phpstorm-font-size 13 17
-        fi
-    fi
-}
-
 
 #===============================================================================
 # Key bindings
@@ -1207,8 +1184,6 @@ shopt -u sourcepath
 
 stty -ixon # Disable Ctrl-S
 tabs -4
-
-_update-dpi
 
 
 #---------------------------------------
