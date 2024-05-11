@@ -1163,6 +1163,11 @@ export HISTSIZE=50000
 export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
 
+if is-executable git; then
+    export NAME=$(git -C "$HOME" config --global user.name)
+    export EMAIL=$(git -C "$HOME" config --global user.email)
+fi
+
 if is-wsl; then
     export BROWSER='start'
 fi
