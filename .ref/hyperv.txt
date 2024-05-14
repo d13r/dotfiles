@@ -25,14 +25,9 @@ Install Hyper-V:
 
 Run PowerShell as an administrator, then run:
 
-    Set-NetIPInterface -ifAlias "vEthernet (Default Switch)" -Forwarding Enabled
-    Set-NetIPInterface -ifAlias "vEthernet (WSL)" -Forwarding Enabled
+    Set-NetIPInterface -ifAlias "vEthernet (*)" -Forwarding Enabled
 
     Source: https://github.com/microsoft/WSL/issues/4288#issuecomment-778790363
-
-Download the latest Ubuntu Server ISO (e.g. `ubuntu-20.04.4-live-server-amd64.iso`):
-
-    https://ubuntu.com/download/server
 
 ================================================================================
  Create a new VM
@@ -56,7 +51,8 @@ Or create it manually:
     - Enter the amount of memory to use (at least `3072 MB` for a netboot install). Leave "Dynamic Memory" ticked. Click Next
     - Select "Hyper-V Internal Network". Click Next
     - Enter a size for the virtual hard disk. Click Next
-    - Select "Install an operating system from a bootable image file", then select the Ubuntu ISO file. Click Next
+    - Select "Install an operating system from a bootable image file", then select the Ubuntu ISO file[1]. Click Next
+      [1]: https://ubuntu.com/download/server
     - Click Finish
 - Right-click the machine, then click Settings
     - In Add Hardware, select "Network Adapter" and click "Add". Set Virtual Switch to "Default Switch"
@@ -115,17 +111,11 @@ Close the window and the main Hyper-V window.
 
 Connect via SSH:
 
-    # With MultiPass:
-    mp h example
-    ssh ubuntu@example
-
-    # With a custom VM:
-    ssh dave@example
+    h example
 
 Set up guest OS:
 
-    setup-ubuntu
-    (etc.)
+    setup-linux
 
 Add it to dotfiles (optional):
 
