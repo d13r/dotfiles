@@ -157,6 +157,21 @@
 [tag]
     sort = version:refname
 
+[url "d13r@git.launchpad.net:"]
+    insteadOf = lp:
+    pushInsteadOf = https://git.launchpad.net/
+
+[url "git@git.maths.ox.ac.uk:it/"]
+    insteadOf = it:
+
+[url "git@github.com:"]
+    insteadOf = gh:
+    pushInsteadOf = https://github.com/
+
+[url "git@gitlab.com:"]
+    insteadOf = gl:
+    pushInsteadOf = https://gitlab.com/
+
 [user]
     email = d@djm.me
     name = Dave James Miller
