@@ -84,10 +84,10 @@ case "${1:-}" in
         fi
 
         input cpus 'CPUs' 4
-        input disk 'Disk' 20G
-        input memory 'Memory' 4G
+        input disk 'Disk (GB)' 20
+        input memory 'Memory (GB)' 4
         input image 'Image' lts
-        input ip 'Static IP' "$ip"
+        input ip 'Static IP/CIDR' "$ip"
 
         echo
 
@@ -101,8 +101,8 @@ case "${1:-}" in
             --cloud-init /tmp/cloud-config-$$.yaml \
             --name "$name" \
             --cpus "$cpus" \
-            --disk "$disk" \
-            --memory "$memory" \
+            --disk "${disk}G" \
+            --memory "${memory}G" \
             --network 'name=Hyper-V Internal Network,mode=manual' \
             "$@" \
             "$image"
