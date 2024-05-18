@@ -34,6 +34,7 @@ if $revert; then
 
     # Remove dependencies
     sudo apt purge -y \
+        chromium-browser \
         default-jre \
         fonts-firacode \
         libgbm-dev \
@@ -43,7 +44,9 @@ if $revert; then
 else
 
     # Install dependencies
+    # (Chromium installed to allow activation via browser)
     sudo apt install -y \
+        chromium-browser \
         default-jre \
         fonts-firacode \
         libgbm-dev \
