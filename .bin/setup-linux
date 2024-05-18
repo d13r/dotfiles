@@ -127,7 +127,7 @@ fi
 
 # WSL symlinks
 if is-wsl; then
-    if ask 'Create symlinks to Windows folders?'; then
+    if ask 'Create symlinks to Windows folders?' Y; then
         if path=$(wsl-mydocs-path 2>/dev/null); then
             ln -nsfv "$path" Documents
         fi
