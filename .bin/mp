@@ -109,6 +109,7 @@ case "${1:-}" in
 
         echo
         list-instances
+        echo
 
         ssh-keygen -f ~/.ssh/known_hosts -R "$name.mshome.net" &>/dev/null
         ssh-keygen -f ~/.ssh/known_hosts -R "$name.djm.me" &>/dev/null
