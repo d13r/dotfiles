@@ -2,5 +2,7 @@
 set -euo pipefail
 
 sudo add-apt-repository -y ppa:bin-cli/bin-cli
+echo
 sudo apt install -y bin-cli
+echo
 bin -v
