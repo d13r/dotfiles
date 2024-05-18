@@ -1,5 +1,19 @@
 #!/bin/sh
 
-test -f /etc/os-release && \
-    . /etc/os-release && \
-    test "${ID:-}" = "ubuntu"
+test -f /etc/os-release || exit 1
+. /etc/os-release || exit 1
+test "${ID:-}" = "ubuntu" || exit 1
+
+[ "${1-}" = '' ] && exit 0
+
+# Accept 'lt', 'gt', etc. to avoid needing to quote '<', '>'
+case "$1" in
+    gt) op='>'  ; shift ;;
+    ge) op='>=' ; shift ;;
+    lt) op='<'  ; shift ;;
+    le) op='<=' ; shift ;;
+    *)  op='='          ;;
+esac
+
+# Example: is-ubuntu ge 22.04
+echo "$VERSION_ID" | awk "{ exit \$1 $op $1 ? 0 : 1 }"

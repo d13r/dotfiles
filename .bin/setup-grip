@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-sudo apt install python3-pip
-sudo pip install --upgrade grip
+
+if is-ubuntu ge 23.04; then
+    is-executable pipx || sudo apt install pipx
+    pipx install grip
+else
+    is-executable pip || sudo apt install python3
+    sudo pip install --upgrade grip
+fi
