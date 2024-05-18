@@ -709,6 +709,13 @@ setup() {
     fi
 
     name=$1
+
+    if [[ -f "$HOME/.bin/setup-$name" ]]; then
+        shift
+        "setup-$name" "$@"
+        return
+    fi
+
     basename=$(basename "$name")
 
     if [[ ! -e $basename ]]; then
