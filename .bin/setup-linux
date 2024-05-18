@@ -84,6 +84,14 @@ if ! is-wsl && ! is-pve; then
     echo
 fi
 
+# Bin CLI
+if ! is-executable bin; then
+    if ask 'Install Bin CLI?' Y; then
+        setup-bin
+    fi
+    echo
+fi
+
 # General utilities
 for package in bat curl fzf httpie file pv tmux tree vim; do
     case $package in
