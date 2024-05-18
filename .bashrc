@@ -701,7 +701,7 @@ sc() {
 }
 
 setup() {
-    local name
+    local basename name
 
     if [[ $# -eq 0 ]]; then
         bin setup
@@ -709,15 +709,15 @@ setup() {
     fi
 
     name=$1
+    basename=$(basename "$name")
 
-    if [[ ! -e $name ]]; then
-        git clone "git@github.com:d13r/$name.git"
+    if [[ ! -e $basename ]]; then
+        clone "$name"
         echo
     fi
 
-    cd "$name"
-
-    bin/setup
+    cd "$basename"
+    bin setup
 }
 
 status() {
