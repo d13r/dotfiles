@@ -139,10 +139,12 @@ if is-wsl; then
 fi
 
 # Reboot
-if ask 'Reboot now?'; then
-    maybe-sudo reboot
+if ! is-wsl; then
+    if ask 'Reboot now?'; then
+        maybe-sudo reboot
+    fi
+    echo
 fi
-echo
 
 # All done
 echo 'Setup finished.'
