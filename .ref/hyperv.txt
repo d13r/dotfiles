@@ -49,13 +49,13 @@ Or create it manually:
     - Enter a name for the VM, and click Next
     - Select Generation 2. Click Next
     - Enter the amount of memory to use (at least `3072 MB` for a netboot install). Leave "Dynamic Memory" ticked. Click Next
-    - Select "Hyper-V Internal Network". Click Next
+    - Select "Default Switch". Click Next
     - Enter a size for the virtual hard disk. Click Next
     - Select "Install an operating system from a bootable image file", then select the Ubuntu ISO file[1]. Click Next
       [1]: https://ubuntu.com/download/server
     - Click Finish
 - Right-click the machine, then click Settings
-    - In Add Hardware, select "Network Adapter" and click "Add". Set Virtual Switch to "Default Switch"
+    - In Add Hardware, select "Network Adapter" and click "Add". Set Virtual Switch to "Hyper-V Inaternal Network"
     - In Security, select "Microsoft UEFI Certificate Authority" (or untick "Enable Secure Boot")
     - In Processor, set the number of processors
     - Click OK
