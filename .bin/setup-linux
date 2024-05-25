@@ -33,7 +33,7 @@ if ! is-wsl; then
         default=N
     fi
 
-    if ask 'Change the hostname?' $default; then
+    if ask "Change the hostname from '$HOSTNAME'?" $default; then
         read -p 'New hostname: ' hostname
         set-hostname "$hostname"
     fi
