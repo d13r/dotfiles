@@ -1361,6 +1361,7 @@ _dirhistory-push-past "$PWD"
 # Load SSH key when connecting to gate from mobile (no SSH agent available in
 # Termius free version - and the paid version is expensive for what I need!)
 if [[ -z ${SSH_AUTH_SOCK-} && ${HOSTNAME-} = gate?.maths.ox.ac.uk ]]; then
+    KILL_SSH_AGENT_ON_EXIT=true # Not exported
     eval $(ssh-agent -s)
     ssh-add
 fi
