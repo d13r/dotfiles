@@ -43,6 +43,10 @@
 !/.github
 !/.gitignore
 
+!/.gnupg
+/.gnupg/*
+!/.gnupg/gpg-agent.conf
+
 !/.grip
 /.grip/cache*
 /.grip/settings-local.py
