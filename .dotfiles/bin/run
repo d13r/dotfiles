@@ -2,15 +2,33 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-# Rebuild the image if the 'dot' script changes (if not it's cached so this is quick)
-bin/_build
-
 opt=()
 if [[ -n $SSH_AUTH_SOCK ]]; then
     opt=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
 fi
 
-# For debugging (to see errors without tmux exiting immediately):
-#exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm dotfiles
+tmux=true
+user=test
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d | --debug)
+            tmux=false
+            ;;
+        -r | --root)
+            user=root
+            ;;
+        *)
+            break;
+    esac
 
-exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm --entrypoint /usr/bin/tmux dotfiles -2 new -A -s test
+    shift
+done
+
+bin/_build "$@"
+
+if $tmux; then
+    exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm --entrypoint /usr/bin/tmux -u "$user" dotfiles -2 new -A -s "$user"
+else
+    exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm dotfiles
+fi
+

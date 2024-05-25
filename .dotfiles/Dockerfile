@@ -1,4 +1,7 @@
-FROM ubuntu
+# Any version of Debian/Ubuntu should work
+# (Perhaps I'll make versions for other operating systems in the future...)
+ARG base=ubuntu
+FROM ${base}
 
 # Set the timezone
 ENV TZ Europe/London
