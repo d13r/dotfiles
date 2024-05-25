@@ -526,13 +526,13 @@ hackit() {
 
 man() {
     # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
-    LESS_TERMCAP_mb=$(printf "\e[91m") \
-    LESS_TERMCAP_md=$(printf "\e[91m") \
-    LESS_TERMCAP_me=$(printf "\e[0m") \
-    LESS_TERMCAP_se=$(printf "\e[0m") \
-    LESS_TERMCAP_so=$(printf "\e[93;44m") \
-    LESS_TERMCAP_ue=$(printf "\e[0m") \
-    LESS_TERMCAP_us=$(printf "\e[92m") \
+    LESS_TERMCAP_mb=$'\e[91m' \
+    LESS_TERMCAP_md=$'\e[91m' \
+    LESS_TERMCAP_me=$'\e[0m' \
+    LESS_TERMCAP_so=$'\e[93;44m' \
+    LESS_TERMCAP_se=$'\e[0m' \
+    LESS_TERMCAP_us=$'\e[92m' \
+    LESS_TERMCAP_ue=$'\e[0m' \
         command man "$@"
 }
 
