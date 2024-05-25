@@ -102,6 +102,10 @@
         7030b200003d19cfe014fe70522f3d1a \
         cf277664b1771217d7006acdea006db1
 
+    # 22bfb8c1dd94b5f3813a2b25da67463f = Ubuntu 24.04 (ISO)
+    delete_skeleton_file .bash_logout \
+        22bfb8c1dd94b5f3813a2b25da67463f
+
     # d41d8cd98f00b204e9800998ecf8427e = Empty string
     # 9a7d426917a95b53644ce123cd0fb333 = Single line ending
     delete_skeleton_file .sudo_as_admin_successful \
