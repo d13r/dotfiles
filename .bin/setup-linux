@@ -68,7 +68,7 @@ fi
 
 if ask 'Install updates now?' Y; then
     maybe-sudo apt update
-    maybe-sudo apt full-upgrade --auto-remove
+    maybe-sudo apt full-upgrade --auto-remove -y
     upgraded=true
 fi
 
