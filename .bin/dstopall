@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Stop all containers
-containers=$(maybe-sudo-for-docker docker ps -qf status=running)
-
-if [[ -n $containers ]]; then
-    exec maybe-sudo-for-docker docker stop $containers
-fi

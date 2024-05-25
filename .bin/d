@@ -1,8 +1,73 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+sudo='maybe-sudo-for-docker'
+
 if [[ $# -eq 0 ]] && is-executable lazydocker; then
-    exec maybe-sudo-for-docker lazydocker
+    exec $sudo lazydocker
 fi
 
-exec maybe-sudo-for-docker docker "$@"
+case $1 in
+
+    clean) # Delete stopped Docker containers and dangling (untagged) images
+        $sudo docker container prune
+        $sudo docker image prune
+        exit
+        ;;
+
+    kill|stop)
+        if [[ $# -eq 1 ]]; then
+            container=$($sudo docker ps -qlf status=running)
+            if [[ -z $container ]]; then
+                echo 'No running containers found.'
+                exit 1
+            fi
+            exec $sudo docker $1 $container
+        fi
+
+        if [[ ${2-} = 'all' ]]; then
+            containers=$($sudo docker ps -qf status=running)
+            if [[ -z $containers ]]; then
+                echo 'No running containers found.'
+                exit 1
+            fi
+            exec $sudo docker $1 $containers
+        fi
+        ;;
+
+    resume)
+        # https://stackoverflow.com/a/37886136/167815
+        if [[ $# -eq 1 ]]; then
+            container=$($sudo docker ps -qlf status=exited)
+            if [[ -z $container ]]; then
+                echo "No stopped containers found." >&2
+                exit 1
+            fi
+        else
+            container=$2
+        fi
+
+        exec $sudo docker start -ai "$container"
+        ;;
+
+    serve) # Serve a directory of files over HTTP for quick local sharing
+        echo "http://$HOSTNAME:8080/"
+        exec $sudo docker run --rm -v "${1:-PWD}:/web" -p 8080:8080 -e DEBUG=true halverneus/static-file-server
+        ;;
+
+    sh) # Shell (with SSH agent forwarding)
+        opt=()
+        if [[ -n $SSH_AUTH_SOCK ]]; then
+            opt+=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
+        fi
+
+        image=${2:-ubuntu}
+        entrypoint=${3:-/bin/sh}
+        shift $(($# > 3 ? 3 : $#))
+
+        exec $sudo docker run --rm -it "${opt[@]}" "$@" --entrypoint "$entrypoint" "$image"
+        ;;
+
+esac
+
+exec $sudo docker "$@"

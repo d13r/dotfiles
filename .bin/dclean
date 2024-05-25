@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Clean up stopped Docker containers and dangling (untagged) images
-maybe-sudo-for-docker docker container prune
-maybe-sudo-for-docker docker image prune

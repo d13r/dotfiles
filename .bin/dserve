@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# Serve a directory of files over HTTP for quick local sharing
-# https://github.com/halverneus/static-file-server
-exec maybe-sudo-for-docker docker run -v "${1:-PWD}:/web" -p 80:8080 halverneus/static-file-server
