@@ -114,7 +114,7 @@ Connect via SSH:
 
 Set up guest OS:
 
-    setup-linux
+    setup linux
 
 Add it to dotfiles (optional):
 
