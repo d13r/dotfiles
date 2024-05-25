@@ -1,6 +1,0 @@
-Temporary workaround for Markdown crashing PhpStorm:
-- Help > Find Action
-- Registry...
-- Disable ide.browser.jcef.sandbox.enable
-
-https://youtrack.jetbrains.com/issue/WI-72219/PHPstorm-crash-while-open-markdown-file#focus=Comments-27-7283955.0-0
