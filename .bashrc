@@ -718,27 +718,35 @@ scratch() {
 setup() {
     local basename name
 
-    if [[ $# -eq 0 ]]; then
-        bin setup
-        return
+    # If a name is given, that's either a global script, subdirectory or repo URL
+    if [[ $# -gt 0 ]]; then
+        name=$1
+
+        # Global script
+        if [[ -f "$HOME/.bin/setup-$name" ]]; then
+            shift
+            "setup-$name" "$@"
+            return
+        fi
+
+        # Repo URL or existing subdirectory
+        basename=$(basename "$name")
+
+        if [[ ! -e $basename ]]; then
+            # The 'clone' helper supports various short URL formats
+            clone "$name" "$basename"
+            echo
+        fi
+
+        cd "$basename"
     fi
 
-    name=$1
-
-    if [[ -f "$HOME/.bin/setup-$name" ]]; then
-        shift
-        "setup-$name" "$@"
-        return
+    # If the setup script is in the normal place, call it directly
+    if [[ -x bin/setup ]]; then
+        bin/setup
     fi
 
-    basename=$(basename "$name")
-
-    if [[ ! -e $basename ]]; then
-        clone "$name"
-        echo
-    fi
-
-    cd "$basename"
+    # Otherwise use 'bin' to find it (it must be installed first)
     bin setup
 }
 
