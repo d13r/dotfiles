@@ -1358,6 +1358,13 @@ _dirhistory-push-past "$PWD"
 # Outputs
 #===============================================================================
 
+# Load SSH key when connecting to gate from mobile (no SSH agent available in
+# Termius free version - and the paid version is expensive for what I need!)
+if [[ -z ${SSH_AUTH_SOCK-} && ${HOSTNAME-} = gate?.maths.ox.ac.uk ]]; then
+    eval $(ssh-agent -s)
+    ssh-add
+fi
+
 # Automatic updates
 ~/.dotfiles/auto-update
 

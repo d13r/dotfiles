@@ -12,6 +12,7 @@
 
 !/.bash
 !/.bash_completion
+!/.bash_logout
 !/.bash_profile
 !/.bashrc
 !/.bashrc_remote
