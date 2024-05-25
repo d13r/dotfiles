@@ -35,7 +35,7 @@ autocmd VimEnter *
 \|  endif
 
 " Configure plugins
-call plug#begin('~/.vim/plugged')
+silent! call plug#begin('~/.vim/plugged')
     Plug 'ap/vim-css-color'
     Plug 'bogado/file-line'
     Plug 'chrisbra/csv.vim'
