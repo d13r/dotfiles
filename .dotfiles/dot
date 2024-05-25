@@ -94,10 +94,12 @@
         echo "Skipping unknown $file (MD5=$actual_md5)"
     }
 
-    # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 22.04 (Docker)
+    # ee35a240758f374832e809ae0ea4883a = Debian 10, 11, 12 (Docker)
+    # 1f98b8f3f3c8f8927eca945d59dcc1c6 = Ubuntu 20.04, 22.04, 24.04 (Docker)
     # 7030b200003d19cfe014fe70522f3d1a = Ubuntu 22.04 (Docker) + 'create-dave-user' script
     # cf277664b1771217d7006acdea006db1 = Ubuntu 22.04 (ISO - root user)
     delete_skeleton_file .bashrc \
+        ee35a240758f374832e809ae0ea4883a \
         1f98b8f3f3c8f8927eca945d59dcc1c6 \
         7030b200003d19cfe014fe70522f3d1a \
         cf277664b1771217d7006acdea006db1
