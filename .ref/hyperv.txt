@@ -72,7 +72,6 @@ Install Ubuntu:
     - Check layout and variant are set to "English (UK)"
 - Choose type of install
     - Leave the default selection, "Ubuntu Server"
-    - Tick "Search for third-party drivers" (optional)
 - Network connections
     - Select "eth1", then "Edit IPv4"
         - Select method "Manual"
@@ -84,8 +83,7 @@ Install Ubuntu:
 - Configure Ubuntu archive mirror
     - Leave the default value
 - Guided storage configuration
-    - Select "Use An Entire Disk"
-    - Select "Done"
+    - Leave the default selection, "Use An Entire Disk"
 - Storage configuration
     - Change "ubuntu-lv" to use all available space (just enter "999")
     - Select "Done", then "Continue"
