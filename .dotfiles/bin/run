@@ -2,20 +2,17 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-opt=()
-if [[ -n $SSH_AUTH_SOCK ]]; then
-    opt=(--volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent)
-fi
-
+# Parse arguments
 tmux=true
-user=test
+user='test'
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -d | --debug)
             tmux=false
             ;;
         -r | --root)
-            user=root
+            user='root'
             ;;
         *)
             break;
@@ -24,11 +21,19 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-bin/_build "$@"
+# Build image
+base=${1-ubuntu:latest}
+maybe-sudo-for-docker docker build --build-arg base="$base" -t dotfiles .
+
+# Run it
+opts=(-it --rm)
+if [[ -n $SSH_AUTH_SOCK ]]; then
+    opts+=(--volume "$SSH_AUTH_SOCK:/tmp/ssh-agent" --env 'SSH_AUTH_SOCK=/tmp/ssh-agent')
+fi
 
 if $tmux; then
-    exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm --entrypoint /usr/bin/tmux -u "$user" dotfiles -2 new -A -s "$user"
+    exec maybe-sudo-for-docker docker run "${opts[@]}" --entrypoint /usr/bin/tmux -u "$user" dotfiles -2 new -A -s "$user"
 else
-    exec maybe-sudo-for-docker docker run "${opt[@]}" -it --rm dotfiles
+    exec maybe-sudo-for-docker docker run "${opts[@]}" dotfiles
 fi
 

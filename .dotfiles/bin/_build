@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-cd "$(dirname "$0")/.."
-
-base=${1-ubuntu:latest}
-
-exec maybe-sudo-for-docker docker build --build-arg base="$base" -t dotfiles .
