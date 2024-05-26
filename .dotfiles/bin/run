@@ -3,27 +3,33 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 # Parse arguments
-tmux=true
+args=$(getopt -n "$(basename "$0")" -o 'rt' -l 'root,tmux' -- "$@")
+eval set -- "$args"
+
+tmux=false
 user='test'
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -d | --debug)
-            tmux=false
-            ;;
-        -r | --root)
-            user='root'
-            ;;
-        *)
-            break;
+        -r | --root) user='root'; shift ;;
+        -t | --tmux) tmux=true; shift ;;
+        --) shift; break ;;
     esac
-
-    shift
 done
 
 # Build image
 base=${1-ubuntu:latest}
-maybe-sudo-for-docker docker build --build-arg base="$base" -t dotfiles .
+
+case "$base" in
+    *alpine*)
+        family='alpine' ;;
+    *almalinux* | *amazonlinux* | *fedora* | *oraclelinux* | *redhat* | *rockylinux* | sl | sl:*)
+        family='redhat' ;;
+    *)
+        family='debian' ;;
+esac
+
+maybe-sudo-for-docker docker build --build-arg base="$base" --target "$family" -t dotfiles .
 
 # Run it
 opts=(-it --rm -u "$user")

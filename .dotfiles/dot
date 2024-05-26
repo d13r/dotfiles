@@ -76,31 +76,59 @@
 
     delete_skeleton_file() {
         local file="$1"
-        local skel="/etc/skel/$1"
-        local force="${2-false}"
 
         if [[ ! -f $file ]]; then
             return
         fi
 
-        if $force || [[ ! -f $skel ]]; then
-            echo "Skipping $file (missing from $skel)"
+        # Always delete
+        if [[ ${1-} = '--force' ]]; then
+            rm -f "$file"
+            echo "Deleted $file"
             return
         fi
 
-        if $force || [[ "$(cat "$file")" != "$(cat "$skel")" ]]; then
-            echo "Skipping $file (different from $skel)"
+        # Delete if identical to the skeleton file
+        local skel="/etc/skel/$file"
+
+        if [[ -f $skel && "$(cat "$file")" = "$(cat "$skel")" ]]; then
+            rm -f "$file"
+            echo "Deleted $file (identical to $skel)"
             return
         fi
 
-        rm -f "$file"
-        echo "Deleted $file (identical to $skel)"
+        # Delete if it's a known file (mainly for the root user as it doesn't use the skeleton files)
+        shift
+
+        actual_md5=$(md5sum "$file" | cut -d' ' -f1)
+
+        for allowed_md5; do
+            if [[ "$allowed_md5" = "$actual_md5" ]]; then
+                rm -f "$file"
+                echo "Deleted $file (MD5=$actual_md5)"
+                return
+            fi
+        done
+
+        echo "Skipping unknown $file (MD5=$actual_md5)"
     }
 
-    delete_skeleton_file .bashrc
+    # c36f10fd0ff59c3bcce088d7a7a6c410 = Red Hat root user (8)
+    # 5a7c4ac3b2c83961ddabb40995e3c301 = Fedora root user (38), Red Hat root user (9)
+    # cf277664b1771217d7006acdea006db1 = Ubuntu root user (20.04, 22.04, 24.04)
+    delete_skeleton_file .bashrc \
+        c36f10fd0ff59c3bcce088d7a7a6c410 \
+        5a7c4ac3b2c83961ddabb40995e3c301 \
+        cf277664b1771217d7006acdea006db1
+
+    # 5fe6b8bf98bb94c55447ae48fb3202d4 = Fedora root user (39, 40)
+    # 3e8337f44f84b298a8a99869ae8ca76a = Red Hat root user (8)
+    delete_skeleton_file .bash_profile \
+        5fe6b8bf98bb94c55447ae48fb3202d4 \
+        3e8337f44f84b298a8a99869ae8ca76a
+
     delete_skeleton_file .bash_logout
-    delete_skeleton_file .bash_profile
-    delete_skeleton_file .sudo_as_admin_successful true
+    delete_skeleton_file .sudo_as_admin_successful --force
 
     # Update the working directory
     # Delete or move any conflicting files (usually .bashrc and .bash_logout)

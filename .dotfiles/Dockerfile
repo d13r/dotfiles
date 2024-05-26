@@ -1,46 +1,98 @@
-# Any version of Debian/Ubuntu should work
-# (Perhaps I'll make versions for other operating systems in the future...)
 ARG base=ubuntu
-FROM ${base}
 
-# Set the timezone
+#===============================================================================
+# Debian-based OS (inc. Ubuntu)
+#===============================================================================
+FROM ${base} AS debian
+
+ENV LANG en_GB.UTF-8
 ENV TZ Europe/London
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # Install dependencies
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
-        ca-certificates \
         git \
-        locales-all \
         ssh \
         sudo \
         tmux \
-        vim \
-        wget
+        vim
 
 # Configure sudo to allow testing 'agi' (apt-get install) and friends
-ADD sudoers /etc/sudoers
+ADD sudoers /etc/sudoers.d/test
 
 # Create a non-root user
-RUN useradd \
-    --create-home --home-dir /home/test \
-    --shell /bin/bash \
-    --groups sudo \
-    test
+RUN useradd --create-home --shell=/bin/bash test
 
-# The first time Bash is run, automatically run the config file
+# The first time Bash is run, automatically run the setup script
 RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bash.bashrc
 
-# Copy the dot script
+# Copy the setup script to each user account
 COPY dot /root/dot
 
 USER test
 COPY dot /home/test/dot
 
-ENV LANG en_GB.UTF-8
+#===============================================================================
+# Red Hat-based OS
+#===============================================================================
+FROM ${base} AS redhat
 
-# Run Bash when the image is run, starting in the current user's home directory
-# (either /root or /home/test depending on the -u option)
-WORKDIR /home/test
-ENTRYPOINT cd && bash
+ENV LANG en_GB.UTF-8
+ENV TZ Europe/London
+
+# Install dependencies
+RUN yum install -y \
+    git \
+    tmux \
+    vim
+
+## Configure sudo to allow testing 'agi' (apt-get install) and friends
+ADD sudoers /etc/sudoers.d/test
+
+# Create a non-root user
+RUN useradd test
+
+# The first time Bash is run, automatically run the setup script
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bashrc
+
+# Copy the setup script to each user account
+COPY dot /root/dot
+
+USER test
+COPY dot /home/test/dot
+
+#===============================================================================
+# Alpine
+#===============================================================================
+FROM ${base} AS alpine
+
+ENV LANG en_GB.UTF-8
+ENV TZ Europe/London
+
+# Install dependencies
+RUN apk update && apk add \
+    bash \
+    git \
+    openssh \
+    shadow \
+    sudo \
+    tmux \
+    vim
+
+# Configure sudo to allow testing 'agi' (apt-get install) and friends
+ADD sudoers /etc/sudoers.d/test
+
+# Change the default root shell from ash to bash
+RUN chsh root -s /bin/bash
+
+# Create a non-root user
+RUN adduser --disabled-password --shell=/bin/bash test
+
+# The first time Bash is run, automatically run the setup script
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bash/bashrc
+
+# Copy the setup script to each user account
+COPY dot /root/dot
+
+USER test
+COPY dot /home/test/dot
