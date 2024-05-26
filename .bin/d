@@ -9,10 +9,20 @@ fi
 
 case ${1-} in
 
+    c) # Container
+        shift
+        exec $sudo docker container "$@"
+        ;;
+
     clean) # Delete stopped Docker containers and dangling (untagged) images
         $sudo docker container prune
         $sudo docker image prune
         exit
+        ;;
+
+    i) # Image
+        shift
+        exec $sudo docker image "$@"
         ;;
 
     kill|stop)
