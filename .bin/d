@@ -7,7 +7,7 @@ if [[ $# -eq 0 ]] && is-executable lazydocker; then
     exec $sudo lazydocker
 fi
 
-case $1 in
+case ${1-} in
 
     clean) # Delete stopped Docker containers and dangling (untagged) images
         $sudo docker container prune
