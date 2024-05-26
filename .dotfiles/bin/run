@@ -26,13 +26,13 @@ base=${1-ubuntu:latest}
 maybe-sudo-for-docker docker build --build-arg base="$base" -t dotfiles .
 
 # Run it
-opts=(-it --rm)
+opts=(-it --rm -u "$user")
 if [[ -n $SSH_AUTH_SOCK ]]; then
     opts+=(--volume "$SSH_AUTH_SOCK:/tmp/ssh-agent" --env 'SSH_AUTH_SOCK=/tmp/ssh-agent')
 fi
 
 if $tmux; then
-    exec maybe-sudo-for-docker docker run "${opts[@]}" --entrypoint /usr/bin/tmux -u "$user" dotfiles -2 new -A -s "$user"
+    exec maybe-sudo-for-docker docker run "${opts[@]}" --entrypoint /usr/bin/tmux dotfiles -2 new -A -s "$user"
 else
     exec maybe-sudo-for-docker docker run "${opts[@]}" dotfiles
 fi
