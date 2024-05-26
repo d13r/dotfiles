@@ -1220,7 +1220,10 @@ shopt -s no_empty_cmd_completion
 shopt -u sourcepath
 
 stty -ixon # Disable Ctrl-S
-tabs -4
+
+if is-executable tabs; then
+    tabs -4
+fi
 
 
 #---------------------------------------
