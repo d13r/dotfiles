@@ -55,7 +55,7 @@ Or create it manually:
       [1]: https://ubuntu.com/download/server
     - Click Finish
 - Right-click the machine, then click Settings
-    - In Add Hardware, select "Network Adapter" and click "Add". Set Virtual Switch to "Hyper-V Inaternal Network"
+    - In Add Hardware, select "Network Adapter" and click "Add". Set Virtual Switch to "Hyper-V Internal Network"
     - In Security, select "Microsoft UEFI Certificate Authority" (or untick "Enable Secure Boot")
     - In Processor, set the number of processors
     - Click OK
