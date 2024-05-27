@@ -527,13 +527,16 @@ hackit() {
 man() {
     # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
     # https://unix.stackexchange.com/questions/119/colors-in-man-pages/147#comment488743_147
-    LESS_TERMCAP_mb=$'\e[91m' \
+    # mb=start blink, mb=start bold, me=end blink/bold
+    # us=start underline, ue=end underline
+    # so=start standout (file information footer), se=end standout
+    LESS_TERMCAP_mb=$'\e[91;5m' \
     LESS_TERMCAP_md=$'\e[96m' \
     LESS_TERMCAP_me=$'\e[0m' \
-    LESS_TERMCAP_so=$'\e[93;44m' \
-    LESS_TERMCAP_se=$'\e[0m' \
     LESS_TERMCAP_us=$'\e[97;4m' \
     LESS_TERMCAP_ue=$'\e[0m' \
+    LESS_TERMCAP_so=$'\e[37;100m' \
+    LESS_TERMCAP_se=$'\e[0m' \
     GROFF_NO_SGR=1 \
         command man "$@"
 }
