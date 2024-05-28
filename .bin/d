@@ -14,9 +14,10 @@ case ${1-} in
         exec $sudo docker container "$@"
         ;;
 
-    clean) # Delete stopped Docker containers and dangling (untagged) images
+    clean|prune) # Prune all caches
         $sudo docker container prune
         $sudo docker image prune
+        $sudo docker builder prune
         exit
         ;;
 
