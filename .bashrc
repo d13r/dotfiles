@@ -334,7 +334,7 @@ cw() {
     elif [[ -d /var/www ]]; then
         c /var/www # Ubuntu
     elif is-wsl; then
-        c "$(wsl-mydocs-path)" # WSL
+        c "$(wsl-documents-path)" # WSL
     else
         echo 'web root not found' >&2
     fi

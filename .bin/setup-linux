@@ -123,7 +123,10 @@ fi
 # WSL symlinks
 if is-wsl; then
     if ask 'Create symlinks to Windows folders?' Y; then
-        if path=$(wsl-mydocs-path 2>/dev/null); then
+        if path=$(wsl-desktop-path 2>/dev/null); then
+            ln -nsfv "$path" Desktop
+        fi
+        if path=$(wsl-documents-path 2>/dev/null); then
             ln -nsfv "$path" Documents
         fi
         if path=$(wsl-dropbox-path 2>/dev/null); then
