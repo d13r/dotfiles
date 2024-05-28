@@ -9,7 +9,7 @@ Install Hyper-V:
 - Click OK
 - Reboot
 
- Add a second network interface:
+Add a second network interface:
 
 - Open Hyper-V Manager.
 - Go to Action > Virtual Switch Manager.
@@ -23,11 +23,8 @@ Install Hyper-V:
 - Enter the IP "192.168.5.1"
 - Click OK, then Close
 
-Run PowerShell as an administrator, then run:
-
-    Set-NetIPInterface -ifAlias "vEthernet (*)" -Forwarding Enabled
-
-    Source: https://github.com/microsoft/WSL/issues/4288#issuecomment-778790363
+Run:
+    wsl-enable-forwarding
 
 ================================================================================
  Create a new VM
