@@ -143,8 +143,6 @@ alias dc='docker-compose' # See function below
 alias dcr='drush cr'
 alias dive="$sudo_for_docker dive"
 alias docker="$sudo_for_docker docker"
-alias dr="$sudo_for_docker docker run"
-alias dri="$sudo_for_docker docker run -it --rm"
 
 alias gcm='g co master'
 alias grep='grep-less'

@@ -46,6 +46,11 @@ case ${1-} in
         fi
         ;;
 
+    r) # Run
+        shift
+        exec $sudo docker run "$@"
+        ;;
+
     resume)
         # https://stackoverflow.com/a/37886136/167815
         if [[ $# -eq 1 ]]; then
@@ -59,6 +64,11 @@ case ${1-} in
         fi
 
         exec $sudo docker start -ai "$container"
+        ;;
+
+    ri) # Run interactive
+        shift
+        exec $sudo docker run -it --rm "$@"
         ;;
 
     serve) # Serve a directory of files over HTTP for quick local sharing
