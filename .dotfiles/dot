@@ -160,18 +160,25 @@
         fi
         if [[ -n $file ]] && [[ $file != $result ]]; then
 
-            read -p "Backup $file? [y/N] " answer
-            case $answer in
-                y*|Y*)
-                    dest="$file.orig"
-                    rm -f "$dest"
-                    mv "$file" "$dest"
-                    echo "  Moved to $dest"
-                    ;;
-                *)
-                    rm -f "$file"
-                    ;;
-            esac
+            echo -n "Backup $file? [y/N] "
+            while true; do
+                read -rsn1 answer
+                case $answer in
+                    y*|Y*)
+                        echo Y
+                        dest="$file.orig"
+                        rm -f "$dest"
+                        mv "$file" "$dest"
+                        echo "  Moved to $dest"
+                        break
+                        ;;
+                    n*|N*|'')
+                        echo N
+                        rm -f "$file"
+                        break
+                        ;;
+                esac
+            done
 
         else
 
