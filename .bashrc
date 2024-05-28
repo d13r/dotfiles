@@ -584,7 +584,7 @@ mv() {
         command file "$@"
     else
         read -p "Rename to: " -ei "$1" newfilename &&
-            [ -n "$newfilename" ] &&
+            [[ -n $newfilename ]] &&
             mv -iv "$1" "$newfilename"
     fi
 }
