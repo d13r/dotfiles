@@ -24,20 +24,6 @@ get-name() {
     name=$1
 }
 
-input() {
-    local variable=$1
-    local prompt=$2
-    local default=$3
-
-    if $quick; then
-        REPLY=
-    else
-        read -p "$prompt [$default]: "
-    fi
-
-    eval "$variable=\${REPLY:-\$default}"
-}
-
 case "${1:-}" in
 
     '') # Help
@@ -83,11 +69,11 @@ case "${1:-}" in
             ip="$ip/24"
         fi
 
-        input cpus 'CPUs' 4
-        input disk 'Disk (GB)' 20
-        input memory 'Memory (GB)' 4
-        input image 'Image' lts
-        input ip 'Static IP/CIDR' "$ip"
+        cpus=$(input 'CPUs' 4)
+        disk=$(input 'Disk (GB)' 20)
+        memory=$(input 'Memory (GB)' 4)
+        image=$(input 'Image' lts)
+        ip=$(input 'Static IP/CIDR' "$ip")
 
         echo
 

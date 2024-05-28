@@ -9,7 +9,7 @@ echo
 
 username=''
 while [[ -z "$username" ]]; do
-    read -rp 'Enter SMTP username ("AKIA..."): ' username
+    username=$(input 'Enter SMTP username ("AKIA...")')
 done
 
 password=''

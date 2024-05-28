@@ -34,8 +34,7 @@ if ! is-wsl; then
     fi
 
     if ask "Change the hostname from '$HOSTNAME'?" $default; then
-        read -p 'New hostname: ' hostname
-        set-hostname "$hostname"
+        set-hostname "$(input 'New hostname' "${HOSTNAME/.*}.djm.me")"
     fi
 
     echo
@@ -44,11 +43,7 @@ fi
 # Swap
 if ! is-wsl && [[ -z $(swapon -s) ]]; then
     if ask 'Create swap file?' Y; then
-        read -p 'Size in GiB [2]: ' size_gb
-        if [[ -z $size_gb ]]; then
-            size_gb=2
-        fi
-        resize-swap "${size_gb}"
+        setup-swap "$(input 'Size in GiB' 2)"
     fi
 
     echo

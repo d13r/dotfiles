@@ -115,7 +115,7 @@ fi
 # Prompt for list of domains
 hostname=$(hostname -f)
 
-default_domains="$(
+domains="$(
     (
         # Try to determine what's in the existing certificate, if there is one
         sudo cat /etc/letsencrypt/live/default/cert.pem 2>/dev/null \
@@ -125,15 +125,11 @@ default_domains="$(
     ) 2>/dev/null || true
 )"
 
-if [[ -z $default_domains ]]; then
-    default_domains="$hostname, *.$hostname"
-fi
-
-read -rp "Enter domain names [$default_domains]: " domains
-
 if [[ -z $domains ]]; then
-    domains=$default_domains
+    domains="$hostname, *.$hostname"
 fi
+
+domains=$(input 'Enter domain names' "$domains")
 
 echo
 

@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+prompt=${1-}
+default=${2-}
+
+if [[ -z $prompt || $prompt = '-h' || $prompt = '--help' ]]; then
+    echo "Usage: $(basename "$0") <prompt> [default]"
+    exit
+fi
+
+if [[ -n $default ]]; then
+    echo -n "$prompt [$default]: " >/dev/tty
+else
+    echo -n "$prompt: " >/dev/tty
+fi
+
+read -r
+
+if [[ -n $REPLY ]]; then
+    echo $REPLY
+elif [[ -n $default ]]; then
+    echo $default
+fi
