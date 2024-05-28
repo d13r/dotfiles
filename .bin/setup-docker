@@ -60,13 +60,13 @@ enable-universe-repository() {
 
 install-docker() {
     style lcyan,bold 'Installing Docker...'
-    maybe-sudo apt install -y docker.io docker-compose docker-buildx
+    maybe-sudo apt install -y docker.io docker-compose docker-compose-v2 docker-buildx
     echo
 }
 
 uninstall-docker() {
     style lcyan,bold 'Uninstalling Docker...'
-    maybe-sudo apt purge --auto-remove docker.io docker-compose docker-buildx
+    maybe-sudo apt purge --auto-remove docker.io docker-compose docker-compose-v2 docker-buildx
     echo
 }
 
