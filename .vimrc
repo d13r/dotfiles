@@ -43,6 +43,7 @@ silent! call plug#begin('~/.vim/plugged')
     Plug 'garbas/vim-snipmate'
     Plug 'editorconfig/editorconfig-vim'
     Plug 'itchyny/lightline.vim'
+    Plug 'lumiliet/vim-twig'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
     Plug 'NoahTheDuke/vim-just'
     Plug 'posva/vim-vue'
