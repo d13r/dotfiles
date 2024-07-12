@@ -33,9 +33,9 @@ print_tmux_status() {
 
 print_quick_reference() {
     style yellow,bold '  Quick Reference'
-    sed -n 's/^#|\s*/  /p' ~/.ssh/config
+    sed -n 's/^#|\s\?/  /p' ~/.ssh/config
     if [[ -f ~/.ssh/config_local ]]; then
-        sed -n 's/^#|\s*/  /p' ~/.ssh/config_local
+        sed -n 's/^#|\s\?/  /p' ~/.ssh/config_local
     fi
 }
 
