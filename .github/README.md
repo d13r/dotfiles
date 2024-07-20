@@ -56,11 +56,12 @@ Click Start, search for `features` and select "Turn Windows features on or off".
 
 [Install Ubuntu from the Microsoft Store](https://apps.microsoft.com/store/detail/ubuntu/9PDXGNCFSCZV). Run it, wait while it completes setup, set a username and password when prompted, then quit.
 
-Disable WSLg by putting this in `c:\Users\dave\.wslconfig` ([source](https://github.com/microsoft/wslg/discussions/523#discussioncomment-1505900)):
+Put this in `c:\Users\dave\.wslconfig`:
 
 ```ini
 [wsl2]
 guiApplications=false
+networkingMode=mirrored
 ```
 
 [Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
