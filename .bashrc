@@ -145,6 +145,7 @@ alias dive="$sudo_for_docker dive"
 alias docker="$sudo_for_docker docker"
 
 alias gcm='g co master'
+alias goland='_idea goland'
 alias grep='grep-less'
 alias groupadd="$sudo groupadd"
 alias groupdel="$sudo groupdel"
@@ -169,6 +170,7 @@ fi
 
 alias l="ls $ls_common -l"
 alias la="ls $ls_common -lA"
+alias land='_idea goland'
 alias ll="ls $ls_common -l"
 alias ls="ls $ls_common"
 alias lsa="ls $ls_common -A"
@@ -182,6 +184,7 @@ alias php5dismod="$sudo php5dismod"
 alias php5enmod="$sudo php5enmod"
 alias phpdismod="$sudo phpdismod"
 alias phpenmod="$sudo phpenmod"
+alias phpstorm='_idea phpstorm'
 alias poweroff="$sudo poweroff"
 alias pow="$sudo poweroff"
 alias pu='phpunit'
@@ -198,7 +201,7 @@ alias service="$sudo service"
 alias shutdown="$sudo poweroff"
 alias sshak='ssh -o StrictHostKeyChecking=accept-new'
 alias sshstop='ssh -O stop'
-alias storm='phpstorm'
+alias storm='_idea phpstorm'
 alias sudo='sudo ' # Expand aliases
 alias sw='sw ' # Expand aliases
 
@@ -611,32 +614,6 @@ php() {
     fi
 }
 
-phpstorm() {
-    local args=()
-    local path
-
-    if [[ $# -eq 0 ]] && path=$(findup -d .idea); then
-
-        # Automatically launch the current project
-        if is-wsl; then
-            path=$(wslpath -aw "$path" | sed 's/\\\\wsl.localhost\\/\\\\wsl$\\/')
-        fi
-
-        args=($path)
-
-    elif [[ -d ${1:-} ]] && is-wsl; then
-
-        # Convert the path to WSL format
-        path=$(wslpath -aw "$1" | sed 's/\\\\wsl.localhost\\/\\\\wsl$\\/')
-        shift
-        args=($path)
-
-    fi
-
-    # Run PhpStorm in the background
-    command phpstorm "${args[@]}" "$@" &>> ~/.cache/phpstorm.log &
-}
-
 prevd() {
     local dir=$PWD
 
@@ -970,6 +947,35 @@ _find-wp-content() {
         echo "Cannot find wp-content/ directory" >&2
         return 1
     fi
+}
+
+_idea() {
+    local ide=$1
+    local args=()
+    local path
+
+    shift
+
+    if [[ $# -eq 0 ]] && path=$(findup -d .idea); then
+
+        # Automatically launch the current project
+        if is-wsl; then
+            path=$(wslpath -aw "$path" | sed 's/\\\\wsl.localhost\\/\\\\wsl$\\/')
+        fi
+
+        args=($path)
+
+    elif [[ -d ${1:-} ]] && is-wsl; then
+
+        # Convert the path to WSL format
+        path=$(wslpath -aw "$1" | sed 's/\\\\wsl.localhost\\/\\\\wsl$\\/')
+        shift
+        args=($path)
+
+    fi
+
+    # Run the IDE in the background
+    command $ide "${args[@]}" "$@" &>> "$HOME/.cache/$ide.log" &
 }
 
 _ls-current-directory() {

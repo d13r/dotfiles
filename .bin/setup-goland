@@ -7,9 +7,10 @@ sudo apt install -y \
     chromium-browser \
     default-jre \
     fonts-firacode \
+    golang-go \
     libgbm-dev \
     libgdm-dev \
     openjfx
 
-# Install PhpStorm
-sudo snap install --classic phpstorm
+# Install GoLand
+sudo snap install --classic goland
