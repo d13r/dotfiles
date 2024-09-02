@@ -127,6 +127,7 @@ packages=(
     "php${version}-readline"
     "php${version}-sqlite3"
     "php${version}-xml"
+    "php${version}-zip"
 )
 
 if $install_fpm; then
