@@ -125,6 +125,7 @@ packages=(
     "php${version}-mysql"
     "php${version}-opcache"
     "php${version}-readline"
+    "php${version}-sqlite3"
     "php${version}-xml"
 )
 
