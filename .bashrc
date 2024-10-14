@@ -138,7 +138,7 @@ alias cy='cypress'
 
 alias dpkg-reconfigure="$sudo dpkg-reconfigure"
 
-alias db="$sudo_for_docker docker build"
+alias db='dbeaver'
 alias dc='docker-compose' # See function below
 alias dcr='drush cr'
 alias dive="$sudo_for_docker dive"

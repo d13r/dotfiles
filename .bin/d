@@ -9,6 +9,10 @@ fi
 
 case ${1-} in
 
+    b) # Build
+        shift
+        exec $sudo docker build "$@"
+
     c) # Container
         shift
         exec $sudo docker container "$@"
