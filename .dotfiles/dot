@@ -76,6 +76,7 @@
 
     delete_skeleton_file() {
         local file="$1"
+        shift
 
         if [[ ! -f $file ]]; then
             return
@@ -98,8 +99,6 @@
         fi
 
         # Delete if it's a known file (mainly for the root user as it doesn't use the skeleton files)
-        shift
-
         actual_md5=$(md5sum "$file" | cut -d' ' -f1)
 
         for allowed_md5; do
