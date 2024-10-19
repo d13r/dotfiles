@@ -76,13 +76,11 @@ fi
 echo
 
 # Set permissions
-style lcyan,bold 'Setting permissions on /var/www/ and /etc/apache2/sites-enabled/...'
-# Note: I put config files directly into sites-enabled, not sites-available, because it's so
-# rare that I want to be able to disable a site, so the extra step isn't really necessary
-sudo chgrp -R www-data /var/www/ /etc/apache2/sites-enabled/
+style lcyan,bold 'Setting permissions on /var/www/ and /etc/apache2/sites-available/...'
+sudo chgrp -R www-data /var/www/ /etc/apache2/sites-available/
 sudo chmod -R ug+rwX,o-rwx /var/www/
-sudo chmod -R ug+rwX /etc/apache2/sites-enabled/
-sudo find /var/www/ /etc/apache2/sites-enabled/ -type d -exec chmod g+s '{}' +
+sudo chmod -R ug+rwX /etc/apache2/sites-available/
+sudo find /var/www/ /etc/apache2/sites-available/ -type d -exec chmod g+s '{}' +
 echo
 
 # Restart Apache

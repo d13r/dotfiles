@@ -129,7 +129,7 @@ if is-executable batcat && ! is-executable bat; then
     alias bat='batcat'
 fi
 
-alias cas='c /etc/apache2/sites-enabled'
+alias cas='c /etc/apache2/sites-available'
 alias cat="$HOME/.bin/bat-or-cat"
 alias certbot="$sudo certbot"
 alias chmox='chmod' # Common typo
