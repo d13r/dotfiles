@@ -725,6 +725,7 @@ setup() {
     # If the setup script is in the normal place, call it directly
     if [[ -x bin/setup ]]; then
         bin/setup
+        return
     fi
 
     # Otherwise use 'bin' to find it (it must be installed first)
