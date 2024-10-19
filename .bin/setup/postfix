@@ -70,5 +70,7 @@ echo
 echo 'Sending test email to root...'
 echo "Test from the 'setup postfix' script." | mail -s "Test root@$HOSTNAME" root
 sleep 2
-echo
-tail -10 /var/log/mail.log
+if [[ -f /var/log/mail.log ]]; then
+    echo
+    tail -10 /var/log/mail.log
+fi
