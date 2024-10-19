@@ -126,6 +126,12 @@ fi
 # SSH agent
 #---------------------------------------
 
+if ! is-executable curl; then
+    echo
+    style lblue 'Installing curl...'
+    sudo apt-get install curl
+fi
+
 if is-wsl 1; then
 
     # wsl-ssh-pageant - https://github.com/benpye/wsl-ssh-pageant
