@@ -60,7 +60,7 @@ sudo a2disconf other-vhosts-access-log
 sudo-write /etc/apache2/conf-enabled/z_dave-common.conf <~/.templates/apache/common.conf
 
 if [[ ! -f /etc/apache2/conf-enabled/z_dave-ssl.conf ]]; then
-    # This will be overwritten by 'setup-certbot'
+    # This will be overwritten by 'setup certbot'
     sudo-write /etc/apache2/conf-enabled/z_dave-ssl.conf <~/.templates/apache/ssl-snakeoil.conf
 fi
 

@@ -15,7 +15,7 @@ wget djm.me/dot
 If it is a work machine, override my name and email address:
 
 ```bash
-setup-identity dave.miller@maths.ox.ac.uk 'Dave Miller'
+setup identity dave.miller@maths.ox.ac.uk 'Dave Miller'
 ```
 
 ### Custom prompt message

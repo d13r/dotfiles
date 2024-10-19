@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-    echo 'Usage: setup-identity <email> [name]' >&2
+    echo 'Usage: setup identity <email> [name]' >&2
     exit 1
 fi
 

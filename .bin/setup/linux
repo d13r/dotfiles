@@ -4,14 +4,14 @@ set -euo pipefail
 # Sudo
 if is-executable sudo && [[ -d /etc/sudoers.d && ! -f /etc/sudoers.d/dave ]]; then
     if ask 'Configure sudo to always set $HOME (for Vim)?' Y; then
-        setup-sudo
+        "$HOME/.bin/setup/sudo"
     fi
     echo
 fi
 
 # Locales
 if ask 'Generate en_GB and en_US locales?' Y; then
-    setup-locales
+    "$HOME/.bin/setup/locales"
 fi
 echo
 
@@ -43,7 +43,7 @@ fi
 # Swap
 if ! is-wsl && [[ -z $(swapon -s) ]]; then
     if ask 'Create swap file?' Y; then
-        setup-swap "$(input 'Size in GiB' 2)"
+        "$HOME/.bin/setup/swap" "$(input 'Size in GiB' 2)"
     fi
 
     echo
@@ -72,9 +72,9 @@ echo
 # Firewall
 if ! is-wsl && ! is-pve; then
     if ask 'Enable firewall (UFW)?' Y; then
-        setup-firewall
+        "$HOME/.bin/setup/firewall"
     elif ask 'Enable Fail2ban?' Y; then
-        setup-fail2ban
+        "$HOME/.bin/setup/fail2ban"
     fi
     echo
 fi
@@ -82,7 +82,7 @@ fi
 # Bin CLI
 if ! is-executable bin; then
     if ask 'Install Bin CLI?' Y; then
-        setup-bin
+        "$HOME/.bin/setup/bin"
     fi
     echo
 fi
@@ -107,7 +107,7 @@ if ! is-executable delta || ! is-executable lazygit; then
     if is-root-user; then
         echo 'Cannot install Homebrew as root - skipping Lazygit, Delta'
     elif ask 'Install Lazygit and Delta (via Homebrew)?'; then
-        setup-git-utilities
+        "$HOME/.bin/setup/git-utilities"
     fi
     echo
 fi
@@ -115,7 +115,7 @@ fi
 # Local directory
 if ! is-wsl && [[ ! -d /local ]]; then
     if ask 'Create /local directory?' Y; then
-        setup-local
+        "$HOME/.bin/setup/local"
     fi
     echo
 fi

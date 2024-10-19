@@ -90,7 +90,7 @@ remove-user-from-docker-group() {
 
 check-for-homebrew() {
     if ! is-executable brew; then
-        style lred "Homebrew is not installed (run 'setup-brew' to install it)"
+        style lred "Homebrew is not installed (run 'setup brew' to install it)"
         return 1
     fi
 }

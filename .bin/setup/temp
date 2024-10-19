@@ -7,7 +7,7 @@ if [[ ! -d /etc/apache2/sites-enabled ]]; then
 fi
 
 if [[ ! -d /local ]]; then
-    setup-local
+    "$HOME/.bin/setup/local"
 fi
 
 mkdir -p /local/temp/public

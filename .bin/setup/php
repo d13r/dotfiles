@@ -78,7 +78,7 @@ if is-executable a2enconf; then
     install_fpm=true
 else
     install_fpm=false
-    style yellow "WARNING: Apache is not installed, so PHP-FPM will be skipped. Run 'setup-apache' first if needed."
+    style yellow "WARNING: Apache is not installed, so PHP-FPM will be skipped. Run 'setup apache' first if needed."
     echo
 fi
 

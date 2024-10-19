@@ -704,9 +704,9 @@ setup() {
         name=$1
 
         # Global script
-        if [[ -f "$HOME/.bin/setup-$name" ]]; then
+        if [[ -f "$HOME/.bin/setup/$name" ]]; then
             shift
-            "setup-$name" "$@"
+            "$HOME/.bin/setup/$name" "$@"
             return
         fi
 

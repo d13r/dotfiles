@@ -27,7 +27,7 @@ while true; do
     esac
 done
 
-setup-brew --auto
+"$HOME/.bin/setup/brew" --auto
 
 if $revert; then
     /home/linuxbrew/.linuxbrew/bin/brew uninstall git-delta jesseduffield/lazygit/lazygit || true
