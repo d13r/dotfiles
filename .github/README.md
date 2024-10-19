@@ -54,7 +54,7 @@ Click Start, search for `features` and select "Turn Windows features on or off".
 
 [Install Windows Terminal from the Microsoft Store](https://www.microsoft.com/en-gb/p/windows-terminal/9n0dx20hk701#activetab=pivot:overviewtab).
 
-[Install Ubuntu from the Microsoft Store](https://apps.microsoft.com/store/detail/ubuntu/9PDXGNCFSCZV). Run it, wait while it completes setup, set a username and password when prompted, then quit.
+[Install Debian from the Microsoft Store](https://www.microsoft.com/store/productId/9MSVKQC78PK6?ocid=pdpshare). Run it, wait while it completes setup, set a username and password when prompted, then quit.
 
 Put this in `c:\Users\dave\.wslconfig`:
 
@@ -66,18 +66,31 @@ networkingMode=mirrored
 
 [Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
 
-Launch Windows Terminal from the start menu, click the tab dropdown menu, then Ubuntu.
+Launch Windows Terminal from the start menu, click the tab dropdown menu, then Debian.
 
 Enter a username and password when prompted.
 
-Then install dotfiles as normal.
-
-### Reinstalling Ubuntu on WSL
-
-To completely reinstall Ubuntu on WSL, close WSL, open PowerShell and run:
+Then install dotfiles:
 
 ```bash
-wsl --unregister Ubuntu
+sudo apt update
+sudo apt install wget
+wget djm.me/dot
+. dot
 ```
 
-Then re-launch Ubuntu from the Start Menu - it will take a few minutes to reinstall.
+When the installation completes, it will close the terminal. Run Debian again, then install various tools (including Tmux):
+
+```bash
+setup linux
+```
+
+### Reinstalling Debian on WSL
+
+To completely reinstall Debian on WSL, close WSL, open PowerShell and run:
+
+```bash
+wsl --unregister Debian
+```
+
+Then re-launch Debian from the Start Menu - it will take a few minutes to reinstall.
