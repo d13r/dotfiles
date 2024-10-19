@@ -49,6 +49,7 @@ END
 
     echo
     style lblue 'Restarting WSL (you will need to reconnect manually)...'
+    sleep 1
     wsl.exe --terminate "$WSL_DISTRO_NAME"
 fi
 
