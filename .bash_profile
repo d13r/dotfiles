@@ -126,7 +126,7 @@ fi
 # SSH agent
 #---------------------------------------
 
-if ! is-executable curl; then
+if is-wsl && ! is-executable curl; then
     echo
     style lblue 'Installing curl...'
     sudo apt-get install curl
