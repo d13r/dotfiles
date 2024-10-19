@@ -29,7 +29,7 @@ done
 
 # Revert
 if $revert; then
-    sudo apt purge --auto-remove apache2 apache2-utils elinks
+    sudo apt purge --auto-remove apache2 apache2-utils elinks ssl-cert
     sudo rm -f /etc/apache2/conf-enabled/z_dave-common.conf
     sudo gpasswd -d "$USER" www-data
     exit
@@ -37,7 +37,7 @@ fi
 
 # Install
 style lcyan,bold 'Installing Apache...'
-sudo apt install -y apache2 apache2-utils elinks
+sudo apt install -y apache2 apache2-utils elinks ssl-cert
 echo
 
 # Enable modules
