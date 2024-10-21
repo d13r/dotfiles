@@ -112,6 +112,11 @@ if ! is-executable delta || ! is-executable lazygit; then
     echo
 fi
 
+# Ping on Debian WSL - https://github.com/microsoft/WSL/issues/5109#issuecomment-1055680459
+if is-wsl && [[ -x /usr/bin/ping ]] && [[ $(getcap /usr/bin/ping) = '' ]] && ask 'Make ping available to all users?' Y; then
+    sudo setcap 'cap_net_raw+p' /usr/bin/ping
+fi
+
 # Local directory
 if ! is-wsl && [[ ! -d /local ]]; then
     if ask 'Create /local directory?' Y; then
