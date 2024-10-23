@@ -69,6 +69,20 @@ fi
 
 echo
 
+# Unattended upgrades
+if [[ ! -f /etc/apt/apt.conf.d/50unattended-upgrades ]] && ask 'Enable unattended upgrades?' Y; then
+    echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | maybe-sudo debconf-set-selections
+    maybe-sudo apt install -y unattended-upgrades
+    echo
+fi
+
+if [[ -f /etc/apt/apt.conf.d/50unattended-upgrades && ! -f /etc/apt/apt.conf.d/52unattended-upgrades-local ]]; then
+    sudo-write /etc/apt/apt.conf.d/52unattended-upgrades-local <<END
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Mail "root";
+END
+fi
+
 # Firewall
 if ! is-wsl && ! is-pve; then
     if ask 'Enable firewall (UFW)?' Y; then
