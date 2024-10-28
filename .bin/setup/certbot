@@ -61,7 +61,7 @@ fi
 
 # Install Certbot
 style lcyan,bold 'Installing Certbot...'
-sudo apt install -y certbot python3-certbot-dns-cloudflare
+sudo apt install -y certbot python3-certbot-apache python3-certbot-dns-cloudflare
 echo
 
 # Save Cloudflare API credentials
