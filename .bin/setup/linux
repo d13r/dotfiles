@@ -103,9 +103,10 @@ if ! is-executable bin; then
 fi
 
 # General utilities
-for package in bash-completion bat curl fzf httpie file pv tmux tree vim wget; do
+for package in bash-completion bat curl dnsutils fzf httpie file pv tmux tree vim wget; do
     case $package in
         bat) command=batcat ;;
+        dnsutils) command=dig ;;
         httpie) command=http ;;
         *) command=$package ;;
     esac
