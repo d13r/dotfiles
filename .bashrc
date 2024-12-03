@@ -526,6 +526,21 @@ hackit() {
     git checkout master
 }
 
+ide() {
+    if findup -f .idea/php.xml >/dev/null; then
+        _idea phpstorm
+    elif findup -f .idea/go.xml >/dev/null; then
+        # Untested (3 Dec 2024)
+        _idea goland
+    elif findup -d .idea >/dev/null; then
+        echo 'Cannot determine the project type'
+        return 1
+    else
+        echo 'Cannot find .idea/ folder'
+        return 1
+    fi
+}
+
 man() {
     # http://boredzo.org/blog/archives/2016-08-15/colorized-man-pages-understood-and-customized
     # https://unix.stackexchange.com/questions/119/colors-in-man-pages/147#comment488743_147
