@@ -216,7 +216,7 @@ alias uuuuu='c ../../../../..'
 alias uuuuuu='c ../../../../../..'
 
 alias ufw="$sudo ufw"
-alias updb='drush updb'
+alias updb='drush updb -y'
 alias updatedb="$sudo updatedb"
 alias update-grub="$sudo update-grub"
 alias useradd="$sudo useradd"
