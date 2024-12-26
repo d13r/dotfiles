@@ -1415,6 +1415,7 @@ _dirhistory-push-past "$PWD"
 if [[ -z ${SSH_AUTH_SOCK-} && ${HOSTNAME-} = gate?.maths.ox.ac.uk ]]; then
     KILL_SSH_AGENT_ON_EXIT=true # Not exported
     eval $(ssh-agent -s)
+    ssh-add ~/.ssh/mi-dave.key
 fi
 
 # Automatic updates
