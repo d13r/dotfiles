@@ -91,9 +91,11 @@ while true; do
     else
         # SSH
         if $tmux; then
-            command="h '$host'"
+            # Not quoted so I can pass a session name
+            command="h $host"
         else
-            command="ssh '$host'"
+            # Not quoted so I can pass extra options
+            command="ssh $host"
         fi
     fi
 
