@@ -15,18 +15,22 @@
     cp          = cherry-pick --ff
     d           = diff --find-copies
     da          = diff --find-copies --text
-    dc          = diff --cached --find-copies
-    dca         = diff --cached --find-copies --text
-    dcf         = diff --cached --stat
-    dcw         = diff --cached --ignore-all-space --find-copies
-    dcwa        = diff --cached --ignore-all-space --find-copies --text
-    dcww        = diff --cached --ignore-all-space --find-copies --word-diff=color
-    dcwww       = diff --cached --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
-    df          = diff --stat
-    dw          = diff --ignore-all-space --find-copies
-    dwa         = diff --ignore-all-space --find-copies --text
-    dww         = diff --ignore-all-space --find-copies --word-diff=color
-    dwww        = diff --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
+    dac         = diff --find-copies --text --cached
+    dacw        = diff --find-copies --text --cached --ignore-all-space
+    dacww       = diff --find-copies --text --cached --ignore-all-space --word-diff=color
+    dacwww      = diff --find-copies --text --cached --ignore-all-space --word-diff=color --word-diff-regex=.
+    daw         = diff --find-copies --text --ignore-all-space
+    daww        = diff --find-copies --text --ignore-all-space --word-diff=color
+    dawww       = diff --find-copies --text --ignore-all-space --word-diff=color --word-diff-regex=.
+    dc          = diff --find-copies --cached
+    dcf         = diff --find-copies --cached --stat
+    dcw         = diff --find-copies --cached --ignore-all-space
+    dcww        = diff --find-copies --cached --ignore-all-space --word-diff=color
+    dcwww       = diff --find-copies --cached --ignore-all-space --word-diff=color --word-diff-regex=.
+    df          = diff --find-copies --stat
+    dw          = diff --find-copies --ignore-all-space
+    dww         = diff --find-copies --ignore-all-space --word-diff=color
+    dwww        = diff --find-copies --ignore-all-space --word-diff=color --word-diff-regex=.
     f           = fetch -v --prune
     fe          = fetch -v --prune
     g           = grep --untracked --break --heading --line-number
