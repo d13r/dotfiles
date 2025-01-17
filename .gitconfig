@@ -20,13 +20,13 @@
     dcf         = diff --cached --stat
     dcw         = diff --cached --ignore-all-space --find-copies
     dcwa        = diff --cached --ignore-all-space --find-copies --text
-    dcwc        = diff --cached --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
     dcww        = diff --cached --ignore-all-space --find-copies --word-diff=color
+    dcwww       = diff --cached --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
     df          = diff --stat
     dw          = diff --ignore-all-space --find-copies
     dwa         = diff --ignore-all-space --find-copies --text
-    dwc         = diff --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
     dww         = diff --ignore-all-space --find-copies --word-diff=color
+    dwww        = diff --ignore-all-space --find-copies --word-diff=color --word-diff-regex=.
     f           = fetch -v --prune
     fe          = fetch -v --prune
     g           = grep --untracked --break --heading --line-number
