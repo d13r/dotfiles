@@ -131,6 +131,9 @@
 [diff]
     colorMoved = default
 
+[help]
+    autocorrect = prompt
+
 [init]
     defaultBranch = main
 
