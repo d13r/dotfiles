@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Make sure the default shell is changed for new panes
+# (Bit hacky to do this inside this script, but I haven't found a simple way to do it from 'terminal-for-x2go' yet)
+if [[ $(tmux display-message -p '#S' 2>/dev/null) = 'x2go' ]]; then
+    tmux set default-shell ~/.bin/x2go-menu
+fi
+
+# Load 'style' as a function to avoid the overhead of calling a script
+source "$HOME/.bash/style"
+
+# Disable tab completion (tab, shift+tab, escape escape)
+bind -r '\t' 2>/dev/null
+bind -r '\e[Z' 2>/dev/null
+bind -r '\e\e' 2>/dev/null
+
+# Bind Escape key
+bind -x '"\e": handle_escape' 2>/dev/null
+
+handle_escape() {
+    clear
+    exit
+}
+
+# After exiting an application, return to the menu
+while true; do
+
+    # Set the window title - otherwise it may be blank or "Untitled window" when returning
+    # The extra space is because '@<hostname>' is appended automatically
+    echo -ne "\e]2;X2Go \a"
+
+    # Set the pane name
+    tmux rename-window 'x2go-menu' &>/dev/null
+
+    # Display prompt
+    clear
+    echo
+    echo ' [b] Beyond Compare'
+    echo ' [d] DBeaver'
+    echo ' [p] PhpStorm'
+    echo ' [t] Terminal'
+    echo
+    echo ' [q] Quit'
+    echo
+
+    # Prompt for hostname (also accepts an alias defined in .ssh/config)
+    trap 'clear; exit' INT
+    read -r -n1 action
+    trap INT
+
+    # Run the given command
+    name=''
+
+    case "${action,,}" in
+        b) command='bcompare'; name='bcompare' ;;
+        d) command='dbeaver'; name='dbeaver' ;;
+        p) command='ssh webdev phpstorm'; name='phpstorm' ;;
+        q) command='clear; exit' ;;
+        t) command='bash' ;;
+        *) continue ;;
+    esac
+
+    if [[ -n $name ]]; then
+        tmux rename-window "$name" &>/dev/null
+    else
+        tmux set-option -w automatic-rename on &>/dev/null
+    fi
+
+    clear
+    trap true INT
+    if ! eval "$command"; then
+        echo
+        echo 'Press any key to continue...'
+        read -rsn 1
+    fi
+    trap INT
+
+done
