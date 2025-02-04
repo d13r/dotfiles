@@ -13,9 +13,9 @@ bind -r '\e[Z' 2>/dev/null
 bind -r '\e\e' 2>/dev/null
 
 # Bind Escape key
-bind -x '"\e": handle_escape' 2>/dev/null
+bind -x '"\e": exit_menu' 2>/dev/null
 
-handle_escape() {
+exit_menu() {
     clear
     exit
 }
@@ -76,7 +76,7 @@ while true; do
     tput rc # Restore cursor
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
-    trap 'clear; exit' INT
+    trap 'exit_menu' INT
     read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
     trap INT
 
@@ -104,7 +104,7 @@ while true; do
     if ! eval "$command"; then
         echo
         echo 'Press any key to continue...'
-        read -rsn 1
+        read -rs -n1
     fi
     trap INT
 
