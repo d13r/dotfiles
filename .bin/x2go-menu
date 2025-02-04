@@ -49,7 +49,7 @@ while true; do
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
     trap 'clear; exit' INT
-    read -r -n1 action
+    read -re -n1 action
     trap INT
 
     # Run the given command
