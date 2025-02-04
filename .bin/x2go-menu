@@ -36,12 +36,15 @@ while true; do
     # Display prompt
     clear
     echo
-    echo ' [b] Beyond Compare'
-    echo ' [d] DBeaver'
-    echo ' [p] PhpStorm'
-    echo ' [t] Terminal'
     echo
-    echo ' [q] Quit'
+    echo "       $(style lcyan,bold,underline 'X2Go')"
+    echo
+    echo "   $(style lyellow '[b]') Beyond Compare"
+    echo "   $(style lyellow '[d]') DBeaver"
+    echo "   $(style lyellow '[p]') PhpStorm"
+    echo "   $(style lyellow '[t]') Terminal"
+    echo
+    echo "   $(style lyellow '[q]') Quit"
     echo
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
