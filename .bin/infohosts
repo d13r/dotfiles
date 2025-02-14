@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+path='/home/sysman/bin/infohosts'
+
+if [[ -x "$path" ]]; then
+    exec "$path" "$@"
+fi
+
+exec ssh lts "$path" $(printf '%q' "$@")
