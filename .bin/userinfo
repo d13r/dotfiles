@@ -7,4 +7,4 @@ if [[ -x "$path" ]]; then
     exec "$path" "$@"
 fi
 
-exec ssh gate $(printf "ssh gate %q" "$path $*")
+exec ssh gate "$path" $(printf '%q' "$@")
