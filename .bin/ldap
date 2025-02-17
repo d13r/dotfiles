@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Thin wrapper around 'ldapsearch'
+args=()
+
+while true; do
+    case "${1-}" in
+        --mi|--maths|--mildap)
+            # '-x' disables Kerberos authentication (for now)
+            args+=(-H ldaps://ldap.maths.ox.ac.uk -x)
+            shift
+            ;;
+        --oak)
+            args+=(-H ldaps://ldap.oak.ox.ac.uk)
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+# -LLL disables superflous output/comments
+# -o ldif_wrap=no prevents wrapping
+# perl filter decodes UTF-8 (https://access.redhat.com/solutions/43621)
+ldapsearch -LLL -o ldif_wrap=no "${args[@]}" "$@" | perl -MMIME::Base64 -MEncode=decode -n -00 -e 's/\n \n+//g;s/(?<=:: )(\S+)/decode("UTF-8",decode_base64($1))/eg;print'
