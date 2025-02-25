@@ -13,24 +13,24 @@
     co          = checkout
     cob         = checkout -b
     cp          = cherry-pick --ff
-    d           = diff --find-copies
-    da          = diff --find-copies --text
-    dac         = diff --find-copies --text --cached
-    dacw        = diff --find-copies --text --cached --ignore-all-space
-    dacww       = diff --find-copies --text --cached --ignore-all-space --word-diff=color
-    dacwww      = diff --find-copies --text --cached --ignore-all-space --word-diff=color --word-diff-regex=.
-    daw         = diff --find-copies --text --ignore-all-space
-    daww        = diff --find-copies --text --ignore-all-space --word-diff=color
-    dawww       = diff --find-copies --text --ignore-all-space --word-diff=color --word-diff-regex=.
-    dc          = diff --find-copies --cached
-    dcf         = diff --find-copies --cached --stat
-    dcw         = diff --find-copies --cached --ignore-all-space
-    dcww        = diff --find-copies --cached --ignore-all-space --word-diff=color
-    dcwww       = diff --find-copies --cached --ignore-all-space --word-diff=color --word-diff-regex=.
-    df          = diff --find-copies --stat
-    dw          = diff --find-copies --ignore-all-space
-    dww         = diff --find-copies --ignore-all-space --word-diff=color
-    dwww        = diff --find-copies --ignore-all-space --word-diff=color --word-diff-regex=.
+    d           = diff
+    da          = diff --text
+    dac         = diff --text --cached
+    dacw        = diff --text --cached --ignore-all-space
+    dacww       = diff --text --cached --ignore-all-space --word-diff=color
+    dacwww      = diff --text --cached --ignore-all-space --word-diff=color --word-diff-regex=.
+    daw         = diff --text --ignore-all-space
+    daww        = diff --text --ignore-all-space --word-diff=color
+    dawww       = diff --text --ignore-all-space --word-diff=color --word-diff-regex=.
+    dc          = diff --cached
+    dcf         = diff --cached --stat
+    dcw         = diff --cached --ignore-all-space
+    dcww        = diff --cached --ignore-all-space --word-diff=color
+    dcwww       = diff --cached --ignore-all-space --word-diff=color --word-diff-regex=.
+    df          = diff --stat
+    dw          = diff --ignore-all-space
+    dww         = diff --ignore-all-space --word-diff=color
+    dwww        = diff --ignore-all-space --word-diff=color --word-diff-regex=.
     f           = fetch -v --prune
     fe          = fetch -v --prune
     g           = grep --untracked --break --heading --line-number
@@ -85,6 +85,9 @@
     todo        = grep --untracked --line-number 'TODO\\|XXX\\|FIXME'
     unshallow   = fetch --unshallow
 
+[branch]
+    sort = -committerdate
+
 [color]
     branch = auto
     diff = auto
@@ -92,8 +95,10 @@
     status = auto
 
 [color "grep"]
-    # This doesn't work on Ubuntu 20.04
-    #match = brightred
+    match = brightred
+
+[column]
+    ui = auto
 
 [commit]
     cleanup = scissors
@@ -129,7 +134,15 @@
     plus-style = syntax 22
 
 [diff]
+    algorithm = histogram
     colorMoved = default
+    mnemonicPrefix = true
+    renames = copies
+
+[fetch]
+    all = true
+    prune = true
+    pruneTags = true
 
 [help]
     autocorrect = prompt
@@ -138,6 +151,7 @@
     defaultBranch = main
 
 [merge]
+    # TODO: Change to zdiff3 when all machines are on Ubuntu 24.04+
     conflictstyle = diff3
     tool = vimdiff3
 
@@ -159,8 +173,15 @@
 [push]
     default = upstream
     followTags = true
+    autoSetupRemote = true
+
+[rebase]
+    autoSquash = true
+    autoStash = true
+    updateRefs = true
 
 [rerere]
+    autoupdate = true
     enabled = true
 
 [tag]
