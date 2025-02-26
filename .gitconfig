@@ -97,9 +97,6 @@
 [color "grep"]
     match = brightred
 
-[column]
-    ui = auto
-
 [commit]
     cleanup = scissors
     verbose = 2
