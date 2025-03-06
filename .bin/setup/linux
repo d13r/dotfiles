@@ -9,23 +9,6 @@ if is-executable sudo && [[ -d /etc/sudoers.d && ! -f /etc/sudoers.d/dave ]]; th
     echo
 fi
 
-# Locales
-if ask 'Generate en_GB and en_US locales?' Y; then
-    "$HOME/.bin/setup/locales"
-fi
-echo
-
-# Timezone
-if ! is-wsl; then
-    timezone='Europe/London'
-
-    if ask "Set timezone to $timezone?" Y; then
-        set-timezone "$timezone"
-    fi
-
-    echo
-fi
-
 # Hostname
 if ! is-wsl; then
     default=Y

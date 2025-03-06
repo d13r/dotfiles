@@ -1,0 +1,4 @@
+dir = .
+
+[timezone]
+alias = tz
