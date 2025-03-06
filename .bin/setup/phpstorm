@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DISTRIB_ID=''
-if [[ -f /etc/lsb_release ]]; then
-    source /etc/lsb_release
+ID=''
+if [[ -f /etc/os-release ]]; then
+    source /etc/os-release
 fi
 
 # Chromium is required to allow activation via browser
 chromium='chromium'
-if [[ $DISTRIB_ID = 'Ubuntu' ]]; then
+if [[ $ID = 'ubuntu' ]]; then
     chromium='chromium-browser'
 fi
 
