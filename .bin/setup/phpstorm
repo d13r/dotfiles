@@ -1,15 +1,26 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+DISTRIB_ID=''
+if [[ -f /etc/lsb_release ]]; then
+    source /etc/lsb_release
+fi
+
+# Chromium is required to allow activation via browser
+chromium='chromium'
+if [[ $DISTRIB_ID = 'Ubuntu' ]]; then
+    chromium='chromium-browser'
+fi
+
 # Install dependencies
-# (Chromium installed to allow activation via browser)
 sudo apt install -y \
-    chromium-browser \
+    "$chromium" \
     default-jre \
     fonts-firacode \
     libgbm-dev \
     libgdm-dev \
-    openjfx
+    openjfx \
+    snapd
 
 # Install PhpStorm
 sudo snap install --classic phpstorm
