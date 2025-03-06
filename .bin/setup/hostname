@@ -5,7 +5,7 @@ set -euo pipefail
 exe=$(basename "$0")
 
 help() {
-    echo "Usage: $exe <hostname>"
+    echo "Usage: $exe [hostname]"
     echo "       $exe [options]"
     echo
     echo "Set the hostname and stop cloud-init overwriting it."
@@ -30,6 +30,12 @@ done
 
 fqdn=${1:-}
 
+# Sanity check
+if is-wsl; then
+    echo 'Cannot set hostname in WSL' >&2
+    exit 1
+fi
+
 # Revert
 if $revert; then
     echo 'Removing cloud-init override...'
@@ -45,8 +51,14 @@ fi
 
 # Validate arguments
 if [[ -z $fqdn ]]; then
-    help >&2
-    exit 1
+    fqdn="${HOSTNAME/.*}.djm.me"
+
+    if [[ "$fqdn" = "$HOSTNAME" ]]; then
+        echo "Hostname is already set to '$HOSTNAME'." >&2
+        exit 1
+    fi
+
+    ask "Change the hostname from '$HOSTNAME' to '$fqdn'?" Y
 fi
 
 hostname=${fqdn%%.*}

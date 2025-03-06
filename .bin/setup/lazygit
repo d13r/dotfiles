@@ -7,11 +7,11 @@ exe=$(basename "$0")
 help() {
     echo "Usage: $exe [options]"
     echo
-    echo "Install Git-related tools (Lazy Git, Delta)."
+    echo "Install Lazy Git."
     echo
     echo "Options:"
     echo "  -h, --help      display this help"
-    echo "  -r, --revert    uninstall everything"
+    echo "  -r, --revert    uninstall it"
 }
 
 args=$(getopt -n "$exe" -o 'hr' -l 'help,revert' -- "$@")
@@ -27,11 +27,10 @@ while true; do
     esac
 done
 
-"$HOME/.bin/setup/brew" --auto
-
 if $revert; then
-    /home/linuxbrew/.linuxbrew/bin/brew uninstall git-delta jesseduffield/lazygit/lazygit || true
+    /home/linuxbrew/.linuxbrew/bin/brew uninstall jesseduffield/lazygit/lazygit || true
 else
+    "$HOME/.bin/setup/brew" --auto
     sudo apt install -y gcc
-    /home/linuxbrew/.linuxbrew/bin/brew install git-delta jesseduffield/lazygit/lazygit
+    /home/linuxbrew/.linuxbrew/bin/brew install jesseduffield/lazygit/lazygit
 fi

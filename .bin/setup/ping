@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if is-wsl && [[ -x /usr/bin/ping ]] && [[ $(getcap /usr/bin/ping) = '' ]] && ask 'Make ping available to all users?' Y; then
+    sudo setcap 'cap_net_raw+p' /usr/bin/ping
+fi

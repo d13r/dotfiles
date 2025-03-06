@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Proxmox repos
+if is-pve; then
+    if [[ -f /etc/apt/sources.list.d/pve-enterprise.list ]] && ask 'Disable Proxmox Enterprise repo?' Y; then
+        maybe-sudo rm /etc/apt/sources.list.d/pve-enterprise.list
+    fi
+    if [[ -f /etc/apt/sources.list.d/ceph.list ]] && grep -q enterprise.proxmox.com /etc/apt/sources.list.d/ceph.list && ask 'Disable Ceph repo?' Y; then
+        maybe-sudo rm /etc/apt/sources.list.d/ceph.list
+    fi
+fi
+
+# Update
+if ask 'Install updates now?' Y; then
+    maybe-sudo apt update
+    maybe-sudo apt full-upgrade --auto-remove -y
+    upgraded=true
+fi
+
+echo
+
+# Unattended upgrades
+if [[ ! -f /etc/apt/apt.conf.d/50unattended-upgrades ]] && ask 'Enable unattended upgrades?' Y; then
+    echo unattended-upgrades unattended-upgrades/enable_auto_updates boolean true | maybe-sudo debconf-set-selections
+    maybe-sudo apt install -y unattended-upgrades
+    echo
+fi
+
+if [[ -f /etc/apt/apt.conf.d/50unattended-upgrades && ! -f /etc/apt/apt.conf.d/52unattended-upgrades-local ]]; then
+    sudo-write /etc/apt/apt.conf.d/52unattended-upgrades-local <<END
+Unattended-Upgrade::Automatic-Reboot "true";
+Unattended-Upgrade::Mail "root";
+Unattended-Upgrade::MailReport "only-on-error";
+END
+fi
+

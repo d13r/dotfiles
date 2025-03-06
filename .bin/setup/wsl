@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if path=$(wsl-desktop-path 2>/dev/null); then
+    ln -nsfv "$path" Desktop
+fi
+
+if path=$(wsl-documents-path 2>/dev/null); then
+    ln -nsfv "$path" Documents
+fi
+
+if path=$(wsl-dropbox-path 2>/dev/null); then
+    ln -nsfv "$path" Dropbox
+fi

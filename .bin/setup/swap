@@ -1,17 +1,17 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-size_gb=${1-}
+size_gb=${1-2}
 
-if [[ -z $size_gb ]]; then
-    echo "Usage: $(basename "$0") <SIZE_IN_GiB>"
+if [[ $size_gb = '-h' || $size_gb = '--help' ]]; then
+    echo "Usage: $(basename "$0") [SIZE_IN_GiB=2]"
     echo
     if [[ -f /swap.img ]]; then
         current_size=$(stat -c %s /swap.img)
-        echo "The swap file is currently $((current_size / 1024 / 1024 / 1024)) GiB"
-        echo "The new size may be 0 to remove it"
+        echo "The swap file is currently $((current_size / 1024 / 1024 / 1024)) GiB."
+        echo "The new size may be 0 to remove it."
     else
-        echo "The swap file doesn't currently exist"
+        echo "The swap file doesn't currently exist."
     fi
     exit
 fi
