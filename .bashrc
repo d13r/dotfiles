@@ -386,7 +386,11 @@ desc() {
     local command=$1
 
     if [[ $(type -t "$command") != 'file' ]]; then
-        type "$command"
+        if command -v bat &>/dev/null; then
+            type "$command" | bat -l bash --plain
+        else
+            type "$command"
+        fi
         return
     fi
 
