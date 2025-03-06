@@ -75,7 +75,7 @@ shopt -s nullglob
 # to '1.2.3-dev'. We'll use a slightly different version here so we can tell if
 # something goes wrong with the build script.
 
-readonly VERSION='1.0.1'
+readonly VERSION='1.0.2'
 
 #endregion =====================================================================
 #region ======= HELPERS: OUTPUT & ERROR HANDLING  ==============================
@@ -604,7 +604,12 @@ relative_path() {
     parent=$1
     child=$2
 
-    echo "${child#"${parent}/"}"
+    if [[ "$parent" = "$child" ]]; then
+        echo '.'
+    else
+        # We don't need to support the case where $child is not inside $parent
+        echo "${child#"${parent}/"}"
+    fi
 }
 
 #endregion =====================================================================
@@ -1669,10 +1674,13 @@ while [[ $# -gt $num_parameters_to_ignore ]]; do
         fi
 
         append=''
-        if in_array "${full_command:1}" completion create edit help info version; then
-            append="${NEW_LINE}${GREY}Perhaps you meant to run 'bin --${full_command:1}'?${RESET}"
+        if [[ -n $main_binconfig ]]; then
+            append="${append} or $main_binconfig"
         fi
-        fail "Command '${full_command:1}' not found in $main_bin_dir/ or $main_binconfig$append" $ERR_NOT_FOUND
+        if in_array "${full_command:1}" completion create edit help info version; then
+            append="${append}${NEW_LINE}${GREY}Perhaps you meant to run 'bin --${full_command:1}'?${RESET}"
+        fi
+        fail "Command '${full_command:1}' not found in $main_bin_dir/$append" $ERR_NOT_FOUND
     fi
 
     # Otherwise display the list of matches
