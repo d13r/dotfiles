@@ -2,12 +2,12 @@
 set -euo pipefail
 
 # To test this repeatedly:
-#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; setup dave && ssh dave@localhost
 # Or (in Docker):
-#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && sudo -su dave
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; setup dave && sudo -su dave
 
 # Must be run as root
-# Note: We can't rely on $PATH because of this (e.g. 'is-root-user')
+# Note: We can't use anything in $PATH because of this (e.g. 'is-root-user')
 if [[ $UID -ne 0 ]]; then
     exec sudo --preserve-env=SSH_AUTH_SOCK "$0" "$@"
 fi
