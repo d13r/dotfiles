@@ -198,6 +198,7 @@ alias rm='rm -i'
 alias s='sudo '
 alias scra="$sudo systemctl reload apache2 && $sudo systemctl status apache2"
 alias service="$sudo service"
+alias setup='bin --exe setup --dir "$HOME/.bin/setup"'
 alias shutdown="$sudo poweroff"
 alias sshak='ssh -o StrictHostKeyChecking=accept-new'
 alias sshstop='ssh -O stop'
@@ -713,42 +714,6 @@ scratch() {
     fi
 
     c "/scratch/$USER"
-}
-
-setup() {
-    local basename name
-
-    # If a name is given, that's either a global script, subdirectory or repo URL
-    if [[ $# -gt 0 ]]; then
-        name=$1
-
-        # Global script
-        if [[ -f "$HOME/.bin/setup/$name" ]]; then
-            shift
-            "$HOME/.bin/setup/$name" "$@"
-            return
-        fi
-
-        # Repo URL or existing subdirectory
-        basename=$(basename "$name")
-
-        if [[ ! -e $basename ]]; then
-            # The 'clone' helper supports various short URL formats
-            clone "$name" "$basename"
-            echo
-        fi
-
-        cd "$basename"
-    fi
-
-    # If the setup script is in the normal place, call it directly
-    if [[ -x bin/setup ]]; then
-        bin/setup
-        return
-    fi
-
-    # Otherwise use 'bin' to find it (it must be installed first)
-    bin setup
 }
 
 status() {
