@@ -11,6 +11,10 @@ while true; do
             args+=(-H ldaps://ldap.maths.ox.ac.uk -x)
             shift
             ;;
+        --rwroot)
+            args+=(-D uid=rwroot,ou=admin,ou=current,dc=maths,dc=ox,dc=ac,dc=uk -W)
+            shift
+            ;;
         --oak)
             args+=(-H ldaps://ldap.oak.ox.ac.uk)
             shift
