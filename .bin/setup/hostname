@@ -59,6 +59,8 @@ if [[ -z $fqdn ]]; then
     fi
 
     ask "Change the hostname from '$HOSTNAME' to '$fqdn'?" Y
+elif [[ $fqdn != *.* ]] && ask "Did you mean '$fqdn.djm.me' instead of '$fqdn'?"; then
+    fqdn="$fqdn.djm.me"
 fi
 
 hostname=${fqdn%%.*}
