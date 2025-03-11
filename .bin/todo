@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ -d "$HOME/Desktop" ]]; then
+    exec vim "$HOME/Desktop/todo.txt"
+fi
+
+exec vim "$HOME/todo.txt"
