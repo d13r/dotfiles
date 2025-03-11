@@ -206,6 +206,7 @@ alias storm='_idea phpstorm'
 alias sudo='sudo ' # Expand aliases
 alias sw='sw ' # Expand aliases
 
+alias t='todo'
 alias tailscale="$sudo tailscale"
 alias tree='tree -C'
 
