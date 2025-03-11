@@ -167,9 +167,8 @@
     rebase = false
 
 [push]
-    default = upstream
-    followTags = true
     autoSetupRemote = true
+    default = upstream
 
 [rebase]
     autoSquash = true
