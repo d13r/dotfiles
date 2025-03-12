@@ -18,7 +18,11 @@ case "${1:-edit}" in
     add|a|+)
         shift
         [[ -f $file ]] && echo >> "$file"
-        echo "$@" >> $file
+        if [[ $# -gt 0 ]]; then
+            echo "$@" >> "$file"
+        else
+            cat >> "$file"
+        fi
         ;;
     delete|del|rm)
         echo "Current TODO list:"
