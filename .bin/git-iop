@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Incoming and outgoing diff (patch)
+help() {
+    echo -e "\e[36m$1\e[0m"
+}
+
+left=${1:-}
+if [ -z "$left" ]; then
+    left=$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")
+fi
+
+right=${2:-}
+if [ -z "$right" ]; then
+    right=HEAD
+fi
+
+git diff "$left..$right"
