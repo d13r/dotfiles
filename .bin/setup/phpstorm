@@ -1,15 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ID=''
-if [[ -f /etc/os-release ]]; then
-    source /etc/os-release
-fi
-
 # Chromium is required to allow activation via browser
-chromium='chromium'
-if [[ $ID = 'ubuntu' ]]; then
+if is-ubuntu; then
     chromium='chromium-browser'
+else
+    chromium='chromium'
 fi
 
 # Install dependencies

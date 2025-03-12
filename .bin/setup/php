@@ -107,9 +107,7 @@ echo
 # Add repository
 style lcyan,bold "Configuring PHP PPA repository..."
 
-source /etc/os-release
-
-if [[ $ID = 'ubuntu' ]]; then
+if is-ubuntu; then
     if [[ -f "/etc/apt/sources.list.d/ondrej-ubuntu-php-$(os-codename).list" ]]; then
         echo 'Already configured.'
     else
