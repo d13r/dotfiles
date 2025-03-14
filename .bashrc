@@ -196,7 +196,7 @@ alias reload='exec bash -l'
 alias rm='rm -i'
 
 alias s='sudo '
-alias scra="$sudo systemctl reload apache2 && $sudo systemctl status apache2"
+alias scra="$sudo systemctl reload apache2 && $sudo systemctl status --no-pager --full apache2"
 alias service="$sudo service"
 alias setup='bin --exe setup --dir "$HOME/.bin/setup"'
 alias shutdown="$sudo poweroff"
@@ -696,7 +696,7 @@ sc() {
         r)      shift; systemctl reload-or-restart "$@" ;;
         rl)     shift; systemctl reload "$@" ;;
         rs)     shift; systemctl restart "$@" ;;
-        s)      shift; systemctl status "$@" ;;
+        s)      shift; systemctl status --no-pager --full "$@" ;;
         u|up)   shift; systemctl start "$@" ;;
         *)             systemctl "$@"
     esac
