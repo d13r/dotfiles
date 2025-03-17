@@ -3,8 +3,13 @@ set -euo pipefail
 
 path='/home/sysman/bin/userinfo'
 
-if [[ -x "$path" ]]; then
+# 17 Mar 2025: This doesn't work on gate or webdev because the Python modules are not installed
+#if [[ -x "$path" ]]; then
+#    exec "$path" "$@"
+#fi
+
+if [[ $HOSTNAME = beulah-penguin.maths.ox.ac.uk ]]; then
     exec "$path" "$@"
 fi
 
-exec ssh gate "$path" $(printf '%q' "$@")
+exec ssh lts "$path" $(printf '%q' "$@")
