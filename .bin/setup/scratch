@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ ! -d /scratch ]]; then
+    echo '/scratch does not exist' >&2
+    return 1
+fi
+
+umask 077
+mkdir -p "/scratch/$USER/temp"

@@ -702,21 +702,6 @@ sc() {
     esac
 }
 
-scratch() {
-    if [[ ! -d /scratch ]]; then
-        echo '/scratch does not exist' >&2
-        return 1
-    fi
-
-    if [[ ! -d "/scratch/$USER" ]]; then
-        (umask 077 && mkdir -p "/scratch/$USER")
-        # Also create temp directory since I have a symlink in ~/temp
-        mkdir -p "/scratch/$USER/temp"
-    fi
-
-    c "/scratch/$USER"
-}
-
 status() {
     # Show the result of the last command
     local status=$?
