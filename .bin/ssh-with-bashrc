@@ -10,8 +10,8 @@ set -euo pipefail
 bashrc=$(egrep -v '(^$|^#)' $HOME/.bashrc_remote )
 
 # Replace some placeholders
-bashrc=${bashrc//__GIT_NAME__/$(git config --global user.name)}
-bashrc=${bashrc//__GIT_EMAIL__/$(git config --global user.email)}
+bashrc=${bashrc//__GIT_NAME__/$(cd && git config user.name)}
+bashrc=${bashrc//__GIT_EMAIL__/$(cd && git config user.email)}
 
 # Replace ' with '\'' (that is close quote, escaped single quote, open quote - because Bash doesn't allow \' inside a string)
 bashrc=${bashrc//\'/\'\\\'\'}
