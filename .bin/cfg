@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -o errexit -o nounset -o pipefail
+cd
+
+if [[ $# -gt 0 ]]; then
+    command git "$@"
+elif is-executable lazygit; then
+    lazygit
+else
+    command git status
+fi
