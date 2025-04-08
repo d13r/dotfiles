@@ -132,6 +132,7 @@ fi
 alias cas='c /etc/apache2/sites-available'
 alias cat="$HOME/.bin/bat-or-cat"
 alias certbot="$sudo certbot"
+alias chrome='google-chrome'
 alias chmox='chmod' # Common typo
 alias cp='cp -i'
 alias cy='cypress'
@@ -143,6 +144,8 @@ alias dc='docker-compose' # See function below
 alias dcr='drush cr'
 alias dive="$sudo_for_docker dive"
 alias docker="$sudo_for_docker docker"
+
+alias edge='microsoft-edge'
 
 alias gcm='g co master'
 alias goland='_idea goland'
