@@ -391,7 +391,9 @@ desc() {
     local command=$1
 
     if [[ $(type -t "$command") != 'file' ]]; then
-        if command -v bat &>/dev/null; then
+        if is-executable batcat; then
+            type "$command" | batcat -l bash --plain
+        elif is-executable bat; then
             type "$command" | bat -l bash --plain
         else
             type "$command"

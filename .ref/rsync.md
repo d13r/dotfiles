@@ -1,4 +1,4 @@
-Clone the current directory to another server:
+To clone the current directory to another server:
 
     rsync -r --links --times --delete --stats --info=progress2 ./ user@server:path
 

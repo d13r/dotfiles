@@ -1,4 +1,4 @@
-Scripted usage:
+# Scripted usage:
 
     curl -fsS '<url>'
 

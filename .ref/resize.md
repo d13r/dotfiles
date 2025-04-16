@@ -1,17 +1,11 @@
-================================================================================
- Resizing a disk or LVM volume
-================================================================================
+# Resizing a disk or LVM volume
 
-----------------------------------------
- Grow the disk
-----------------------------------------
+## Grow the disk
 
 Grow the disk in the hypervisor, if required.
 This doesn't normally require a reboot (except in Ganeti).
 
-----------------------------------------
- Grow the partition
-----------------------------------------
+## Grow the partition
 
 Find the disk name and partition number:
 
@@ -28,9 +22,7 @@ In this case the device name is `sda`, and the partition number is `3`. Extend i
     $ growpart /dev/sda 3
     CHANGED: partition=3 start=6397952 old: size=60708864 end=67106816 new: size=64905183 end=71303135
 
-----------------------------------------
- Check the PV / VG
-----------------------------------------
+## Check the PV / VG
 
 The physical volume should now show the free space:
 
@@ -88,9 +80,7 @@ As should the volume group:
       Free  PE / Size       512 / 2.00 GiB
       VG UUID               XBIge3-y6C1-egnO-tTYn-pWXI-wJDM-LcGqJC
 
-----------------------------------------
- Grow the logical volume
-----------------------------------------
+## Grow the logical volume
 
 Get the VG/LV names:
 
@@ -136,9 +126,7 @@ The '-r' flag tells it to also resize the filesystem (ext4, etc.), so the next s
 You can pass the full LV Path ('/dev/ubuntu-vg/ubuntu-lv') instead of the VG/LV name
 ('ubuntu-vg/ubuntu-lv') if you prefer - but some LVs (e.g. Proxmox LVM Thinpool) don't have one.
 
-----------------------------------------
- Grow the filesystem
-----------------------------------------
+## Grow the filesystem
 
 This is not necessary if '-r' was passed to 'lvextend' - but for completeness, here is how you can grow it manually:
 
@@ -148,9 +136,7 @@ This is not necessary if '-r' was passed to 'lvextend' - but for completeness, h
     old_desc_blocks = 4, new_desc_blocks = 4
     The filesystem on /dev/ubuntu-vg/ubuntu-lv is now 8112128 (4k) blocks long.
 
-----------------------------------------
- Check it worked
-----------------------------------------
+## Check it worked
 
     $ df -h
     Filesystem                         Size  Used Avail Use% Mounted on

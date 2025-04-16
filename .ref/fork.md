@@ -1,6 +1,4 @@
-================================================================================
- How to temporarily fork a PHP package
-================================================================================
+# How to temporarily fork a PHP package
 
 1. Fork the project on GitHub, or create a new repo on GitLab.
 

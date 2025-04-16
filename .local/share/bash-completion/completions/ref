@@ -4,9 +4,9 @@ _ref_completion() {
     if [[ $COMP_CWORD = 1 ]]; then
 
         files=()
-        for file in $HOME/.ref/*.txt; do
+        for file in $HOME/.ref/*.md; do
             file=${file#$HOME/.ref/}
-            file=${file%.txt}
+            file=${file%.md}
             files+=("$file")
         done
 

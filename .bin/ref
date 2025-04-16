@@ -8,8 +8,8 @@ if [[ -z $topic ]]; then
     echo
     style lyellow 'Topics:'
     cd $HOME/.ref
-    for file in *.txt; do
-        echo "${file//.txt}"
+    for file in *.md; do
+        echo "${file//.md}"
     done
     exit
 fi
@@ -20,12 +20,12 @@ if [[ ! $topic =~ ^[a-z0-9-]+$ ]]; then
 fi
 
 if [[ ${2:-} = 'edit' ]]; then
-    e "$HOME/.ref/$topic.txt"
-elif [[ ! -f "$HOME/.ref/$topic.txt" ]]; then
+    e "$HOME/.ref/$topic.md"
+elif [[ ! -f "$HOME/.ref/$topic.md" ]]; then
     style lred 'Not Found'
 elif [[ ${2:-} = 'delete' ]]; then
-    rm -f "$HOME/.ref/$topic.txt"
+    rm -f "$HOME/.ref/$topic.md"
     style lgreen 'Deleted'
 else
-    bat-or-cat "$HOME/.ref/$topic.txt"
+    bat-or-cat "$HOME/.ref/$topic.md"
 fi
