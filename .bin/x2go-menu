@@ -42,6 +42,7 @@ while true; do
     echo
     echo "   $(style lyellow '[b]') Beyond Compare"
     echo "   $(style lyellow '[d]') DBeaver"
+    echo "   $(style lyellow '[c]') Google Chrome"
     echo "   $(style lyellow '[p]') PhpStorm"
     echo "   $(style lyellow '[t]') Terminal"
     echo
@@ -60,6 +61,7 @@ while true; do
 
     case "${action,,}" in
         b) command='bcompare'; name='bcompare' ;;
+        c) command='google-chrome'; name='google-chrome' ;;
         d) command='dbeaver'; name='dbeaver' ;;
         p) command='ssh webdev phpstorm'; name='phpstorm' ;;
         q) command='clear; exit' ;;
