@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# X2Go doesn't support SSH agent forwarding, so we have to hijack the agent from a different connection
-# https://wiki.x2go.org/doku.php/doc:howto:ssh-agent-workaround
-exec mate-terminal --maximize -e 'bash -lc "share-ssh-agent; tmux -2 new -A -s x2go x2go-menu"'
+# Start SSH agent
+# Prompt for SSH key passphrase
+# If successful, start (or reconnect to) Tmux
+# The SSH agent exits automatically when Tmux exits
+exec ssh-agent mate-terminal --maximize -e 'bash -lc "ssh-add ~/.ssh/mi-dave.key && exec tmux -2 new -A -s x2go x2go-menu"'
