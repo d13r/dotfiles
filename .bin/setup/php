@@ -125,14 +125,14 @@ else
     if [[ -f /etc/apt/sources.list.d/php.list ]]; then
         echo 'Repository already configured.'
     else
-        echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $VERSION_CODENAME main" | sudo-write /etc/apt/sources.list.d/php.list
+        echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(os-codename) main" | sudo-write /etc/apt/sources.list.d/php.list
         sudo apt update
     fi
 fi
 
 echo
 
-# Install PHP
+# Install PHP + dependencies
 packages=(
     "php${version}-bcmath"
     "php${version}-cli"
@@ -147,6 +147,7 @@ packages=(
     "php${version}-sqlite3"
     "php${version}-xml"
     "php${version}-zip"
+    "unzip"
 )
 
 if $install_fpm; then
