@@ -13,7 +13,7 @@ if [[ $UID -ne 0 ]]; then
 fi
 
 # Can't use $HOME here or assume it is in the path
-source "$(dirname "$0")/../.bash/style"
+source "$(dirname "$0")/../../.bash/style"
 
 # Create user
 style lcyan,bold  'Creating user...'
