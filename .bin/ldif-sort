@@ -1,0 +1,48 @@
+#!/usr/bin/awk -f
+
+# Code mostly by ChatGPT-4o
+BEGIN {
+    RS=""
+    ORS="\n\n"
+}
+
+{
+    # Split the entry into lines
+    n = split($0, lines, "\n")
+    dn = ""
+    attrs_count = 0
+
+    # Separate dn and other attributes
+    for (i = 1; i <= n; i++) {
+        if (lines[i] ~ /^dn:/) {
+            dn = lines[i]
+        } else {
+            attrs[++attrs_count] = lines[i]
+        }
+    }
+
+    # Print a YAML style record separator so it stands out when syntax highlighted by 'bat -l yaml'
+    if (match(dn, /dn: [^=,]+=([^,]+)/, rdn)) {
+        printf "--- # %s\n", rdn[1]
+    } else {
+        printf "---\n"
+    }
+
+    # Print the DN first
+    printf "%s\n", dn
+
+    # Sort and print attributes
+    asort(attrs)
+    for (i = 1; i <= attrs_count; i++) {
+        printf "%s\n", attrs[i]
+    }
+
+    # Print blank line to separate records
+    if (NR < ARGC + 1) {
+        printf "\n"
+    }
+
+    # Clear attribute array for next record
+    delete attrs
+}
+

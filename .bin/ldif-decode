@@ -1,0 +1,24 @@
+#!/usr/bin/env perl
+
+# Based on https://access.redhat.com/solutions/43621
+use strict;
+use warnings;
+
+use Encode qw(decode);
+use MIME::Base64;
+
+# Set STDOUT to UTF-8
+binmode STDOUT, ":encoding(UTF-8)";
+
+# Enable paragraph mode (slurp records separated by empty lines)
+local $/ = "";
+
+while (<>) {
+    # Remove sequences of "\n \n+" (newline-space-newlines) globally
+    s/\n \n+//g;
+
+    # Replace ':: <base64>' with ': <decoded UTF-8>'
+    s/:: (\S+)/": " . decode("UTF-8", decode_base64($1))/eg;
+
+    print;
+}

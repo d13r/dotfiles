@@ -1160,6 +1160,9 @@ else
     bind '"\e[1;7B": "\C-a\C-kc \e[Z"'
 fi
 
+# Alt+T - Templates for complex commands
+bind -x '"\et": __fzf_insert_command'
+
 # Space - Expand history (!!, !$, etc.) immediately
 bind 'Space: magic-space'
 
@@ -1313,6 +1316,39 @@ __fzf_cd__() {
   cmd="${FZF_ALT_C_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
     -o -type d -print 2> /dev/null | cut -b3-"}"
   dir=$(eval "$cmd" | FZF_DEFAULT_OPTS="--height ${FZF_TMUX_HEIGHT:-40%} --reverse $FZF_DEFAULT_OPTS $FZF_ALT_C_OPTS" $(__fzfcmd) +m) && printf 'c %q' "$dir"
+}
+
+# Templates for complex commands (bound to Alt-T)
+__fzf_insert_command() {
+    local after before cursor_marker label_marker prefix selected
+
+    # Prompt for the required command
+    selected=$(fzf --height=40% --reverse < $HOME/.bash_commands)
+
+    # If it is cancelled, or fzf is not available, abort
+    if [[ -z $selected ]]; then
+        return
+    fi
+
+    # Extract what was before/after the cursor originally
+    before=${READLINE_LINE:0:$READLINE_POINT}
+    after=${READLINE_LINE:$READLINE_POINT}
+
+    # Remove the label from the beginning of the line (and any more spaces)
+    selected=${selected#*: }
+    selected="${selected#"${selected%%[![:space:]]*}"}"
+
+    # Work out where to put the cursor afterwards and remove the cursor marker
+    cursor_marker='¦'
+
+    if [[ "$selected" == *"$cursor_marker"* ]]; then
+        local prefix=${selected%%$cursor_marker*}
+        READLINE_POINT=$(( ${#prefix} + ${#before} ))
+        selected="${selected//$cursor_marker/}"
+    fi
+
+    # Return the new command line
+    READLINE_LINE="$before$selected$after"
 }
 
 
