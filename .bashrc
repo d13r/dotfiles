@@ -1331,11 +1331,11 @@ __fzf_insert_command() {
     # Note: '--nth' doesn't actually do anything yet (https://github.com/junegunn/fzf/issues/4257)
     # Note: 'cut' can be replaced with '--accept-nth' from 0.60.0
     selected=$(
-        gawk '
-            /^\s*$/ { next }                                        # Skip blank lines
-            match($0, /^#> (.+)/, line) { title = line[1]; next }   # Capture titles
-            /^#/ { next }                                           # Skip other comments
-            { print (title ? title : $0) "\t" $0; title = 0 }       # Print title<TAB>value
+        awk '
+            /^\s*$/ { next }                                    # Skip blank lines
+            /^#> .+/ { title = substr($0, 3); next }            # Capture titles
+            /^#/ { next }                                       # Skip other comments
+            { print (title ? title : $0) "\t" $0; title = 0 }   # Print title<TAB>value
         ' "$HOME/.bash_commands" |
         fzf \
             --height=40% \
