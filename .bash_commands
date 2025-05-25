@@ -1,3 +1,25 @@
+#> git filter-repo: Remove file/directory
+git filter-repo --invert-paths --path path/to/remove/
+
+#> git filter-repo: Remove glob
+git filter-repo --invert-paths --path-glob 'path/to/*.jpg'
+
+#===============================================================================
+
+#> iptables: Block an IP
+iptables -A INPUT -s 1.2.3.4 -j REJECT -m comment --comment 'Reason here'
+
+#> iptables: Block a range
+iptables -A INPUT -s 1.2.3.0/24 -j REJECT -m comment --comment 'Reason here'
+
+#> iptables: List rules
+iptables -L INPUT --line-numbers
+
+#> iptables: Delete a rule
+iptables -D INPUT 123
+
+#===============================================================================
+
 #> ldapsearch: miLDAP (Kerberos)
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
 
@@ -6,5 +28,21 @@ ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -x -D uid=rwroot,
 
 #> ldapsearch: Oak LDAP
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=oak,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
+
+#===============================================================================
+
+#> rsync: Sync the current directory to another server
+rsync -rlt --delete --stats --info=progress2 ./ user@server:/path/to/target
+
+#> rsync: Sync the current directory to another server - preserve owner, etc. (root only)
+rsync -aHS --delete --stats --info=progress2 ./ user@server:/path/to/target
+
+#> rsync: Sync a directory from another server
+rsync -rlt --delete --stats --info=progress2 user@server:/path/to/source/ /path/to/target
+
+#> rsync: Sync a directory from another server - preserve owner, etc. (root only)
+rsync -aHS --delete --stats --info=progress2 user@server:/path/to/source/ /path/to/target
+
+#===============================================================================
 
 # vim:ft=bash
