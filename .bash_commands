@@ -1,3 +1,10 @@
-miLDAP (Kerberos): ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
-miLDAP (rwroot):   ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -x -D uid=rwroot,ou=admin,ou=current,dc=maths,dc=ox,dc=ac,dc=uk -W -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
-Oak LDAP:          ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=oak,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
+#> ldapsearch: miLDAP (Kerberos)
+ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
+
+#> ldapsearch: miLDAP (rwroot)
+ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -x -D uid=rwroot,ou=admin,ou=current,dc=maths,dc=ox,dc=ac,dc=uk -W -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
+
+#> ldapsearch: Oak LDAP
+ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=oak,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
+
+# vim:ft=bash
