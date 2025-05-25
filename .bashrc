@@ -1322,10 +1322,15 @@ __fzf_cd__() {
 __fzf_insert_command() {
     local after before cursor_marker label_marker prefix selected
 
+    # Make sure fzf is installed
+    if ! is-executable fzf; then
+        return
+    fi
+
     # Prompt for the required command
     selected=$(fzf --height=40% --reverse < $HOME/.bash_commands)
 
-    # If it is cancelled, or fzf is not available, abort
+    # If it is cancelled, abort
     if [[ -z $selected ]]; then
         return
     fi
