@@ -2,6 +2,11 @@
 set -o errexit -o nounset -o pipefail
 
 topic=${1:-}
+action=${2:-}
+
+valid_topic() {
+    [[ $1 =~ ^[a-z0-9-]+$ ]]
+}
 
 if [[ -z $topic ]]; then
     echo "$(style lwhite Usage:) ref <topic> [edit|delete]"
@@ -9,21 +14,24 @@ if [[ -z $topic ]]; then
     style lyellow 'Topics:'
     cd $HOME/.ref
     for file in *.md; do
-        echo "${file//.md}"
+        topic="${file//.md}"
+        if valid_topic "$topic"; then
+            echo "$topic"
+        fi
     done
     exit
 fi
 
-if [[ ! $topic =~ ^[a-z0-9-]+$ ]]; then
+if ! valid_topic "$topic"; then
     style lred "Invalid topic name '$topic'"
     exit 1
 fi
 
-if [[ ${2:-} = 'edit' ]]; then
+if in-array "$action" 'edit' '--edit' '-e' ]]; then
     e "$HOME/.ref/$topic.md"
 elif [[ ! -f "$HOME/.ref/$topic.md" ]]; then
     style lred 'Not Found'
-elif [[ ${2:-} = 'delete' ]]; then
+elif in-array "$action" 'delete' '--delete' '-d' 'rm' '--rm'; then
     rm -f "$HOME/.ref/$topic.md"
     style lgreen 'Deleted'
 else
