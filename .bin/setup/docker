@@ -70,7 +70,11 @@ install-docker() {
 
 uninstall-docker() {
     style lcyan,bold 'Uninstalling Docker...'
-    maybe-sudo apt purge --auto-remove docker.io docker-compose docker-compose-v2 docker-buildx
+    if is-ubuntu; then
+        maybe-sudo apt purge --auto-remove docker.io docker-compose docker-compose-v2 docker-buildx
+    else
+        maybe-sudo apt purge --auto-remove docker.io docker-compose
+    fi
     echo
 }
 
