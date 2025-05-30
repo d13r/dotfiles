@@ -51,7 +51,7 @@ parse-arguments() {
 enable-universe-repository() {
     # Make sure the 'universe' repository is enabled
     # TODO: If I need this for any other scripts, move it into its own script
-    if ! grep -q '^deb .* universe' /etc/apt/sources.list; then
+    if is-ubuntu && ! grep -q '^deb .* universe' /etc/apt/sources.list; then
         style lcyan,bold "Enabling 'universe' repository..."
         maybe-sudo add-apt-repository --yes universe
         echo
@@ -60,7 +60,11 @@ enable-universe-repository() {
 
 install-docker() {
     style lcyan,bold 'Installing Docker...'
-    maybe-sudo apt install -y docker.io docker-compose docker-compose-v2 docker-buildx
+    if is-ubuntu; then
+        maybe-sudo apt install -y docker.io docker-compose docker-compose-v2 docker-buildx
+    else
+        maybe-sudo apt install -y docker.io docker-compose
+    fi
     echo
 }
 
