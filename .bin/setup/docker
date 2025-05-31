@@ -58,23 +58,27 @@ enable-universe-repository() {
     fi
 }
 
+packages() {
+    echo docker.io
+    echo docker-compose
+    if is-ubuntu; then
+        echo docker-compose-v2
+        echo docker-buildx
+    fi
+    if is-debian le 12; then
+        echo apparmor
+    fi
+}
+
 install-docker() {
     style lcyan,bold 'Installing Docker...'
-    if is-ubuntu; then
-        maybe-sudo apt install -y docker.io docker-compose docker-compose-v2 docker-buildx
-    else
-        maybe-sudo apt install -y docker.io docker-compose
-    fi
+    maybe-sudo apt install -y $(packages)
     echo
 }
 
 uninstall-docker() {
     style lcyan,bold 'Uninstalling Docker...'
-    if is-ubuntu; then
-        maybe-sudo apt purge --auto-remove docker.io docker-compose docker-compose-v2 docker-buildx
-    else
-        maybe-sudo apt purge --auto-remove docker.io docker-compose
-    fi
+    maybe-sudo apt purge --auto-remove $(packages)
     echo
 }
 
