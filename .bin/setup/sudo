@@ -38,4 +38,7 @@ fi
     # shellcheck disable=SC2016
     echo '# Always set $HOME so Vim writes temp files to /root/.vim/ instead of (e.g.) /home/dave/.vim/'
     echo 'Defaults always_set_home'
+    echo
+    echo '# Disable email alerts whenever I get the password wrong'
+    echo 'Defaults !mail_badpass'
 ) | sudo-write /etc/sudoers.d/dave
