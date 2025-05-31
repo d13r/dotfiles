@@ -10,13 +10,11 @@ main() {
 
     if $revert; then
         uninstall-docker
-        remove-user-from-docker-group
         uninstall-lazy-docker
         uninstall-dive
     else
         enable-universe-repository # Not reverted
         install-docker
-        add-user-to-docker-group
         install-lazy-docker
         install-dive
     fi
@@ -79,24 +77,6 @@ install-docker() {
 uninstall-docker() {
     style lcyan,bold 'Uninstalling Docker...'
     maybe-sudo apt purge --auto-remove $(packages)
-    echo
-}
-
-add-user-to-docker-group() {
-    if ! is-root-user && ! is-in-group docker; then
-        # Security info: https://docs.docker.com/engine/install/linux-postinstall/
-        style lcyan,bold "Configuring group membership..."
-        if ask "Add '$USER' to the 'docker' group? (WARNING: This is less secure!)" N; then
-            sudo gpasswd -a "$USER" docker
-            added_to_group=true
-        fi
-        echo
-    fi
-}
-
-remove-user-from-docker-group() {
-    style lcyan,bold "Deleting the 'docker' group..."
-    maybe-sudo groupdel docker || true
     echo
 }
 
