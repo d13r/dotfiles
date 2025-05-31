@@ -1346,7 +1346,6 @@ __fzf_insert_command() {
             --nth='..' \
             --preview-window='down,2,wrap,border-top' \
             --preview='echo {2} | ( batcat -pl bash --color=always || cat ) 2>/dev/null' \
-            --ansi \
             --color='preview-fg:bright-white' \
             --query="$READLINE_LINE" |
         cut -f2
