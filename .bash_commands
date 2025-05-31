@@ -1,3 +1,17 @@
+#> docker: Clean all
+docker system prune && docker builder prune
+
+#> docker: Run an interactive shell
+docker run -it --rm ubuntu
+
+#> docker: Run an interactive shell with SSH agent forwarding
+docker run -it --rm --volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent --entrypoint /bin/bash ubuntu
+
+#> docker: Run a static file server on port 8080
+docker run --rm -v "$PWD:/web" -p 8080:8080 -e DEBUG=true halverneus/static-file-server
+
+#===============================================================================
+
 #> git filter-repo: Remove file/directory
 git filter-repo --invert-paths --path path/to/remove/
 
