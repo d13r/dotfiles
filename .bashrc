@@ -1347,7 +1347,8 @@ __fzf_insert_command() {
             --preview-window='down,2,wrap,border-top' \
             --preview='echo {2} | ( batcat -pl bash --color=always || cat ) 2>/dev/null' \
             --ansi \
-            --color='preview-fg:bright-white' |
+            --color='preview-fg:bright-white' \
+            --query="$READLINE_LINE" |
         cut -f2
     )
 
@@ -1355,10 +1356,6 @@ __fzf_insert_command() {
     if [[ -z $selected ]]; then
         return
     fi
-
-    # Extract what was before/after the cursor originally
-    before=${READLINE_LINE:0:$READLINE_POINT}
-    after=${READLINE_LINE:$READLINE_POINT}
 
     # Remove the label from the beginning of the line (and any more spaces)
     selected=${selected#*: }
@@ -1368,13 +1365,12 @@ __fzf_insert_command() {
     cursor_marker='¦'
 
     if [[ "$selected" == *"$cursor_marker"* ]]; then
-        local prefix=${selected%%$cursor_marker*}
-        READLINE_POINT=$(( ${#prefix} + ${#before} ))
+        READLINE_POINT=${selected%%$cursor_marker*}
         selected="${selected//$cursor_marker/}"
     fi
 
     # Return the new command line
-    READLINE_LINE="$before$selected$after"
+    READLINE_LINE="$selected"
 }
 
 
