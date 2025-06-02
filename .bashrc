@@ -1320,7 +1320,7 @@ __fzf_cd__() {
 
 # Templates for complex commands (bound to Alt-T)
 __fzf_insert_command() {
-    local after before cursor_marker label_marker prefix selected
+    local cursor_marker prefix selected
 
     # Make sure fzf is installed
     if ! is-executable fzf; then
