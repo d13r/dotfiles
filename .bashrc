@@ -1364,7 +1364,8 @@ __fzf_insert_command() {
     cursor_marker='¦'
 
     if [[ "$selected" == *"$cursor_marker"* ]]; then
-        READLINE_POINT=${selected%%$cursor_marker*}
+        prefix=${selected%%$cursor_marker*}
+        READLINE_POINT=${#prefix}
         selected="${selected//$cursor_marker/}"
     fi
 
