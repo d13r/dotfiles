@@ -104,6 +104,9 @@
 [core]
     pager = delta-or-less
 
+[credential]
+    helper = cache --timeout=3600
+
 [delta]
     features = decorations
     navigate = true
