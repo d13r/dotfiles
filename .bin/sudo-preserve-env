@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# If no command was given, using 'env' will cause it to print all environment variables
+if [[ $# -eq 0 ]]; then
+    exec sudo
+fi
+
 # If the first argument is an option rather than a command, we can't do this
-if [[ "${1-}" = -* ]]; then
+if [[ $1 = -* ]]; then
     exec sudo "$@"
 fi
 
