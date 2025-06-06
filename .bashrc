@@ -1340,7 +1340,6 @@ __fzf_insert_command() {
         fzf \
             --height=40% \
             --reverse \
-            --no-sort \
             --delimiter='\t' \
             --with-nth='1' \
             --nth='..' \
