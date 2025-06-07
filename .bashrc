@@ -74,9 +74,9 @@ if [[ -f /usr/local/bin/virtualenvwrapper_lazy.sh ]]; then
 fi
 
 # Ruby rvm
-if [[ -s ~/.rvm/scripts/rvm ]]; then
+if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
     rvm_project_rvmrc=0
-    source ~/.rvm/scripts/rvm
+    source "$HOME/.rvm/scripts/rvm"
 fi
 
 
@@ -173,7 +173,6 @@ fi
 
 alias l="ls $ls_common -l"
 alias la="ls $ls_common -lA"
-alias land='_idea goland'
 alias ll="ls $ls_common -l"
 alias ls="ls $ls_common"
 alias lsa="ls $ls_common -A"
@@ -197,6 +196,7 @@ alias pw='PASSWORD_STORE_DIR="$HOME/.password-store/MI" pvview'
 alias reboot="$sudo reboot"
 alias reload='exec bash -l'
 alias rm='rm -i'
+alias rustrover='_idea rustrover'
 
 alias s='sudo '
 alias scra="$sudo systemctl reload apache2 && $sudo systemctl status --no-pager --full apache2"
@@ -205,7 +205,6 @@ alias setup='bin --exe setup --dir "$HOME/.bin/setup"'
 alias shutdown="$sudo poweroff"
 alias sshak='ssh -o StrictHostKeyChecking=accept-new'
 alias sshstop='ssh -O stop'
-alias storm='_idea phpstorm'
 alias sudo='sudo ' # Expand aliases
 alias sw='sw ' # Expand aliases
 
@@ -538,16 +537,21 @@ hackit() {
 }
 
 ide() {
-    if findup -f .idea/php.xml >/dev/null; then
-        _idea phpstorm
-    elif findup -f .idea/go.xml >/dev/null; then
-        # Untested (3 Dec 2024)
-        _idea goland
-    elif findup -d .idea >/dev/null; then
-        echo 'Cannot determine the project type'
-        return 1
-    else
+    local path
+
+    if ! path=$(findup -d .idea); then
         echo 'Cannot find .idea/ folder'
+        return 1
+    fi
+
+    if [[ -f "$path/.idea/php.xml" || -f "$path/composer.json" ]]; then
+        _idea phpstorm
+    elif [[ -f "$path/Cargo.toml" ]]; then
+        _idea rustrover
+    elif [[ -f "$path/go.mod" ]]; then
+        _idea goland
+    else
+        echo 'Cannot determine the project type'
         return 1
     fi
 }

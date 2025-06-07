@@ -1,16 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Install dependencies
-# (Chromium installed to allow activation via browser)
-sudo apt install -y \
-    chromium-browser \
-    default-jre \
-    fonts-firacode \
-    golang-go \
-    libgbm-dev \
-    libgdm-dev \
-    openjfx
+source "$HOME/.lib/setup-idea"
 
-# Install GoLand
+sudo apt install -y "${apt_packages[@]}" goland-go
 sudo snap install --classic goland
