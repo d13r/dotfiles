@@ -69,6 +69,7 @@
 !/.multipass
 !/.new/
 !/.pam_environment
+!/.profile
 !/.ref/
 
 !/.ssh
