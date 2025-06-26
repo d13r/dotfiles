@@ -1440,10 +1440,12 @@ fi
 ~/.dotfiles/auto-update
 
 # Show the current directory name & contents
-# Only if running in tmux - because I normally only use a plan terminal to launch tmux
-if [[ -n ${TMUX:-} ]]; then
-    _ls-current-directory
-fi
+# Only if running in tmux - because I normally only use a plain terminal to launch tmux
+# Removed 26 Jun 2025 because I rarely look at it and it slows things down, and
+# because I have now configured Win+` to use Tmux instead of a plain terminal
+#if [[ -n ${TMUX:-} ]]; then
+#    _ls-current-directory
+#fi
 
 
 #===============================================================================
