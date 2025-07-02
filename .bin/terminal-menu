@@ -95,7 +95,7 @@ while true; do
             command="h $host"
         else
             # Not quoted so I can pass extra options
-            command="ssh $host"
+            command="ssh-with-bashrc $host"
         fi
     fi
 
