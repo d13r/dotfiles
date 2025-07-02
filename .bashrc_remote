@@ -167,9 +167,6 @@ export LS_COLORS='rs=0:fi=97:di=93:ln=96:mh=00:pi=40;33:so=95:do=95:bd=40;93:cd=
 export EDITOR='vim'
 export VISUAL='vim'
 
-# Display directory listing
-c .
-
 # Uncomment these to test escaping
 #echo "Test 1 ' OK"
 #echo 'Test 2 " OK'
