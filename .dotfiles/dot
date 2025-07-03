@@ -131,6 +131,7 @@
         3e8337f44f84b298a8a99869ae8ca76a
 
     delete_skeleton_file .bash_logout
+    delete_skeleton_file .profile
     delete_skeleton_file .sudo_as_admin_successful --force
 
     # Update the working directory
