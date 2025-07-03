@@ -116,13 +116,15 @@
     # c36f10fd0ff59c3bcce088d7a7a6c410 = Red Hat root user (8)
     # 5a7c4ac3b2c83961ddabb40995e3c301 = Fedora root user (38), Red Hat root user (9)
     # cf277664b1771217d7006acdea006db1 = Ubuntu root user (20.04, 22.04, 24.04)
-    # 0a540d50c157ed0070459b82c358a05a = Proxmox VE (8.2)
+    # 0a540d50c157ed0070459b82c358a05a = Proxmox VE root user (8.2)
+    # 7030b200003d19cfe014fe70522f3d1a = Ubuntu dave user (24.04) on Oracle Cloud
     delete_skeleton_file .bashrc \
         9c05b15df7f85bb969c87435a750d9da \
         c36f10fd0ff59c3bcce088d7a7a6c410 \
         5a7c4ac3b2c83961ddabb40995e3c301 \
         cf277664b1771217d7006acdea006db1 \
-        0a540d50c157ed0070459b82c358a05a
+        0a540d50c157ed0070459b82c358a05a \
+        7030b200003d19cfe014fe70522f3d1a
 
     # 5fe6b8bf98bb94c55447ae48fb3202d4 = Fedora root user (39, 40)
     # 3e8337f44f84b298a8a99869ae8ca76a = Red Hat root user (8)
