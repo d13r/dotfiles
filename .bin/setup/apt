@@ -21,6 +21,9 @@ fi
 
 echo
 
+# add-apt-repository
+maybe-sudo apt install -y software-properties-common
+
 # Unattended upgrades
 echo 'Configuring unattended upgrades...'
 
