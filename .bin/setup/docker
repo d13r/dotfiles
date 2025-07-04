@@ -70,7 +70,7 @@ packages() {
 
 install-docker() {
     style lcyan,bold 'Installing Docker...'
-    maybe-sudo apt install -y $(packages)
+    maybe-sudo apt install -y $(packages) python3-setuptools
     echo
 }
 
