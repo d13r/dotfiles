@@ -1,1 +1,1 @@
-command -v bin &>/dev/null && eval "$(bin --completion)"
+complete -C "bin --complete-bash" -o default bin

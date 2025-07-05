@@ -1,1 +1,1 @@
-command -v bin &>/dev/null && eval "$(bin --completion --exe setup --dir "$HOME/.bin/setup")"
+complete -C "bin --exe 'setup' --dir '$HOME/.bin/setup' --complete-bash" -o default setup
