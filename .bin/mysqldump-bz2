@@ -6,4 +6,4 @@ if [[ -z ${1:-} ]]; then
     exit 1
 fi
 
-mysqldump --routines $1 | bzip2 -9 > $1.sql.bz2
+mysqldump --single-transaction --routines "$1" | bzip2 -9 > "$1.sql.bz2"
