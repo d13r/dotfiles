@@ -65,6 +65,14 @@ ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=
 
 #===============================================================================
 
+#> mysqldump: Single database (bzipped)
+mysqldump --single-transaction --routines ¦ | bzip2 -9 > dump.sql.bz2
+
+#> mysqldump: Single database (uncompressed)
+mysqldump --single-transaction --routines ¦ > dump.sql
+
+#===============================================================================
+
 #> rsync: Sync the current directory to another server
 rsync -rlt --delete --stats --info=progress2 ./ user@server:/path/to/target
 
