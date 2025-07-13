@@ -77,8 +77,18 @@ while true; do
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
     trap 'exit_menu' INT
+    HISTFILE=~/.terminal_menu_history
+    history -r
     read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
+    history -s "${host#\#}"
+    history -w
     trap INT
+
+    # Alt-# writes to the history and clears input without running anything
+    if [[ $host == '#'* ]]; then
+        host=''
+        continue
+    fi
 
     # Connect to the given server and run 'tmux' or $SHELL as appropriate
     if [[ -z $host ]]; then
