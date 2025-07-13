@@ -1,90 +1,27 @@
-#> docker: Clean all
-docker system prune && docker builder prune
-
-#> docker: Run an interactive shell
-docker run -it --rm ubuntu
-
-#> docker: Run an interactive shell with SSH agent forwarding
-docker run -it --rm --volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent --entrypoint /bin/bash ubuntu
-
-#> docker: Run a static file server on port 8080
+docker system prune && docker builder prune # Clean all
+docker run -it --rm ubuntu # Interactive shell
+docker run -it --rm --volume $SSH_AUTH_SOCK:/tmp/ssh-agent --env SSH_AUTH_SOCK=/tmp/ssh-agent --entrypoint /bin/bash ubuntu # Shell with agent forwarding
 docker run --rm -v "$PWD:/web" -p 8080:8080 -e DEBUG=true halverneus/static-file-server
-
-#===============================================================================
-
-#> git filter-repo: Remove file/directory
 git filter-repo --invert-paths --path path/to/remove/
-
-#> git filter-repo: Remove glob
 git filter-repo --invert-paths --path-glob 'path/to/*.jpg'
-
-#===============================================================================
-
-#> iptables: Block an IP
 iptables -A INPUT -s 1.2.3.4 -j REJECT -m comment --comment 'Reason here'
-
-#> iptables: Block a range
 iptables -A INPUT -s 1.2.3.0/24 -j REJECT -m comment --comment 'Reason here'
-
-#> iptables: List rules
 iptables -L INPUT --line-numbers
-
-#> iptables: Delete a rule
-iptables -D INPUT 123
-
-#===============================================================================
-
-#> kinit: miLDAP - miller/sysman
+iptables -D INPUT 123 # Delete rule by number
 kinit miller/sysman
-
-#> kinit: miLDAP - miller
 kinit miller
-
-#> kinit: CUD - webdev
 kinit -kt /mi/etc/keytabs/OX.AC.UK/cud/webdev.maths.ox.ac.uk.keytab cud/webdev.maths.ox.ac.uk@OX.AC.UK
-
-#> kinit: Oak LDAP - webdev
 kinit -kt /mi/etc/keytabs/OX.AC.UK/oak-ldap/webdev.maths.ox.ac.uk.keytab oak-ldap/webdev.maths.ox.ac.uk@OX.AC.UK
-
-#===============================================================================
-
-#> ldapsearch: miLDAP
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
-
-#> ldapsearch: miLDAP - Show user
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=people,ou=current,dc=maths,dc=ox,dc=ac,dc=uk '(uid=¦)' | ldif-sort | ldif-decode | bat -pl yaml
-
-#> ldapsearch: miLDAP - Show group
+ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=people,ou=expired,dc=maths,dc=ox,dc=ac,dc=uk '(uid=¦)' | ldif-sort | ldif-decode | bat -pl yaml
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=group,ou=current,dc=maths,dc=ox,dc=ac,dc=uk '(cn=¦)' | ldif-sort | ldif-decode | bat -pl yaml
-
-#> ldapsearch: miLDAP - Authenticate as rwroot
-ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -x -D uid=rwroot,ou=admin,ou=current,dc=maths,dc=ox,dc=ac,dc=uk -W -b ou=current,dc=maths,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
-
-#> ldapsearch: Oak LDAP
+ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=group,ou=expired,dc=maths,dc=ox,dc=ac,dc=uk '(cn=¦)' | ldif-sort | ldif-decode | bat -pl yaml
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=oak,dc=ox,dc=ac,dc=uk '¦' | ldif-sort | ldif-decode | bat -pl yaml
-
-#===============================================================================
-
-#> mysqldump: Single database (bzipped)
 mysqldump --single-transaction --routines ¦ | bzip2 -9 > dump.sql.bz2
-
-#> mysqldump: Single database (uncompressed)
 mysqldump --single-transaction --routines ¦ > dump.sql
-
-#===============================================================================
-
-#> rsync: Sync the current directory to another server
 rsync -rlt --delete --stats --info=progress2 ./ user@server:/path/to/target
-
-#> rsync: Sync the current directory to another server - preserve owner, etc. (root only)
-rsync -aHS --delete --stats --info=progress2 ./ user@server:/path/to/target
-
-#> rsync: Sync a directory from another server
+rsync -aHS --delete --stats --info=progress2 ./ user@server:/path/to/target # root only
 rsync -rlt --delete --stats --info=progress2 user@server:/path/to/source/ /path/to/target
-
-#> rsync: Sync a directory from another server - preserve owner, etc. (root only)
-rsync -aHS --delete --stats --info=progress2 user@server:/path/to/source/ /path/to/target
-
-#===============================================================================
-
+rsync -aHS --delete --stats --info=progress2 user@server:/path/to/source/ /path/to/target # root only
 # vim:ft=bash

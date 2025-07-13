@@ -1335,33 +1335,21 @@ __fzf_insert_command() {
     # Note: '--nth' doesn't actually do anything yet (https://github.com/junegunn/fzf/issues/4257)
     # Note: 'cut' can be replaced with '--accept-nth' from 0.60.0
     selected=$(
-        awk '
-            /^\s*$/ { next }                                    # Skip blank lines
-            /^#> .+/ { title = substr($0, 3); next }            # Capture titles
-            /^#/ { next }                                       # Skip other comments
-            { print (title ? title : $0) "\t" $0; title = 0 }   # Print title<TAB>value
-        ' "$HOME/.bash_commands" |
+        grep -v '^#' "$HOME/.bash_commands" |
         fzf \
             --height=40% \
             --reverse \
-            --delimiter='\t' \
-            --with-nth='1' \
-            --nth='..' \
             --preview-window='down,2,wrap,border-top' \
-            --preview='echo {2} | ( batcat -pl bash --color=always || cat ) 2>/dev/null' \
+            --preview='echo {} | ( batcat -pl bash --color=always || cat ) 2>/dev/null' \
             --color='preview-fg:bright-white' \
             --query="$READLINE_LINE" |
-        cut -f2
+        sed 's/ # .*//'
     )
 
     # If it is cancelled, abort
     if [[ -z $selected ]]; then
         return
     fi
-
-    # Remove the label from the beginning of the line (and any more spaces)
-    selected=${selected#*: }
-    selected="${selected#"${selected%%[![:space:]]*}"}"
 
     # Work out where to put the cursor afterwards and remove the cursor marker
     cursor_marker='¦'
@@ -1370,6 +1358,8 @@ __fzf_insert_command() {
         prefix=${selected%%$cursor_marker*}
         READLINE_POINT=${#prefix}
         selected="${selected//$cursor_marker/}"
+    else
+        READLINE_POINT=${#selected}
     fi
 
     # Return the new command line
