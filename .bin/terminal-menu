@@ -78,7 +78,7 @@ while true; do
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
     trap 'exit_menu' INT
     HISTFILE=~/.terminal_menu_history
-    history -r
+    history -r || true
     read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
     history -s "${host#\#}"
     history -w
