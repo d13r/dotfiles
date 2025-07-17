@@ -62,6 +62,7 @@ Put this in `c:\Users\dave\.wslconfig`:
 [wsl2]
 guiApplications=false
 networkingMode=mirrored
+kernelCommandLine=ipv6.disable=1
 ```
 
 [Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
