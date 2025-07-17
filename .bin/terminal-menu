@@ -58,6 +58,13 @@ toggle_tmux() {
     update_tmux_status
 }
 
+# Save the history in a file
+HISTCONTROL='ignoreboth'
+HISTFILE=~/.terminal_menu_history
+HISTIGNORE='&'
+HISTSIZE=1000
+history -n || true
+
 # After exiting a terminal, return to the menu
 while true; do
 
@@ -77,8 +84,6 @@ while true; do
 
     # Prompt for hostname (also accepts an alias defined in .ssh/config)
     trap 'exit_menu' INT
-    HISTFILE=~/.terminal_menu_history
-    history -r || true
     read -rp "  $(style lwhite 'Enter Hostname:') " -ei "$host" host
     history -s "${host#\#}"
     history -w
