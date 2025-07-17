@@ -1178,12 +1178,13 @@ bind 'Space: magic-space'
 dirhistory_past=()
 dirhistory_future=()
 
+HISTCONTROL='ignoreboth'
+HISTIGNORE='&'
+HISTSIZE=50000
+HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
+
 export DOCKER_USER="$(id -u):$(id -g)" # https://stackoverflow.com/a/68711840/167815
 export GPG_TTY=$(tty)
-export HISTCONTROL='ignoreboth'
-export HISTIGNORE='&'
-export HISTSIZE=50000
-export HISTTIMEFORMAT='[%Y-%m-%d %H:%M:%S] '
 export QUOTING_STYLE='literal'
 
 if is-executable git; then
