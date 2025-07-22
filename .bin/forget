@@ -3,6 +3,6 @@ set -euo pipefail
 
 ssh-keygen -f ~/.ssh/known_hosts -R "$1" || true
 
-for host in $(grep "^$1[ .]" ~/.ssh/known_hosts | cut -f1 -d' '); do
+for host in $(grep "^$1[ .]" ~/.ssh/known_hosts | cut -f1 -d' ' | uniq); do
     ssh-keygen -f ~/.ssh/known_hosts -R "$host" || true
 done
