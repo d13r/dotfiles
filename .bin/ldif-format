@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if is-executable batcat; then
+    ldif-sort | ldif-decode | batcat -pl yaml
+elif is-executable bat; then
+    ldif-sort | ldif-decode | bat -pl yaml
+else
+    ldif-sort | ldif-decode
+fi
