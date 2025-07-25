@@ -1296,6 +1296,18 @@ export FZF_CTRL_T_OPTS="
     --preview '(batcat -p {} --color=always || cat {} || tree -C {}) 2>/dev/null | head -200'
 "
 
+# Limit depth because it becomes unusable in large projects
+export FZF_ALT_C_COMMAND="
+    find -L . \
+        -mindepth 1 \
+        -maxdepth 2 \
+        \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+        -o -type d \
+        -print \
+        2>/dev/null \
+    | cut -b3-
+"
+
 export FZF_ALT_C_OPTS="
     --preview 'tree -C {} | head -200'
 "
