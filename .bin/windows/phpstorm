@@ -1,17 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
-shopt -s nullglob
 
-file=
-for file in $(wsl-localappdata-path)/JetBrains/Toolbox/apps/PhpStorm/ch-0/*/bin/PhpStorm64.exe; do
-    : # We generally want the last version
-done
+exe="$(wsl-localappdata-path)/Programs/PhpStorm/bin/phpstorm64.exe"
 
-if [[ -z $file ]]; then
-    echo "PhpStorm64.exe not found" >&2
+if [[ ! -f $exe ]]; then
+    echo "phpstorm64.exe not found" >&2
     exit 1
 fi
 
-# Added 'cmd.exe' 11 Feb 2023 because PhpStorm was crashing with error:
-# siginfo: EXCEPTION_ACCESS_VIOLATION (0xc0000005), data execution prevention violation at address 0x0000000000000000
-exec cmd.exe "$file" "$@"
+exec "$exe" "$@"
