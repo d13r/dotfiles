@@ -4,7 +4,7 @@ set -euo pipefail
 # Get username & password
 echo "You will need an AWS SES username and password."
 echo "Visit https://console.aws.amazon.com/iam/home?SESRegion=eu-west-1#/users/smtp/create to create a new user."
-echo "Set the IAM username to \"${HOSTNAME%%.*}-ses-postfix-user\"."
+echo "Set the IAM username to \"${HOSTNAME%%.*}-postfix-ses\"."
 echo
 
 username=''
