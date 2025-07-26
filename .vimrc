@@ -42,6 +42,7 @@ silent! call plug#begin('~/.vim/plugged')
     Plug 'ctrlpvim/ctrlp.vim'
     Plug 'garbas/vim-snipmate'
     Plug 'editorconfig/editorconfig-vim'
+    Plug 'hashivim/vim-terraform'
     Plug 'itchyny/lightline.vim'
     Plug 'lumiliet/vim-twig'
     Plug 'MarcWeber/vim-addon-mw-utils' " Dependency of SnipMate
