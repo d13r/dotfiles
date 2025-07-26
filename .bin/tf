@@ -1,4 +1,82 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Environment variables
+if [[ -f .env ]]; then
+    set -o allexport
+    source .env
+    set +o allexport
+fi
 
+# Shortcuts
+case "${1:-}" in
+
+    a) # Apply
+        shift
+        exec tofu apply "$@"
+        ;;
+
+    an) # Apply No Refresh
+        shift
+        exec tofu apply -refresh=false "$@"
+        ;;
+
+    ar) # Apply Refresh Only
+        shift
+        exec tofu apply -refresh-only "$@"
+        ;;
+
+    i) # Init
+        shift
+        exec tofu init "$@"
+        ;;
+
+    ia) # Init and Apply
+        shift
+        tofu init && exec tofu apply "$@"
+        ;;
+
+    ian) # Init and Apply No Refresh
+        shift
+        tofu init && exec tofu apply -refresh=false "$@"
+        ;;
+
+    iar) # Init and Apply Refresh Only
+        shift
+        tofu init && exec tofu apply -refresh-only "$@"
+        ;;
+
+    ls) # State List
+        shift
+        exec tofu state ls "$@"
+        ;;
+
+    mv) # State Move
+        shift
+        exec tofu state mv "$@"
+        ;;
+
+    o) # Output
+        shift
+        exec tofu output "$@"
+        ;;
+
+    os) # Output Sensitive
+        shift
+        exec tofu output -show-sensitive "$@"
+        ;;
+
+    p) # Plan
+        shift
+        exec tofu plan "$@"
+        ;;
+
+    v) # Validate
+        shift
+        exec tofu validate "$@"
+        ;;
+
+esac
+
+# Anything else
+exec tofu "$@"
