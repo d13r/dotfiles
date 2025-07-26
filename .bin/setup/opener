@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if ! is-executable unzip; then
+    ~/.bin/setup/unzip
+fi
+
+mkdir -p ~/.local/bin
+
+tmp=$(mktemp)
+trap 'rm -f "$tmp"' EXIT
+
+wget https://github.com/superbrothers/opener/releases/latest/download/opener-linux-amd64.zip -O "$tmp"
+unzip "$tmp" opener -d ~/.local/bin
+chmod +x ~/.local/bin/opener

@@ -62,7 +62,12 @@ if is-wsl; then
     PATH="$HOME/.bin/local/windows:$PATH"
 fi
 
-# For tab completion with sudo
+# For Opener (https://github.com/superbrothers/opener)
+if [[ -S $HOME/.opener.remote.sock ]]; then
+    PATH="$HOME/.bin/opener:$PATH"
+fi
+
+# For tab completion with sudo (lower precedence)
 PATH="$PATH:/usr/local/sbin"
 PATH="$PATH:/usr/sbin"
 PATH="$PATH:/sbin"
