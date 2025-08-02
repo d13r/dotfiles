@@ -12,8 +12,9 @@ main() {
         uninstall-docker
         uninstall-lazy-docker
         uninstall-dive
+        remove-docker-repository
     else
-        enable-universe-repository # Not reverted
+        add-docker-repository
         install-docker
         install-lazy-docker
         install-dive
@@ -46,31 +47,34 @@ parse-arguments() {
     done
 }
 
-enable-universe-repository() {
-    # Make sure the 'universe' repository is enabled
-    # TODO: If I need this for any other scripts, move it into its own script
-    if is-ubuntu && ! grep -q '^deb .* universe' /etc/apt/sources.list; then
-        style lcyan,bold "Enabling 'universe' repository..."
-        maybe-sudo add-apt-repository --yes universe
-        echo
-    fi
+# Using the upstream repository because (1) Docker 27 enables IPv6 support by
+# default, which is much simpler than configuring it manually, and (2) it
+# ensures consistency between Debian and Ubuntu hosts
+add-docker-repository() {
+    style lcyan,bold 'Adding Docker repository...'
+    maybe-sudo curl -fsSL "https://download.docker.com/linux/$(os-id)/gpg" -o /etc/apt/keyrings/docker.asc
+
+    echo "deb [arch=$(os-arch) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/$(os-id) $(os-codename) stable" |
+        sudo-write /etc/apt/sources.list.d/docker.list
+
+    maybe-sudo apt update
+    echo
+}
+
+remove-docker-repository() {
+    style lcyan,bold 'Removing Docker repository...'
+    maybe-sudo rm -f /etc/apt/keyrings/docker.asc /etc/apt/sources.list.d/docker.list
+    echo
 }
 
 packages() {
-    echo docker.io
-    echo docker-compose
-    if is-ubuntu; then
-        echo docker-compose-v2
-        echo docker-buildx
-    fi
-    if is-debian le 12; then
-        echo apparmor
-    fi
+    # https://docs.docker.com/engine/install/debian/
+    echo docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 }
 
 install-docker() {
     style lcyan,bold 'Installing Docker...'
-    maybe-sudo apt install -y $(packages) python3-setuptools
+    maybe-sudo apt install -y $(packages)
     echo
 }
 
