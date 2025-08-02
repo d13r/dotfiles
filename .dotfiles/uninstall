@@ -38,11 +38,7 @@
         .marks \
         .vim
 
-    # Delete .my.cnf only if it hadn't been changed from the default
-    # Note: Removed automatic generation 28 Apr 2023
-    [[ $(md5sum .my.cnf | cut -d' ' -f1) = 'dce3584e1dd8b14b7ec0322d330946c1' ]] && rm -f .my.cnf
-
     # Restore the default (skeleton) files, skipping any existing files
-    cp -nr /etc/skel/. .
+    cp -r --update=none /etc/skel/. .
 
 ) && exec bash -l
