@@ -23,9 +23,6 @@ Add a second network interface:
 - Enter the IP "192.168.5.1"
 - Click OK, then Close
 
-Run:
-    wsl-enable-forwarding
-
 ================================================================================
  Create a new VM
 ================================================================================
