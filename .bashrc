@@ -182,8 +182,6 @@ alias mux='tmuxinator'
 alias ncdu='ncdu --color dark'
 alias nslookup='_domain-command nslookup'
 
-alias php5dismod="$sudo php5dismod"
-alias php5enmod="$sudo php5enmod"
 alias phpdismod="$sudo phpdismod"
 alias phpenmod="$sudo phpenmod"
 alias phpstorm='_idea phpstorm'
