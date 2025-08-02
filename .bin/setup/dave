@@ -34,7 +34,7 @@ chown dave:dave ~dave/.ssh ~dave/.ssh/authorized_keys
 
 # Prepare dotfiles
 style lcyan,bold  'Preparing dotfiles installer...'
-echo '[[ ! -d .git ]] && cd && wget https://djm.me/dot && source dot' >> ~dave/.bashrc
+echo '[[ ! -d .git ]] && cd && wget https://djm.me/cfg && source cfg' >> ~dave/.bashrc
 chown dave:dave ~dave/.bashrc
 
 # Prompt for a password

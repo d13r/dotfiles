@@ -34,8 +34,8 @@ if ! grep -q "^$user:" /etc/passwd; then
     # Automatically download and run the Dotfiles installation script
     # Use '-n' ("no dotfiles") to disable this step
     if [[ ${1-} != '-n' ]]; then
-        # Also delete 'dot' and '.git' if they already exist, in case it fails the first time
-        sudo su "$user" -c "echo 'cd; rm -rf .git dot; wget djm.me/dot && . dot' >> ~/.bashrc"
+        # Also delete 'cfg' and '.git' if they already exist, in case it fails the first time
+        sudo su "$user" -c "echo 'cd; rm -rf .git cfg; wget djm.me/cfg && . cfg' >> ~/.bashrc"
     fi
 
 fi

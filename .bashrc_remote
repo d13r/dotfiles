@@ -73,9 +73,9 @@ alias sc='systemctl'
 
 # Shortcut to upgrade to full dotfiles install
 setup-dotfiles() {
-    wget djm.me/dot -O ~/dot
+    wget djm.me/cfg -O ~/cfg
     cd
-    . dot
+    . cfg
     unset -f setup-dotfiles
 }
 

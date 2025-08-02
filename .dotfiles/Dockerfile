@@ -24,13 +24,13 @@ ADD sudoers /etc/sudoers.d/test
 RUN useradd --create-home --shell=/bin/bash test
 
 # The first time Bash is run, automatically run the setup script
-RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bash.bashrc
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/cfg ]] && cd && . cfg" >> /etc/bash.bashrc
 
 # Copy the setup script to each user account
-COPY dot /root/dot
+COPY cfg /root/cfg
 
 USER test
-COPY dot /home/test/dot
+COPY cfg /home/test/cfg
 
 #===============================================================================
 # Red Hat-based OS
@@ -53,13 +53,13 @@ ADD sudoers /etc/sudoers.d/test
 RUN useradd test
 
 # The first time Bash is run, automatically run the setup script
-RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bashrc
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/cfg ]] && cd && . cfg" >> /etc/bashrc
 
 # Copy the setup script to each user account
-COPY dot /root/dot
+COPY cfg /root/cfg
 
 USER test
-COPY dot /home/test/dot
+COPY cfg /home/test/cfg
 
 #===============================================================================
 # Alpine
@@ -89,10 +89,10 @@ RUN chsh root -s /bin/bash
 RUN adduser --disabled-password --shell=/bin/bash test
 
 # The first time Bash is run, automatically run the setup script
-RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/dot ]] && cd && . dot" >> /etc/bash/bashrc
+RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/cfg ]] && cd && . cfg" >> /etc/bash/bashrc
 
 # Copy the setup script to each user account
-COPY dot /root/dot
+COPY cfg /root/cfg
 
 USER test
-COPY dot /home/test/dot
+COPY cfg /home/test/cfg

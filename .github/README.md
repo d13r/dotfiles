@@ -4,8 +4,8 @@
 
 ```bash
 cd
-wget djm.me/dot
-. dot
+wget djm.me/cfg
+. cfg
 ```
 
 ## Configuration
@@ -76,8 +76,8 @@ Then install dotfiles:
 ```bash
 sudo apt update
 sudo apt install wget
-wget djm.me/dot
-. dot
+wget djm.me/cfg
+. cfg
 ```
 
 When the installation completes, it will close the terminal. Run Debian again, then install various tools (including Tmux):
