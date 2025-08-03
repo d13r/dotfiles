@@ -112,9 +112,11 @@
         echo "Skipping unknown $file (MD5=$actual_md5)"
     }
 
-    # 24dd8ec99b49998cf0db145f26658993 = Auto-installer written by Ansible
+    # 3dfcfd30fbd064a6afccb4dfc24f2585  bashrc-auto-install-local
+    # ee8684af17fcef5a858e1f9d7c62f28b  bashrc-auto-install-remote
     delete_skeleton_file .bashrc \
-        24dd8ec99b49998cf0db145f26658993
+        3dfcfd30fbd064a6afccb4dfc24f2585 \
+        ee8684af17fcef5a858e1f9d7c62f28b
 
     delete_skeleton_file .bash_profile
     delete_skeleton_file .bash_logout

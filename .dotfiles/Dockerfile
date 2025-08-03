@@ -23,14 +23,13 @@ ADD sudoers /etc/sudoers.d/test
 # Create a non-root user
 RUN useradd --create-home --shell=/bin/bash test
 
-# The first time Bash is run, automatically run the setup script
-RUN echo "[[ ! -d ~/.git ]] && [[ -f ~/cfg ]] && cd && . cfg" >> /etc/bash.bashrc
-
-# Copy the setup script to each user account
+# Copy the setup script to each user account and run it automatically on login
 COPY cfg /root/cfg
+COPY bashrc-auto-install-local /root/.bashrc
 
 USER test
 COPY cfg /home/test/cfg
+COPY bashrc-auto-install-local /home/test/.bashrc
 
 #===============================================================================
 # Red Hat-based OS
