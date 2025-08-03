@@ -5,8 +5,8 @@ ARG base=ubuntu
 #===============================================================================
 FROM ${base} AS debian
 
-ENV LANG en_GB.UTF-8
-ENV TZ Europe/London
+ENV LANG=en_GB.UTF-8
+ENV TZ=Europe/London
 
 # Install dependencies
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && \
@@ -37,8 +37,8 @@ COPY cfg /home/test/cfg
 #===============================================================================
 FROM ${base} AS redhat
 
-ENV LANG en_GB.UTF-8
-ENV TZ Europe/London
+ENV LANG=en_GB.UTF-8
+ENV TZ=Europe/London
 
 # Install dependencies
 RUN yum install -y \
@@ -66,8 +66,8 @@ COPY cfg /home/test/cfg
 #===============================================================================
 FROM ${base} AS alpine
 
-ENV LANG en_GB.UTF-8
-ENV TZ Europe/London
+ENV LANG=en_GB.UTF-8
+ENV TZ=Europe/London
 
 # Install dependencies
 RUN apk update && apk add \
