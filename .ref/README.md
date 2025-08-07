@@ -1,6 +1,6 @@
 # Reference files
 
-The `.txt` files in this folder can be read (and edited) from the CLI:
+The `.md` files in this folder can be read (and edited) from the CLI:
 
 ```bash
 ref <topic>
