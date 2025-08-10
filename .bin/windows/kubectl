@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-if [[ -x /usr/local/bin/kubectl ]]; then
-    exec /usr/local/bin/kubectl "$@"
-fi
-
-exec kubectl.exe "$@"

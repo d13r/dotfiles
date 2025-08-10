@@ -156,15 +156,6 @@ alias groupmod="$sudo groupmod"
 
 alias host='_domain-command host'
 
-alias k='kubectl'
-alias ka='kubectl apply -f'
-alias kcx='kubectl config use-context'
-alias kd='kubectl describe'
-alias ke='kubectl edit'
-alias kg='kubectl get'
-alias kns='kubectl config set-context --current --namespace'
-alias krm='kubectl delete'
-
 if is-mac; then
     ls_common='-GF'
 else
