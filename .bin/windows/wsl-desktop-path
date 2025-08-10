@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-winpath=$(powershell.exe -Command "[Environment]::GetFolderPath('Desktop')" | tr -d '\r')
-
-exec wslpath "$winpath"

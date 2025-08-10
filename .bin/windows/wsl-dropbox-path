@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-winpath=$(powershell.exe -Command 'gc $env:localappdata\Dropbox\host.db | select -index 1' | base64 -di)
-
-exec wslpath "$winpath"
