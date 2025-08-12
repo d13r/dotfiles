@@ -1,7 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-source "$HOME/.lib/setup-idea"
-
-sudo apt install -y "${apt_packages[@]}" golang-go
-sudo snap install --classic goland
