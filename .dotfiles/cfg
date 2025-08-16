@@ -112,11 +112,9 @@
         echo "Skipping unknown $file (MD5=$actual_md5)"
     }
 
-    # 3dfcfd30fbd064a6afccb4dfc24f2585  bashrc-auto-install-local
-    # ee8684af17fcef5a858e1f9d7c62f28b  bashrc-auto-install-remote
+    # 3dfcfd30fbd064a6afccb4dfc24f2585  bashrc-auto-install
     delete_skeleton_file .bashrc \
-        3dfcfd30fbd064a6afccb4dfc24f2585 \
-        ee8684af17fcef5a858e1f9d7c62f28b
+        3dfcfd30fbd064a6afccb4dfc24f2585
 
     delete_skeleton_file .bash_profile
     delete_skeleton_file .bash_logout

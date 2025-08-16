@@ -25,11 +25,11 @@ RUN useradd --create-home --shell=/bin/bash test
 
 # Copy the setup script to each user account and run it automatically on login
 COPY cfg /root/cfg
-COPY bashrc-auto-install-local /root/.bashrc
+COPY bashrc-auto-install /root/.bashrc
 
 USER test
 COPY cfg /home/test/cfg
-COPY bashrc-auto-install-local /home/test/.bashrc
+COPY bashrc-auto-install /home/test/.bashrc
 
 #===============================================================================
 # Red Hat-based OS

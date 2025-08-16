@@ -1,1 +1,0 @@
-[[ $- = *i* && ! -d ~/.git ]] && cd && wget https://djm.me/cfg && . cfg
