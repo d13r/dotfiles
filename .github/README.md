@@ -15,7 +15,7 @@ wget djm.me/cfg
 If it is a work machine, override my name and email address:
 
 ```bash
-setup identity dave.miller@maths.ox.ac.uk 'Dave Miller'
+git user dave.miller@maths.ox.ac.uk 'Dave Miller'
 ```
 
 ### Custom prompt message
@@ -54,7 +54,7 @@ Click Start, search for `features` and select "Turn Windows features on or off".
 
 [Install Windows Terminal from the Microsoft Store](https://www.microsoft.com/en-gb/p/windows-terminal/9n0dx20hk701#activetab=pivot:overviewtab).
 
-[Install Debian from the Microsoft Store](https://www.microsoft.com/store/productId/9MSVKQC78PK6?ocid=pdpshare). Run it, wait while it completes setup, set a username and password when prompted, then quit.
+[Install Ubuntu from the Microsoft Store](https://apps.microsoft.com/detail/9pdxgncfsczv?hl=en-GB&gl=GB). Run it, wait while it completes setup, set a username and password when prompted, then quit.
 
 Put this in `c:\Users\dave\.wslconfig`:
 
@@ -67,7 +67,7 @@ kernelCommandLine=ipv6.disable=1
 
 [Install VcXsrv](https://sourceforge.net/projects/vcxsrv/), then run XLaunch from the Start Menu. Accept the default settings except untick "Primary Selection". Save the configuration into the `shell:startup` folder so it's started automatically.
 
-Launch Windows Terminal from the start menu, click the tab dropdown menu, then Debian.
+Launch Windows Terminal from the start menu, click the tab dropdown menu, then Ubuntu.
 
 Enter a username and password when prompted.
 
@@ -80,18 +80,12 @@ wget djm.me/cfg
 . cfg
 ```
 
-When the installation completes, it will close the terminal. Run Debian again, then install various tools (including Tmux):
+### Reinstalling Ubuntu on WSL
+
+To completely reinstall Ubuntu on WSL, close WSL, open PowerShell and run:
 
 ```bash
-setup linux
+wsl --unregister Ubuntu
 ```
 
-### Reinstalling Debian on WSL
-
-To completely reinstall Debian on WSL, close WSL, open PowerShell and run:
-
-```bash
-wsl --unregister Debian
-```
-
-Then re-launch Debian from the Start Menu - it will take a few minutes to reinstall.
+Then re-launch Ubuntu from the Start Menu - it will take a few minutes to reinstall.

@@ -2,9 +2,9 @@
 set -euo pipefail
 
 # To test this repeatedly:
-#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; setup dave && ssh dave@localhost
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && ssh dave@localhost
 # Or (in Docker):
-#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; setup dave && sudo -su dave
+#   sudo pkill -u dave; sudo userdel dave; sudo rm -rf /home/dave; create-dave-user && sudo -su dave
 
 # Must be run as root
 # Note: We can't use anything in $PATH because of this (e.g. 'is-root-user')

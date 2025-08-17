@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
-# There is no 'latest' installer URL, or even 'v0.x' installer URL :-(
-# https://github.com/nvm-sh/nvm/issues/3473
-#
-# Check https://github.com/nvm-sh/nvm for the latest version number
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash

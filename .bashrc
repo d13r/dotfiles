@@ -190,7 +190,6 @@ alias rustrover='_idea rustrover'
 alias s='sudo '
 alias scra="$sudo systemctl reload apache2 && $sudo systemctl status --no-pager --full apache2"
 alias service="$sudo service"
-alias setup='bin --exe setup --dir "$HOME/.bin/setup"'
 alias shutdown="$sudo poweroff"
 alias sshak='ssh -o StrictHostKeyChecking=accept-new'
 alias sshstop='ssh -O stop'
