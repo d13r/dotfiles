@@ -20,6 +20,7 @@ ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=people,o
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=group,ou=current,dc=maths,dc=ox,dc=ac,dc=uk '(cn=¦)' | ldif-format
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.maths.ox.ac.uk -Q -b ou=group,ou=expired,dc=maths,dc=ox,dc=ac,dc=uk '(cn=¦)' | ldif-format
 ldapsearch -LLL -o ldif_wrap=no -H ldaps://ldap.oak.ox.ac.uk -Q -b ou=people,dc=oak,dc=ox,dc=ac,dc=uk '¦' | ldif-format
+oak ¦ | tail -n+2 | ldif-format
 mysqldump --single-transaction --routines ¦ | bzip2 -9 > dump.sql.bz2
 mysqldump --single-transaction --routines ¦ > dump.sql
 rsync -rlt --delete --stats --info=progress2 ./ user@server:/path/to/target
